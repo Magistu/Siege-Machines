@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "iti",
+    "ppp"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:compass"
+    },
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "t": {
+      "item": "minecraft:crafting_table"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "siegemachines:siege_workbench",
+    "count": 1
+  }
+}

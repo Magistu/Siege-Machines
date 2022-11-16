@@ -1,0 +1,16 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "i"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron",
+      "count": 2
+    }
+  },
+  "result": {
+    "item": "siegemachines:cannonball",
+    "count": 1
+  }
+}
