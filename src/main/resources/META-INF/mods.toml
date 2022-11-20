@@ -1,0 +1,19 @@
+modLoader="javafml" #mandatory
+loaderVersion="[40,)" #mandatory
+license="All rights reserved"
+[[mods]] #mandatory
+modId="siegemachines" #mandatory
+version="${file.jarVersion}" #mandatory
+ # A display name for the mod
+displayName="Medieval Siege Machines" #mandatory
+# logoFile="siegemachines.png" #optional
+credits="Thanks for this example mod goes to Java"
+authors="Magistu, itzme1on" #optional
+description='''Adds medieval siege machines'''
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.siegemachines]]
+    modId="geckolib3"
+    mandatory=true
+    versionRange="[3.00,]"
+    ordering="NONE"
+    side="BOTH"

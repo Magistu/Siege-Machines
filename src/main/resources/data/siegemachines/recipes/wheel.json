@@ -1,0 +1,22 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    " b ",
+    "bob",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "item": "siegemachines:beam",
+      "count": 1
+    },
+    "o": {
+      "tag": "forge:rods/wooden",
+      "count": 8
+    }
+  },
+  "result": {
+    "item": "siegemachines:wheel",
+    "count": 2
+  }
+}

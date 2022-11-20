@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "siegemachines:block/siege_workbench_front",
+    "north": "siegemachines:block/siege_workbench_front",
+    "south": "siegemachines:block/siege_workbench_side",
+    "east": "siegemachines:block/siege_workbench_side",
+    "west": "siegemachines:block/siege_workbench_front",
+    "up": "siegemachines:block/siege_workbench_top",
+    "down": "siegemachines:block/siege_workbench_bottom"
+  }
+}

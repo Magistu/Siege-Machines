@@ -1,0 +1,46 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "cbs",
+    "pBi",
+    "lr "
+  ],
+  "key": {
+    "B": {
+      "item": "siegemachines:turret_base",
+      "count": 16
+    },
+    "b": {
+      "item": "siegemachines:beam",
+      "count": 32
+    },
+    "p": {
+      "tag": "minecraft:planks",
+      "count": 24
+    },
+    "c": {
+      "item": "siegemachines:counterweight",
+      "count": 1
+    },
+    "i": {
+      "tag": "forge:ingots/iron",
+      "count": 32
+    },
+    "s": {
+      "item": "minecraft:string",
+      "count": 8
+    },
+    "l": {
+      "item": "minecraft:leather",
+      "count": 8
+    },
+    "r": {
+      "tag": "forge:rods/wooden",
+      "count": 16
+    }
+  },
+  "result": {
+    "item": "siegemachines:trebuchet",
+    "count": 1
+  }
+}
