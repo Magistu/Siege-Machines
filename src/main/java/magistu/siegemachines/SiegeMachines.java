@@ -33,7 +33,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod("siegemachines")
+@Mod(SiegeMachines.ID)
 public class SiegeMachines
 {
     public static final String ID = "siegemachines";

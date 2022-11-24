@@ -51,7 +51,7 @@ public class MachineItem extends Item implements IAnimatable
     private final String entitykey;
     private final String typekey;
 
-    public MachineItem(Item.Properties prop, String entitykey, String typekey)
+    public MachineItem(Properties prop, String entitykey, String typekey)
     {
         super(prop.stacksTo(1));
         this.entitykey = entitykey;
@@ -152,7 +152,7 @@ public class MachineItem extends Item implements IAnimatable
     public Entity spawn(EntityType<?> entitytype, ServerWorld p_220342_1_, @Nullable CompoundNBT p_220342_2_, @Nullable ITextComponent p_220342_3_, @Nullable PlayerEntity p_220342_4_, BlockPos p_220342_5_, SpawnReason p_220342_6_, boolean p_220342_7_, boolean p_220342_8_, float yaw) {
         Entity t = this.create(entitytype, p_220342_1_, p_220342_2_, p_220342_3_, p_220342_4_, p_220342_5_, p_220342_6_, p_220342_7_, p_220342_8_, yaw);
         if (t != null) {
-            if (t instanceof net.minecraft.entity.MobEntity && net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn((net.minecraft.entity.MobEntity) t, p_220342_1_, p_220342_5_.getX(), p_220342_5_.getY(), p_220342_5_.getZ(), null, p_220342_6_)) return null;
+            if (t instanceof MobEntity && net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn((MobEntity) t, p_220342_1_, p_220342_5_.getX(), p_220342_5_.getY(), p_220342_5_.getZ(), null, p_220342_6_)) return null;
             p_220342_1_.addFreshEntityWithPassengers(t);
         }
 
