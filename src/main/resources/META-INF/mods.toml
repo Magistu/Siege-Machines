@@ -1,16 +1,14 @@
-modLoader="javafml" #mandatory
-loaderVersion="[40,)" #mandatory
+modLoader="javafml"
+loaderVersion="[40,)"
 license="All rights reserved"
-[[mods]] #mandatory
-modId="siegemachines" #mandatory
-version="${file.jarVersion}" #mandatory
- # A display name for the mod
-displayName="Medieval Siege Machines" #mandatory
-# logoFile="siegemachines.png" #optional
-credits="Thanks for this example mod goes to Java"
-authors="Magistu, itzme1on" #optional
-description='''Adds medieval siege machines'''
-# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[mods]]
+modId="siegemachines"
+version="${file.jarVersion}"
+displayName="Medieval Siege Machines"
+logoFile="siegemachines.png"
+credits="Models by Lexiolty"
+authors="Magistu, itzme1on"
+description='''Adds medieval siege machines to your beauty Minecraft world!'''
 [[dependencies.siegemachines]]
     modId="geckolib3"
     mandatory=true
