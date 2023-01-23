@@ -1,5 +1,10 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.client.SoundTypes;
+import ru.magistu.siegemachines.entity.IReloading;
+import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -18,11 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.entity.IReloading;
-import ru.magistu.siegemachines.gui.Crosshair;
-import ru.magistu.siegemachines.gui.ReloadingCrosshair;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -38,7 +38,6 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     static AnimationBuilder MOVING_ANIM = new AnimationBuilder().addAnimation("Moving", ILoopType.EDefaultLoopTypes.LOOP);
-//    static AnimationBuilder TILTING_ANIM = new AnimationBuilder().addAnimation("Tilting", true);
 
     private double wheelspitch = 0.0;
     private double wheelsspeed = 0.0;
@@ -165,7 +164,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
                 Entity passenger = this.getControllingPassenger();
                 if (passenger instanceof Player)
                 {
-                    passenger.sendMessage(new TranslatableComponent(SiegeMachines.MOD_ID + ".no_gunpowder").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
+                    passenger.sendMessage(new TranslatableComponent(SiegeMachines.ID + ".no_gunpowder").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
                 }
             }
             this.shootingticks = 0;
@@ -203,7 +202,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
         {
             if (!this.level.isClientSide())
             {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(0.5f, 6.0f, this.distanceTo(player)), 0.8f);
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
             this.shootingticks = this.type.userealisetime;

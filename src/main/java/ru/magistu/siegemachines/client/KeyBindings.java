@@ -6,8 +6,8 @@ import net.minecraftforge.client.ClientRegistry;
 
 public class KeyBindings
 {
-    public static KeyMapping MACHINE_USE = new KeyMapping(SiegeMachines.MOD_ID + ".machine_use", 70, SiegeMachines.MOD_ID + ".category");
-    public static KeyMapping MACHINE_INVENTORY = new KeyMapping(SiegeMachines.MOD_ID + ".machine_inventory", 73, SiegeMachines.MOD_ID + ".category");
+    public static KeyMapping MACHINE_USE = new KeyMapping(SiegeMachines.ID + ".machine_use", 70, SiegeMachines.ID + ".category");
+    public static KeyMapping MACHINE_INVENTORY = new KeyMapping(SiegeMachines.ID + ".machine_inventory", 73, SiegeMachines.ID + ".category");
 
     public static void register()
     {

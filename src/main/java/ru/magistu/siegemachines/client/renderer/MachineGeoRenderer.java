@@ -8,13 +8,14 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public abstract class MachineGeoRenderer<T extends Machine & IAnimatable> extends GeoEntityRenderer<T>
 {
-    protected MachineGeoRenderer(EntityRendererProvider.Context renderManager, AnimatedGeoModel<T> model)
+    protected MachineGeoRenderer(EntityRendererProvider.Context rendermanager, AnimatedGeoModel<T> model)
     {
-        super(renderManager, model);
+        super(rendermanager, model);
     }
 
     @Override
-    protected float getDeathMaxRotation(T entity) {
+    protected float getDeathMaxRotation(T entity)
+    {
 		return 0.0F;
 	}
 }

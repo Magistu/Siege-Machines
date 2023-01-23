@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class Crosshair extends HudElement
 {
-    protected static final ResourceLocation CROSSHAIR_TEXTURES = new ResourceLocation(SiegeMachines.MOD_ID, "textures/gui/crosshairs.png");
+    protected static final ResourceLocation CROSSHAIR_TEXTURES = new ResourceLocation(SiegeMachines.ID, "textures/gui/crosshairs.png");
 
     public Crosshair(int width, int height)
     {

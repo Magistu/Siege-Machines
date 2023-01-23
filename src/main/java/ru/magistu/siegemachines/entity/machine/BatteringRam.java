@@ -24,7 +24,6 @@ import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -39,8 +38,8 @@ public class BatteringRam extends Machine implements IAnimatable
     static AnimationBuilder HITTING_ANIM = new AnimationBuilder().addAnimation("Hitting", ILoopType.EDefaultLoopTypes.LOOP);
     static AnimationBuilder RELOADING_ANIM = new AnimationBuilder().addAnimation("Reloading", ILoopType.EDefaultLoopTypes.LOOP);
 
-    public int hittingTicks = 0;
-    private int wheelsSoundTicks = 10;
+    public int hittingticks = 0;
+    private int wheelssoundticks = 10;
 
     public enum State
     {
@@ -153,10 +152,10 @@ public class BatteringRam extends Machine implements IAnimatable
             this.delayticks = this.type.delaytime;
         }
 
-        if (this.hittingTicks != 0 && --this.hittingTicks <= 0)
+        if (this.hittingticks != 0 && --this.hittingticks <= 0)
         {
             this.useRealise();
-            this.hittingTicks = 0;
+            this.hittingticks = 0;
         }
 
         if (!level.isClientSide() && this.isOnGround())
@@ -192,11 +191,11 @@ public class BatteringRam extends Machine implements IAnimatable
             PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
 
-        if (this.delayticks <= 0 && this.useticks <= 0 && this.hittingTicks <= 0)
+        if (this.delayticks <= 0 && this.useticks <= 0 && this.hittingticks <= 0)
         {
             this.state = State.HITTING;
             this.useticks = this.type.usetime;
-            this.hittingTicks = this.type.userealisetime;
+            this.hittingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
             this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), SoundSource.BLOCKS, 0.5f, 0.9f, false);

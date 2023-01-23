@@ -3,7 +3,7 @@ package ru.magistu.siegemachines.entity.projectile;
 public enum MissileType
 {
     CANNONBALL(15.0f, 1.5f, true, 3.0f, FlightType.SPINNING, 1.0f),
-    STONE(50.0f, 1.5f, true, 2.0f, FlightType.SPINNING, 1.0f),
+    STONE(50.0f, 1.5f, true, 3.0f, FlightType.SPINNING, 1.0f),
     GIANT_ARROW(5.0f, 1.5f, false, 0.0f, FlightType.AHEAD, 0.5f);
 
     public final float mass;

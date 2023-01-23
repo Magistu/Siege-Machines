@@ -16,11 +16,11 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EntityTypes
 {
-    public static final DeferredRegister<EntityType<?>> DEFERRED_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, SiegeMachines.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> DEFERRED_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, SiegeMachines.ID);
 
     public static final RegistryObject<EntityType<Cannonball>> CANNONBALL = addRegistry("cannonball", Cannonball::new, 0.5f, 0.5f);
     public static final RegistryObject<EntityType<Stone>> STONE = addRegistry("stone", Stone::new, 0.6f, 0.6f);
-    public static final RegistryObject<EntityType<GiantArrow>> GIANT_ARROW = DEFERRED_REGISTER.register("giant_arrow", () -> EntityType.Builder.<GiantArrow>of(GiantArrow::new, MobCategory.MISC).clientTrackingRange(4).updateInterval(20).sized(0.5f, 0.5f).build(new ResourceLocation(SiegeMachines.MOD_ID, "giant_arrow").toString()));
+    public static final RegistryObject<EntityType<GiantArrow>> GIANT_ARROW = DEFERRED_REGISTER.register("giant_arrow", () -> EntityType.Builder.<GiantArrow>of(GiantArrow::new, MobCategory.MISC).clientTrackingRange(4).updateInterval(20).sized(0.5f, 0.5f).build(new ResourceLocation(SiegeMachines.ID, "giant_arrow").toString()));
 
     public static final RegistryObject<EntityType<Mortar>> MORTAR = addRegistry("mortar", Mortar::new, 2.0f, 1.0f);
     public static final RegistryObject<EntityType<Culverin>> CULVERIN = addRegistry("culverin", Culverin::new, 2.0f, 1.0f);
@@ -31,7 +31,7 @@ public class EntityTypes
 
     public static <T extends Entity> RegistryObject<EntityType<T>> addRegistry(String name, EntityType.EntityFactory<T> constructor, float sizex, float sizey)
     {
-        return DEFERRED_REGISTER.register(name, () -> EntityType.Builder.of(constructor, MobCategory.MISC).sized(sizex, sizey).build(new ResourceLocation(SiegeMachines.MOD_ID, name).toString()));
+        return DEFERRED_REGISTER.register(name, () -> EntityType.Builder.of(constructor, MobCategory.MISC).sized(sizex, sizey).build(new ResourceLocation(SiegeMachines.ID, name).toString()));
     }
 
     public static void register(IEventBus eventBus)

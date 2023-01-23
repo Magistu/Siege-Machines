@@ -2,12 +2,12 @@ package ru.magistu.siegemachines.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import ru.magistu.siegemachines.client.renderer.model.MachineModel;
+import ru.magistu.siegemachines.entity.machine.Trebuchet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import ru.magistu.siegemachines.client.renderer.model.MachineModel;
-import ru.magistu.siegemachines.entity.machine.Trebuchet;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;

@@ -2,7 +2,6 @@ package ru.magistu.siegemachines.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;

@@ -13,7 +13,7 @@ public class PacketHandler
 {
     private static final String PROTOCOL_VERSION = "1";
 
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(SiegeMachines.MOD_ID, "main"), () -> "1", "1"::equals, "1"::equals);
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(SiegeMachines.ID, "main"), () -> "1", "1"::equals, "1"::equals);
 
     protected static int currentId = 0;
 

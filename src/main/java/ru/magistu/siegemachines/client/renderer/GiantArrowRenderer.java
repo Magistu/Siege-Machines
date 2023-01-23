@@ -18,7 +18,8 @@ import org.jetbrains.annotations.NotNull;
 @OnlyIn(Dist.CLIENT)
 public class GiantArrowRenderer extends EntityRenderer<GiantArrow>
 {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(SiegeMachines.MOD_ID, "textures/entity/giant_arrow.png");
+    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(SiegeMachines.ID, "textures/entity/giant_arrow.png");
+//    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("textures/entity/projectiles/arrow.png");
 
     public GiantArrowModel model = new GiantArrowModel(GiantArrowModel.createModel());
 

@@ -1,10 +1,9 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.gui.Crosshair;
-import ru.magistu.siegemachines.gui.ReloadingCrosshair;
+import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -52,23 +51,21 @@ public class Catapult extends ShootingMachine implements IAnimatable
         super(entitytype, level, MachineType.CATAPULT);
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
+    {
         switch (state) {
             case SHOOTING -> {
                 event.getController().setAnimation(SHOOTING_ANIM);
                 return PlayState.CONTINUE;
             }
-
             case IDLE_RELOADED -> {
                 event.getController().setAnimation(IDLE_RELOADED_ANIM);
                 return PlayState.CONTINUE;
             }
-
             case RELOADING -> {
                 event.getController().setAnimation(RELOADING_ANIM);
                 return PlayState.CONTINUE;
             }
-
             case IDLE_NOT_RELOADED -> {
                 event.getController().setAnimation(IDLE_NOT_RELOADED_ANIM);
                 return PlayState.CONTINUE;
@@ -130,16 +127,21 @@ public class Catapult extends ShootingMachine implements IAnimatable
     }
 
     @Override
-    public void shoot() {
-        if (!level.isClientSide()) {
+    public void shoot()
+    {
+        if (!level.isClientSide())
+        {
             super.shoot();
         }
     }
 
     @Override
-	public void travel(@NotNull Vec3 pos) {
-		if (this.isAlive()) {
-            if (this.isVehicle() && this.useticks <= 0 && this.delayticks <= 0) {
+	public void travel(Vec3 pos)
+    {
+		if (this.isAlive())
+        {
+            if (this.isVehicle() && this.useticks <= 0 && this.delayticks <= 0)
+            {
 			    LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
 
                 this.setTurretRotations(livingentity.getXRot(), this.getTurretYaw());
@@ -148,7 +150,6 @@ public class Catapult extends ShootingMachine implements IAnimatable
                 this.setYawDest(livingentity.getYRot());
                 this.updateYaw();
 			}
-
             super.travel(pos);
 		}
 	}

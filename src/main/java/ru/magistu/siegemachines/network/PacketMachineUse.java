@@ -58,15 +58,18 @@ public class PacketMachineUse
 
 	public static void handleEachSide(PacketMachineUse packet, Player player)
 	{
-		if(packet == null || player == null || player.level == null) {
+		if(packet == null || player == null || player.level == null)
+		{
 			return;
 		}
 
 		Entity entity = player.level.getEntity(packet.entityid);
-        if (!(entity instanceof Machine machine)) {
+        if (!(entity instanceof Machine))
+        {
             return;
         }
+		Machine machine = (Machine) entity;
 
-		machine.use(player);
+        machine.use(player);
 	}
 }

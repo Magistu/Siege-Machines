@@ -15,7 +15,7 @@ import ru.magistu.siegemachines.SiegeMachines;
 @OnlyIn(Dist.CLIENT)
 public class SiegeWorkbenchScreen extends AbstractContainerScreen<SiegeWorkbenchContainer>
 {
-	private static final ResourceLocation DISPLAY_CASE_GUI = new ResourceLocation(SiegeMachines.MOD_ID,
+	private static final ResourceLocation DISPLAY_CASE_GUI = new ResourceLocation(SiegeMachines.ID,
 			"textures/gui/siege_workbench.png");
 
 	public SiegeWorkbenchScreen(SiegeWorkbenchContainer screenContainer, Inventory inv, Component titleIn)

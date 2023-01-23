@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ContainerTypes
 {
-    public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, SiegeMachines.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, SiegeMachines.ID);
 
     public static final RegistryObject<MenuType<MachineContainer>> MACHINE_CONTAINER = CONTAINER_TYPES.register("machine", () -> IForgeMenuType.create(MachineContainer::new));
     public static final RegistryObject<MenuType<SiegeWorkbenchContainer>> SIEGE_WORKBENCH_CONTAINER = CONTAINER_TYPES.register("siege_workbench", () -> IForgeMenuType.create(SiegeWorkbenchContainer::new));

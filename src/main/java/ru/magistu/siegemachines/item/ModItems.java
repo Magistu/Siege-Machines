@@ -9,23 +9,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModItems
 {
-    public static final CreativeModeTab GROUP_SM = new CreativeModeTab(SiegeMachines.MOD_ID + ".medieval_siege_machines")
-    {
-        public @NotNull ItemStack makeIcon()
-        {
-            return new ItemStack(ModItems.BALLISTA.get());
+    public static final CreativeModeTab GROUP_SM = new CreativeModeTab(SiegeMachines.ID + ".medieval_siege_machines") {
+        @Override
+        public ItemStack makeIcon() {
+            return new ItemStack(ModItems.MORTAR.get());
         }
     };
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SiegeMachines.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SiegeMachines.ID);
 
     public static final RegistryObject<MachineItem> MORTAR = ITEMS.register("mortar", MortarItem::new);
-    public static final RegistryObject<MachineItem> CULVERIN = ITEMS.register("culverin", CulverinItem::new);
+    //public static final RegistryObject<MachineItem> CULVERIN = ITEMS.register("culverin", CulverinItem::new);
     public static final RegistryObject<MachineItem> CATAPULT = ITEMS.register("catapult", CatapultItem::new);
     public static final RegistryObject<MachineItem> TREBUCHET = ITEMS.register("trebuchet", TrebuchetItem::new);
     public static final RegistryObject<MachineItem> BALLISTA = ITEMS.register("ballista", BallistaItem::new);

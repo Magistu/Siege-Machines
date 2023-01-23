@@ -1,6 +1,5 @@
 package ru.magistu.siegemachines.item;
 
-import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
 import ru.magistu.siegemachines.client.renderer.model.MachineItemModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -16,7 +15,7 @@ public class MortarItem extends MachineItem
     }
 
     @Override
-	public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
 		super.initializeClient(consumer);
 		consumer.accept(new IItemRenderProperties() {
 			private final BlockEntityWithoutLevelRenderer renderer = new MachineItemGeoRenderer(new MachineItemModel<>("mortar"));

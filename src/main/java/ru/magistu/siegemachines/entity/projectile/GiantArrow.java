@@ -12,26 +12,31 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class GiantArrow extends AbstractArrow {
-    private final Packet<?> spawningPacket = NetworkHooks.getEntitySpawningPacket(this);
+public class GiantArrow extends AbstractArrow
+{
+    private final Packet<?> spawningpacket = NetworkHooks.getEntitySpawningPacket(this);
 
-    public GiantArrow(EntityType<GiantArrow> type, Level level) {
+    public GiantArrow(EntityType<GiantArrow> type, Level level)
+    {
         super(type, level);
     }
 
-	public GiantArrow(EntityType<GiantArrow> entityType, Level level, Vector3d pos, LivingEntity entity, Item item) {
-		super(entityType, entity, level);
+	public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, Item item)
+    {
+		super(entitytype, entity, level);
         this.setPos(pos.x, pos.y, pos.z);
         this.setBaseDamage(5.0F);
 	}
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected @NotNull ItemStack getPickupItem()
+    {
         return new ItemStack(ModItems.GIANT_ARROW.get());
     }
 
     @Override
-	public @NotNull Packet<?> getAddEntityPacket() {
-		return spawningPacket;
+	public @NotNull Packet<?> getAddEntityPacket()
+    {
+		return spawningpacket;
 	}
 }

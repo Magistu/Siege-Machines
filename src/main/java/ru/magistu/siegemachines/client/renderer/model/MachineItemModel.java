@@ -17,9 +17,9 @@ public class MachineItemModel<T extends MachineItem & IAnimatable> extends Anima
 	public MachineItemModel(String name)
 	{
 		this.name = name;
-		this.animationlocation = new ResourceLocation(SiegeMachines.MOD_ID, "animations/none.animation.json");
-		this.modellocation = new ResourceLocation(SiegeMachines.MOD_ID, "geo/" + this.name + "_item.geo.json");
-		this.texturelocation = new ResourceLocation(SiegeMachines.MOD_ID, "textures/entity/" + this.name + ".png");
+		this.animationlocation = new ResourceLocation(SiegeMachines.ID, "animations/none.animation.json");
+		this.modellocation = new ResourceLocation(SiegeMachines.ID, "geo/" + this.name + "_item.geo.json");
+		this.texturelocation = new ResourceLocation(SiegeMachines.ID, "textures/entity/" + this.name + ".png");
 	}
 
     @Override

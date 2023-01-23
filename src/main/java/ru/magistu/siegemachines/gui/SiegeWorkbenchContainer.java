@@ -2,15 +2,11 @@ package ru.magistu.siegemachines.gui;
 
 import com.google.common.collect.Sets;
 import ru.magistu.siegemachines.block.ModBlocks;
-import ru.magistu.siegemachines.data.recipes.ModRecipes;
-import ru.magistu.siegemachines.data.recipes.SiegeWorkbenchRecipe;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -75,23 +71,23 @@ public class SiegeWorkbenchContainer extends AbstractContainerMenu
     // to create resulting item
     protected static void slotChangedCraftingGrid(AbstractContainerMenu p_150547_, int p_217066_0_, Level p_217066_1_, Player p_217066_2_, CraftingContainer p_217066_3_, ResultContainer p_217066_4_)
     {
-        if (!p_217066_1_.isClientSide)
-        {
-            ServerPlayer serverplayerentity = (ServerPlayer) p_217066_2_;
-            ItemStack itemstack = ItemStack.EMPTY;
-            Optional<SiegeWorkbenchRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipeFor(ModRecipes.SIEGE_WORKBENCH_RECIPE, p_217066_3_, p_217066_1_);
-            if (optional.isPresent())
-            {
-                SiegeWorkbenchRecipe icraftingrecipe = optional.get();
-                if (p_217066_4_.setRecipeUsed(p_217066_1_, serverplayerentity, icraftingrecipe))
-                {
-                    itemstack = icraftingrecipe.assemble(p_217066_3_);
-                }
-            }
-
-            p_217066_4_.setItem(0, itemstack);
-            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(p_150547_.containerId, p_217066_0_, 0, itemstack));
-        }
+//        if (!p_217066_1_.isClientSide)
+//        {
+//            ServerPlayer serverplayerentity = (ServerPlayer) p_217066_2_;
+//            ItemStack itemstack = ItemStack.EMPTY;
+//            Optional<SiegeWorkbenchRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipeFor(ModRecipes.SIEGE_WORKBENCH_SERIALIZER, p_217066_3_, p_217066_1_);
+//            if (optional.isPresent())
+//            {
+//                SiegeWorkbenchRecipe icraftingrecipe = optional.get();
+//                if (p_217066_4_.setRecipeUsed(p_217066_1_, serverplayerentity, icraftingrecipe))
+//                {
+//                    itemstack = icraftingrecipe.assemble(p_217066_3_);
+//                }
+//            }
+//
+//            p_217066_4_.setItem(0, itemstack);
+//            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(p_150547_.containerId, p_217066_0_, 0, itemstack));
+//        }
     }
 
     @Override

@@ -1,5 +1,10 @@
 package ru.magistu.siegemachines.item;
 
+import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.entity.EntityTypes;
+import ru.magistu.siegemachines.entity.machine.Machine;
+import ru.magistu.siegemachines.entity.machine.MachineType;
+import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,11 +36,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.entity.EntityTypes;
-import ru.magistu.siegemachines.entity.machine.Machine;
-import ru.magistu.siegemachines.entity.machine.MachineType;
-import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -65,12 +65,12 @@ public class MachineItem extends Item implements IAnimatable
         ProjectileBuilder[] ammo = MachineType.valueOf(this.typekey).ammo;
         if (ammo.length > 0)
         {
-            tooltip.add(new TranslatableComponent(SiegeMachines.MOD_ID + ".ammo").withStyle(ChatFormatting.BLUE));
+            tooltip.add(new TranslatableComponent(SiegeMachines.ID + ".ammo").withStyle(ChatFormatting.BLUE));
             for (ProjectileBuilder builder : ammo)
             {
                 if (MachineType.valueOf(this.typekey).usesgunpowder)
                 {
-                    tooltip.add(new TranslatableComponent(SiegeMachines.MOD_ID + ".uses_gunpowder").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(new TranslatableComponent(SiegeMachines.ID + ".uses_gunpowder").withStyle(ChatFormatting.BLUE));
                 }
                 tooltip.add(new TextComponent("    ").append(new TranslatableComponent(builder.item.getDescriptionId())).withStyle(ChatFormatting.BLUE));
             }

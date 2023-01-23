@@ -15,30 +15,36 @@ public class PacketOpenMachineInventory
 {
 	public PacketOpenMachineInventory() {}
 
-	public static PacketOpenMachineInventory read(FriendlyByteBuf buf) {
+	public static PacketOpenMachineInventory read(FriendlyByteBuf buf)
+    {
         return new PacketOpenMachineInventory();
     }
 
 	public static void write(PacketOpenMachineInventory message, FriendlyByteBuf buf) {}
 
-	public static class Handler {
-        public static void handle(PacketOpenMachineInventory packet, Supplier<NetworkEvent.Context> ctx) {
+	public static class Handler
+    {
+        public static void handle(PacketOpenMachineInventory packet, Supplier<NetworkEvent.Context> ctx)
+        {
             NetworkEvent.Context context = ctx.get();
-            if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+            if (context.getDirection().getReceptionSide() == LogicalSide.SERVER)
+            {
                 context.enqueueWork(() -> PacketOpenMachineInventory.handleServerSide(packet, context.getSender()));
 			}
-
             context.setPacketHandled(true);
         }
     }
 
-	public static void handleServerSide(PacketOpenMachineInventory packet, ServerPlayer player) {
-		if(packet == null || player == null || !player.isPassenger()) {
+	public static void handleServerSide(PacketOpenMachineInventory packet, ServerPlayer player)
+	{
+		if(packet == null || player == null || !player.isPassenger())
+		{
 			return;
 		}
 
 		Entity entity = player.getVehicle();
-        if (!(entity instanceof Machine)) {
+        if (!(entity instanceof Machine))
+        {
             return;
         }
 		Machine machine = (Machine) entity;

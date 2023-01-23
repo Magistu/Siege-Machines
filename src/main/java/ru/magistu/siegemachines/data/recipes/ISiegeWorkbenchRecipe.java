@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ISiegeWorkbenchRecipe extends Recipe<CraftingContainer>
 {
-    ResourceLocation TYPE_ID = new ResourceLocation(SiegeMachines.MOD_ID, "siege_workbench");
+    ResourceLocation TYPE_ID = new ResourceLocation(SiegeMachines.ID, "siege_workbench");
 
     @Override
     default @NotNull RecipeType<?> getType(){

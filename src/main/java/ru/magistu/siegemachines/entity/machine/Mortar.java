@@ -3,8 +3,8 @@ package ru.magistu.siegemachines.entity.machine;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
 import ru.magistu.siegemachines.entity.IReloading;
-import ru.magistu.siegemachines.gui.Crosshair;
-import ru.magistu.siegemachines.gui.ReloadingCrosshair;
+import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -167,7 +167,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
                 Entity passenger = this.getControllingPassenger();
                 if (passenger instanceof Player)
                 {
-                    passenger.sendMessage(new TranslatableComponent(SiegeMachines.MOD_ID + ".no_gunpowder").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
+                    passenger.sendMessage(new TranslatableComponent(SiegeMachines.ID + ".no_gunpowder").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
                 }
             }
             this.shootingticks = 0;
@@ -205,7 +205,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         {
             if (!this.level.isClientSide())
             {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(0.5f, 6.0f, this.distanceTo(player)), 0.8f);
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
             this.shootingticks = this.type.userealisetime;

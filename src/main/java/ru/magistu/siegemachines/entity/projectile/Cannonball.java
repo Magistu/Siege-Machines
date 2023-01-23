@@ -9,12 +9,14 @@ import net.minecraft.world.level.Level;
 
 public class Cannonball extends Missile
 {
-    public Cannonball(EntityType<Cannonball> type, Level level) {
+    public Cannonball(EntityType<Cannonball> type, Level level)
+    {
         super(type, level);
         this.item = ModItems.CANNONBALL.get();
     }
 
-	public Cannonball(EntityType<Stone> entityType, Level level, Vector3d pos, LivingEntity entity, Item item) {
-		super(entityType, level, pos, entity, MissileType.CANNONBALL, item);
+	public Cannonball(EntityType<Stone> entitytype, Level level, Vector3d pos, LivingEntity entity, Item item)
+    {
+		super(entitytype, level, pos, entity, MissileType.CANNONBALL, item);
 	}
 }

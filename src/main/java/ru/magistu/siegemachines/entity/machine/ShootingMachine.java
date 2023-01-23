@@ -21,9 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import ru.magistu.siegemachines.gui.Crosshair;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -51,12 +48,12 @@ public abstract class ShootingMachine extends Machine implements IReloading
             Entity passenger = this.getControllingPassenger();
             if (passenger instanceof Player)
             {
-                passenger.sendMessage(new TranslatableComponent(SiegeMachines.MOD_ID + ".no_ammo").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
+                passenger.sendMessage(new TranslatableComponent(SiegeMachines.ID + ".no_ammo").withStyle(ChatFormatting.RED), SiegeMachines.CHAT_UUID);
             }
             return;
         }
         LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
-        Projectile projectile = projectilebuilder.factory.create(projectilebuilder.entityType, this.level, new Vector3d(this.getShotPos().x, this.getShotPos().y, this.getShotPos().z), livingentity == null ? this : livingentity, projectilebuilder.projectileItem);
+        Projectile projectile = projectilebuilder.factory.create(projectilebuilder.entitytype, this.level, new Vector3d(this.getShotPos().x, this.getShotPos().y, this.getShotPos().z), livingentity == null ? this : livingentity, projectilebuilder.projectilitem);
         if (projectile instanceof Missile)
         {
             Missile missile = (Missile) projectile;
@@ -190,7 +187,4 @@ public abstract class ShootingMachine extends Machine implements IReloading
         }
         return Arrays.stream(this.type.ammo).filter(builder -> builder.item.equals(ammo.getItem())).findFirst().orElse(ProjectileBuilder.NONE);
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public abstract Crosshair createCrosshair();
 }

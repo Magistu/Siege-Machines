@@ -1,9 +1,9 @@
 package ru.magistu.siegemachines.item;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraftforge.client.IItemRenderProperties;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
 import ru.magistu.siegemachines.client.renderer.model.MachineItemModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraftforge.client.IItemRenderProperties;
 
 import java.util.function.Consumer;
 
