@@ -4,9 +4,9 @@ license="All rights reserved"
 [[mods]] #mandatory
 modId="siegemachines" #mandatory
 version="${file.jarVersion}" #mandatory
- # A display name for the mod
+# A display name for the mod
 displayName="Medieval Siege Machines" #mandatory
-# logoFile="siegemachines.png" #optional
+# logoFile="siegemachines.png" #optional // TODO Logo
 credits="Lexiolty, itzme1on, Sahgar"
 authors="Magistu" #optional
 description='''Adds medieval siege machines'''

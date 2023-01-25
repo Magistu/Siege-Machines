@@ -42,7 +42,7 @@ public abstract class Machine extends Mob implements MenuProvider
 {
 	public MachineInventory inventory = new MachineInventory();
 
-	public static int containersize = 9;
+	public static int rows = 1;
 
 	public final MachineType type;
 
@@ -64,7 +64,7 @@ public abstract class Machine extends Mob implements MenuProvider
         super(entitytype, level);
 		this.type = type;
 		this.delayticks = this.type.delaytime;
-		containersize = this.type.containersize;
+		rows = this.type.rows;
 	}
 
 	public static AttributeSupplier.Builder setEntityAttributes(MachineType type) {
@@ -633,11 +633,11 @@ public abstract class Machine extends Mob implements MenuProvider
 
 
 	public static class MachineInventory implements Container, Nameable {
-		public NonNullList<ItemStack> items = NonNullList.withSize(containersize, ItemStack.EMPTY);
+		public NonNullList<ItemStack> items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
 
 		@Override
 		public int getContainerSize() {
-			return containersize;
+			return 9 * rows;
 		}
 
 		@Override
@@ -676,7 +676,7 @@ public abstract class Machine extends Mob implements MenuProvider
 
 		@Override
 		public void clearContent() {
-			this.items = NonNullList.withSize(containersize, ItemStack.EMPTY);
+			this.items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
 		}
 
 		public boolean containsItem(Item item) {
