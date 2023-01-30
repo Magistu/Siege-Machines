@@ -1,7 +1,6 @@
 package ru.magistu.siegemachines.gui.machine;
 
 import ru.magistu.siegemachines.entity.machine.Machine;
-import ru.magistu.siegemachines.gui.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,6 +10,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import ru.magistu.siegemachines.gui.ModMenuTypes;
 
 import java.util.Objects;
 

@@ -1,12 +1,198 @@
 1.18.x Changelog
+40.2
+====
+ - 40.2.1 Fire TickEvent.WorldTickEvent on ClientLevel tick (#9304)
+ - 40.2.0 Mark 1.18.2 Recommended Build 2
+
 40.1
 ====
- - 40.1.0 Mark 1.18.2 Recommended Build.
-          Co-authored-by: sciwhiz12 <arnoldnunag12@gmail.com>
-          Co-authored-by: Marc Hermans <marc.hermans@ldtteam.com>
-          Co-authored-by: Curle <curle@gemwire.uk>
-          Co-authored-by: SizableShrimp <sizableshrimp@sizableshrimp.me>
-          Co-authored-by: David Quintana <gigaherz@gmail.com>
+ - 40.1.93 Fix mob block breaking AI when chunk 0,0 is unloaded Fixes #9241 (#9250)
+ - 40.1.92 [1.18.x] Make check tasks fail and report errors (#9228)
+           * Make check tasks fail and report errors
+           * License header and sas
+ - 40.1.91 [1.18.x] Make Util.memoize thread-safe (#9166)
+           * Make Util.memoize thread-safe
+           * Add the forge marker present in the PR
+ - 40.1.90 [1.18] Improve extensibility of DetectorRailBlock and PoweredRailBlock (#9156)
+           * Improve extensibility of DetectorRailBlock and PoweredRailBlock
+           * Add missing license header to BlockGrowFeatureTest
+ - 40.1.89 [1.18.x] Add supplier to FlowerBlock so it works with custom MobEffects (#9140)
+           * add supplier to FlowerBlock so it works with custom MobEffects
+           * address comments by @Matyrobbrt
+           * address comments by @ChampionAsh5357
+           * fix missing exc entry
+           * remove null check and rename constructor parameter
+ - 40.1.88 [1.18.x] Backport grindstone event from 1.19 (#9090)
+           * Backport grindstone event from 1.19
+           * Fix several bugs in the original PR related to canceling the event
+           Fix canceling the event not clearing the result item, causing it to dupe whatever the result with the previous item was
+           Fix canceling the event running vanilla behavior if vanilla behavior ran at all since the menu was opened and no other listener changed the XP
+           * Add comments to the test mod explaining the expected behavior
+           * Clarify docs on behavior of the XP
+           Makes it clear XP is ignored in on place if the output is empty or the event is canceled
+           * Fix broadcast changes not being called if the event overrides grindstone behavior
+           Not sure its strictly needed, but every vanilla branch in the function calls it and its a trivial change.
+           * Add enabled flag to the test mod
+           * Improve javadocs
+           (cherry picked from commit e12c849cc0f4e1a031c06be9cb6489d21e4b1685)
+           * Formatting fixes
+           * Apply javadoc suggestions from review
+           Co-authored-by: matyrobbrt <65940752+Matyrobbrt@users.noreply.github.com>
+           * Correct capitalization in event name
+           * Javadoc improvements
+           Remove some redundancy in certain javadoc comments
+           Add @see to the header
+           Inline single line javadocs
+           * Add some funny curly brackets next to returns
+           Seems the kids these days have invented a new way to write return statements in javadocs
+           * Remove extra dots and capital letters
+           The return tag apparently puts more dots at the end, and having two dots on each sentence is not in the budget. Have also reached the capital letter quota
+           * Apply suggestions from code review
+           Co-authored-by: matyrobbrt <65940752+Matyrobbrt@users.noreply.github.com>
+           Co-authored-by: ferriarnus <61201275+ferriarnus@users.noreply.github.com>
+           Co-authored-by: matyrobbrt <65940752+Matyrobbrt@users.noreply.github.com>
+ - 40.1.87 [1.18.2] Fix compatibility checker task configuration (#9229)
+ - 40.1.86 Enable additional build types to handle pull request validation. (#9160)
+ - 40.1.85 [1.18.x] Improve logging of missing or unsupported dependencies (#9108)
+ - 40.1.84 [1.18.x] Make LivingSetAttackTargetEvent compatible with the Brain/Behavior system. (#8918)
+ - 40.1.83 [1.18.x] Backport recipe grouping feature to 1.18. (#8984)
+ - 40.1.82 [1.18.x] Invalidate lazy optionals properly (#9082)
+ - 40.1.81 [1.18.x] Fix NPE when feeding cats and wolves (#9075)
+ - 40.1.80 Revert "[1.18.x] Backport: Cache resource listing calls in resource packs (#8868)" (#9026)
+           This reverts commit 4df024ef43524d8ec48928c70f561903f7a8e184.
+ - 40.1.79 [1.18.x] Backport #8981 ("Add event to growing fungus") to 1.18 (#8998)
+ - 40.1.78 LTS Backport of ModMismachEvent (#8989) (#9010)
+ - 40.1.77 LTS Backport of #8927 (#9012)
+ - 40.1.76 Backport Reach Distance fix (#9008)
+ - 40.1.75 Backport version-checker user-agent changes to 1.18 (#8975)
+ - 40.1.74 Fix circular dependency in static init of RecipeBookRegistry (#8996)
+ - 40.1.73 Backport: Load custom ITransformationServices from the classpath in dev (#8350)
+ - 40.1.72 [1.18.x] Backport: Cache resource listing calls in resource packs (#8868)
+ - 40.1.71 Backport: Re-add PotentialSpawns event (#8944)
+ - 40.1.70 [1.18.2][Backport] Let isRemotePresent check minecraft:register for packet ids from other mod loaders (#8943)
+ - 40.1.69 Fix crossbows not firing ArrowLooseEvent (#8888)
+ - 40.1.68 [1.18] Allow blocks to provide a dynamic MaterialColor for display on maps (#8855)
+ - 40.1.67 [1.18.x] Add RenderLevelStageEvent to expand on and replace RenderLevelLastEvent (#8603)
+ - 40.1.66 [1.18] Fix EnumArgument to use enum names for suggestions (#8746)
+           Previously, the suggestions used the string representation of the enum
+           through Enum#toString, which can differ from the name of the enum as
+           required by Enum#valueOf, causing invalid suggestions (both in gui and
+           through the error message).
+           Using Enum#name fixes this discrepancy, so now the suggestions are
+           always valid inputs regardless of the return of Enum#toString.
+           Fixes #8618
+ - 40.1.65 [1.18] Add MC-105317 fix into patch to rotate entities in structures properly (#8793)
+ - 40.1.64 [1.18] Update to the latest JarJar (#8848)
+ - 40.1.63 [1.18.x] Fix a weird interaction between shulker boxes and hoppers. (#8824)
+ - 40.1.62 [1.18.x] Implement full support for IPv6 (#8376)
+ - 40.1.61 [1.16] Make tryEmptyContainer respect doDrain (#8318)
+ - 40.1.60 Jar-In-Jar (#8657)
+           * Jar-In-Jar
+           * Change to use the custom 4.x SPI.
+           * Bump JarJar to fix some version range selectors.
+           * Address requested changes.
+           * Mark the JiJ locator as a locator.
+           * Remove the unused imports.
+ - 40.1.59 Fix static member ordering crash in UnitSprite (#8839)
+           The previous ordering caused LOCATION to be null during the construction
+           of the UnitSprite INSTANCE, leading to errors as the atlas location for
+           the sprite would be null.
+           Fixes #8795
+ - 40.1.58 Backport: ForgeChunkManager ticking ticket fixes. (#8784)
+ - 40.1.57 Delete LootItemRandomChanceCondition.java.patch (#8734)
+ - 40.1.56 Use stack sensitive translation key by default (#8674)
+ - 40.1.55 Add callback after a BlockState was changed and the neighbors were updated (#8617)
+ - 40.1.54 [1.18.x] Allow safely registering RenderType predicates at any time (#8671)
+           * Allow safely registering RenderType predicates at any time
+           * Requested changes
+ - 40.1.53 Add Filtered Message to ServerChatEvent
+ - 40.1.52 [1.18] Make ConfigValue implement Supplier. (#8777)
+ - 40.1.51 Make IVertexConsumers such as the lighting pipeline, be aware of which format they are dealing with (#8665)
+           Also fix Lighting pipeline ignoring the overlay coords from the block renderer.
+ - 40.1.50 Revert "TeamCity change in 'MinecraftForge / MinecraftForge' project: build features of 'Build' build configuration were updated"
+           This reverts commit 0cc85bc314c8c90f1bdb24d77c7035bb09150489.
+ - 40.1.49 TeamCity change in 'MinecraftForge / MinecraftForge' project: build features of 'Build' build configuration were updated
+ - 40.1.48 [1.18.x] Fix #8530 (Banner Pattern) NPE (#8666)
+ - 40.1.47 Revert "[1.18.x] Enable the Forge light pipeline by default (#8629)" (#8663)
+ - 40.1.46 Fix eager loading of model loaders during datagen causing NPE (#8659)
+ - 40.1.45 [1.18.x] Fix 2 crossbow animations not applying to custom variants (#8625)
+ - 40.1.44 [1.18.x] Added new Disconnection screen to display better channel/registry mismatch information (#8402)
+           Co-authored-by: Curle <42079760+TheCurle@users.noreply.github.com>
+ - 40.1.43 [1.18] Avoid exclusive synchronisation in block render type lookups (#8476)
+ - 40.1.42 [1.18] Fix command redirects by replacing Commands#fillUsableCommands (#8616)
+           Commands#fillUsableCommands does not handle redirect nodes properly. It
+           blindly pulls from the cached node map for a redirect node, which may
+           have no result because the target node of the redirect has not been
+           visited yet.
+           CommandHelper#mergeCommandNode is better in this regard, because it
+           visits the target node of the redirect instead of blindly pulling from
+           the node map.
+           Fixes #7551
+ - 40.1.41 [1.18] Fix tags command suggestion to include dynamic registries (#8638)
+           Manually entering the names of dynamic registries work as expected. The
+           suggestions for registries didn't include dynamic registries because
+           they queried the static registries rather than querying all registries
+           from the server's `RegistryAccess` (which includes both static
+           registries and dynamic registries).
+ - 40.1.40 Low code language provider (#8633)
+           Co-authored-by: Curle <42079760+TheCurle@users.noreply.github.com>
+ - 40.1.39 [1.18.x] Add checkJarCompatibility task (#8644)
+ - 40.1.38 [1.18.x] Fix Banner Patterns not being extensible (#8530)
+           Co-authored-by: Curle <42079760+TheCurle@users.noreply.github.com>
+ - 40.1.37 1.18.x Port BiomeDictionary over to biome tags (#8564)
+ - 40.1.36 [1.18.x] Enable the Forge light pipeline by default (#8629)
+ - 40.1.35 [1.18.x] Allow Modders to add custom data-pack registries through RegistryBuilder (#8630)
+           Co-authored-by: Silverminer007 <66484505+Silverminer007@users.noreply.github.com>
+           Co-authored-by: Curle <42079760+TheCurle@users.noreply.github.com>
+ - 40.1.34 [1.18] Allow custom rarities to directly modify the style (#8648)
+ - 40.1.33 [1.18] Fix reload listener registration in ModelLoaderRegistry (#8650)
+ - 40.1.32 Fix wrong position in Level#hasChunk() call in IForgeBlockGetter (#8654)
+ - 40.1.31 Add ItemStack context to Enchantment#getDamageBonus (#8635)
+ - 40.1.30 Fix attack cooldown bar showing when out of reach of target. Closes #8639 (#8640)
+ - 40.1.29 Improve TagsUpdatedEvent by adding update case information. (#8636)
+ - 40.1.28 Deprecate patched-in Style methods for removal, vanilla variants exist. (#8615)
+ - 40.1.27 Add pack-type-specific format versions in pack metadata. Fixes #8563 (#8612)
+ - 40.1.26 Catch and aggregate exceptions during NewRegistryEvent (#8601)
+ - 40.1.25 Added removeErroringEntities config option (#8627)
+           Counterpart to removeErroringBlockEntities
+ - 40.1.24 Add missing patches for not lowering mipmap level for small textures (#8622)
+ - 40.1.23 Make TransformType enum extensible, includes the possibility to specify a fallback type for cases where models don't specify the transform explicitly. (#8566)
+           Makes it possible to add new perspectives.
+ - 40.1.22 Fix CheckSAS to actually validate that the SAS line will do something.
+           This removes all method level lines as they are not necessary now.
+ - 40.1.21 Add Attack Range attribute and Update Reach Distance (#8478)
+ - 40.1.20 Implement PlayerNegotiationEvent (#8599)
+ - 40.1.19 Fire EntityTravelToDimensionEvent in all expected cases (#8614)
+           Fixes #8520
+ - 40.1.18 Fix isEdible crash (#8613)
+           Fixes #8602
+ - 40.1.17 Fix typo in Snow Golem patch causing them to destroy blocks they shouldn't. Closes  #8611
+ - 40.1.16 Re-introduce an attribute for entity step height in a non-breaking way (#8607)
+ - 40.1.15 Revert step height attribute (#8604)
+ - 40.1.14 [1.18.x] Fix ContextNbtProvider serializing the wrong name (#8575)
+ - 40.1.13 Let BaseRailBlock decide if the calculated RailShape for placement or connection to neighbors is valid (#8562)
+ - 40.1.12 Fix shears not playing a breakage sound (#8600)
+ - 40.1.11 Update IExtensionPoint javadoc to be correct (#8568)
+ - 40.1.10 Fix IDs of Multi-part entities being desynced across client and server. (#8576)
+ - 40.1.9  Expose ICondition$IContext to modded reload listeners. (#8596)
+ - 40.1.8  Fix undead causing chunkloading leading to extensive lag (#8583)
+ - 40.1.7  Accomodate Bukkit-like Servers not sending Command Args (#8582)
+           Note to modded server devs:
+           Please, please, please implement full compatibility with [Brigadier](https://github.com/Mojang/Brigadier) instead of hacking around it.
+ - 40.1.6  Restore translation key comments to ForgeConfigSpec (#8584)
+ - 40.1.5  Fix entity parts being ignored when collecting entities in an AABB (#8588)
+           Previously entity parts are only taken into consideration when the parent entity is in a chunk that intersects with the AABB
+ - 40.1.4  Fix EntityInteraction event running twice on client side (#8598)
+ - 40.1.3  Introduce an attribute for step height additions (#8389)
+ - 40.1.2  Fix shears passing on a client when interacting with a shearable entity (#8597)
+           Caused the offhand item to also interact with the entity, possibly sending a packet to the server causing both hands to interact
+ - 40.1.1  Allow Exception passed through CommandEvent to propagate (#8590)
+ - 40.1.0  Mark 1.18.2 Recommended Build.
+           Co-authored-by: sciwhiz12 <arnoldnunag12@gmail.com>
+           Co-authored-by: Marc Hermans <marc.hermans@ldtteam.com>
+           Co-authored-by: Curle <curle@gemwire.uk>
+           Co-authored-by: SizableShrimp <sizableshrimp@sizableshrimp.me>
+           Co-authored-by: David Quintana <gigaherz@gmail.com>
 
 40.0
 ====

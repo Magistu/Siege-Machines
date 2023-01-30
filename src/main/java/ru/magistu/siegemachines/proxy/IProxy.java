@@ -9,8 +9,6 @@ public interface IProxy
     void setup(IEventBus paramIEventBus1, IEventBus paramIEventBus2);
 
     public void clientSetup(FMLClientSetupEvent event);
-
-    public void commonSetup(FMLCommonSetupEvent event);
-
+    
     public void onPreInit();
 }

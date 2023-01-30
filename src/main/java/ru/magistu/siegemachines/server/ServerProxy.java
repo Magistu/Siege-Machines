@@ -11,9 +11,5 @@ public class ServerProxy implements IProxy
 
     public void clientSetup(FMLClientSetupEvent event) {}
 
-    public void commonSetup(FMLCommonSetupEvent event) {
-//        Registry.register(Registry.RECIPE_TYPE, SiegeWorkbenchRecipe.Type.ID, ModRecipes.SIEGE_WORKBENCH_SERIALIZER.get());
-    }
-
     public void onPreInit() {}
 }

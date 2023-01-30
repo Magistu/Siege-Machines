@@ -1,13 +1,12 @@
 package ru.magistu.siegemachines.client;
 
 import ru.magistu.siegemachines.gui.ModMenuTypes;
+import ru.magistu.siegemachines.gui.workbench.SiegeWorkbenchScreen;
 import ru.magistu.siegemachines.gui.machine.MachineInventoryScreen;
-import ru.magistu.siegemachines.gui.siegeworkbench.SiegeWorkbenchScreen;
 import ru.magistu.siegemachines.proxy.IProxy;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ClientProxy implements IProxy
 {
@@ -22,11 +21,6 @@ public class ClientProxy implements IProxy
         MenuScreens.register(ModMenuTypes.SIEGE_WORKBENCH_CONTAINER.get(), SiegeWorkbenchScreen::new);
 
         KeyBindings.register();
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event)
-    {
-//        Registry.register(Registry.RECIPE_TYPE, SiegeWorkbenchRecipe.Type.ID);
     }
 
     public void onPreInit() {}

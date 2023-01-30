@@ -1,6 +1,10 @@
 package ru.magistu.siegemachines.event;
 
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.event.RegistryEvent;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.data.recipes.ModRecipes;
+import ru.magistu.siegemachines.data.recipes.SiegeWorkbenchRecipe;
 import ru.magistu.siegemachines.entity.EntityTypes;
 import ru.magistu.siegemachines.entity.machine.*;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;

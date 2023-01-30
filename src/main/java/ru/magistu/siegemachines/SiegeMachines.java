@@ -1,11 +1,12 @@
 package ru.magistu.siegemachines;
 
+import net.minecraftforge.fml.event.lifecycle.*;
 import ru.magistu.siegemachines.block.ModBlocks;
-import ru.magistu.siegemachines.block.entity.ModBlockEntities;
 import ru.magistu.siegemachines.client.ClientProxy;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.gui.ModMenuTypes;
+import ru.magistu.siegemachines.data.recipes.ModRecipes;
 import ru.magistu.siegemachines.entity.EntityTypes;
+import ru.magistu.siegemachines.gui.ModMenuTypes;
 import ru.magistu.siegemachines.item.ModItems;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.proxy.IProxy;
@@ -19,10 +20,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,23 +43,24 @@ public class SiegeMachines
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
+    IEventBus eventBus;
+
 
     public SiegeMachines()
     {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
-       // ModRecipes.register(eventBus);
         EntityTypes.register(eventBus);
         SoundTypes.register(eventBus);
-        ModBlockEntities.register(eventBus);
         ModMenuTypes.register(eventBus);
         ModBlocks.register(eventBus);
         ModItems.register(eventBus);
+        ModRecipes.register(eventBus);
 
         PacketHandler.init();
 

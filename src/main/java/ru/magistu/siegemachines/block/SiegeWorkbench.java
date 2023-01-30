@@ -14,8 +14,9 @@ import net.minecraft.world.level.block.CraftingTableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-import ru.magistu.siegemachines.gui.SiegeWorkbenchContainer;
+import ru.magistu.siegemachines.gui.workbench.SiegeWorkbenchContainer;
 
 public class SiegeWorkbench extends CraftingTableBlock
 {
@@ -39,6 +40,7 @@ public class SiegeWorkbench extends CraftingTableBlock
         }
     }
 
+    @Override
     public MenuProvider getMenuProvider(@NotNull BlockState blockstate, @NotNull Level level, @NotNull BlockPos blockpos)
     {
         return new SimpleMenuProvider((p_220270_2_, p_220270_3_, p_220270_4_) ->

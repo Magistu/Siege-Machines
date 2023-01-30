@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.gui;
+package ru.magistu.siegemachines.gui.workbench;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,19 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
 
 @OnlyIn(Dist.CLIENT)
-public class MachineInventoryScreen extends AbstractContainerScreen<MachineContainer>
+public class SiegeWorkbenchScreen extends AbstractContainerScreen<SiegeWorkbenchContainer>
 {
-	private static final ResourceLocation DISPLAY_CASE_GUI = new ResourceLocation(SiegeMachines.ID,
-			"textures/gui/machine_inventory.png");
+	private static final ResourceLocation DISPLAY_CASE_GUI = new ResourceLocation(SiegeMachines.ID, "textures/gui/siege_workbench.png");
 
-	public MachineInventoryScreen(MachineContainer screenContainer, Inventory inv, Component titleIn)
+	public SiegeWorkbenchScreen(SiegeWorkbenchContainer screenContainer, Inventory inv, Component titleIn)
     {
 		super(screenContainer, inv, titleIn);
-
-		this.leftPos = 0;
-		this.topPos = 0;
-		this.imageWidth = 176;
-		this.imageHeight = 166;
 	}
 
 	@Override
@@ -46,14 +40,21 @@ public class MachineInventoryScreen extends AbstractContainerScreen<MachineConta
 	}
 
 	@Override
+	protected void init()
+	{
+		super.init();
+		this.titleLabelX = 29;
+	}
+
+	@Override
 	protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      	RenderSystem.setShaderTexture(0, DISPLAY_CASE_GUI);
-		int x = (this.width - this.imageWidth) / 2;
-		int y = (this.height - this.imageHeight) / 2;
-		this.blit(matrixStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
+		RenderSystem.setShaderTexture(0, DISPLAY_CASE_GUI);
+    	int i = this.leftPos;
+    	int j = (this.height - this.imageHeight) / 2;
+    	this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 	}
 
 	@Override
@@ -62,6 +63,7 @@ public class MachineInventoryScreen extends AbstractContainerScreen<MachineConta
 		assert this.minecraft != null;
 		if (key == 256)
 		{
+			assert this.minecraft.player != null;
 			this.minecraft.player.closeContainer();
 			return true;
 		}
