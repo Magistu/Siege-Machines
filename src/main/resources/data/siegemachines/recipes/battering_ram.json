@@ -1,0 +1,42 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    " bs",
+    "pBi",
+    "lw "
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:string",
+      "count": 12
+    },
+    "B": {
+      "item": "siegemachines:turret_base",
+      "count": 12
+    },
+    "b": {
+      "item": "siegemachines:beam",
+      "count": 22
+    },
+    "p": {
+      "tag": "minecraft:planks",
+      "count": 16
+    },
+    "i": {
+      "tag": "forge:ingots/iron",
+      "count": 8
+    },
+    "l": {
+      "item": "minecraft:leather",
+      "count": 4
+    },
+    "w": {
+      "item": "siegemachines:wheel",
+      "count": 6
+    }
+  },
+  "result": {
+    "item": "siegemachines:battering_ram",
+    "count": 1
+  }
+}

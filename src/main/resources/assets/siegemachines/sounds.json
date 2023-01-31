@@ -1,0 +1,197 @@
+{
+  "trebuchet_shooting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:trebuchet_shooting",
+        "stream": true
+      }
+    ]
+  },
+  "trebuchet_reloading": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:trebuchet_reloading_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:trebuchet_reloading_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:trebuchet_reloading_3",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:trebuchet_reloading_4",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:trebuchet_reloading_5",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:trebuchet_reloading_6",
+        "stream": true
+      }
+    ]
+  },
+  "catapult_shooting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:catapult_shooting_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_shooting_1",
+        "stream": true
+      }
+    ]
+  },
+  "catapult_reloading": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:catapult_reloading_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_reloading_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_reloading_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_reloading_3",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_reloading_4",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:catapult_reloading_5",
+        "stream": true
+      }
+    ]
+  },
+  "ballista_shooting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:ballista_shooting_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_shooting_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_shooting_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_shooting_3",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_shooting_4",
+        "stream": true
+      }
+    ]
+  },
+  "ballista_reloading": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:ballista_reloading_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_reloading_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_reloading_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ballista_reloading_3",
+        "stream": true
+      }
+    ]
+  },
+  "mortar_shooting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:mortar_shooting",
+        "stream": true
+      }
+    ]
+  },
+  "fuse": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:fuse",
+        "stream": true
+      }
+    ]
+  },
+  "cannon_wheels": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:cannon_wheels_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:cannon_wheels_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:cannon_wheels_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:cannon_wheels_3",
+        "stream": true
+      }
+    ]
+  },
+  "ram_wheels": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:ram_wheels_0",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ram_wheels_1",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ram_wheels_2",
+        "stream": true
+      },
+      {
+        "name": "siegemachines:ram_wheels_3",
+        "stream": true
+      }
+    ]
+  },
+  "ram_hitting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:ram_hitting",
+        "stream": true
+      }
+    ]
+  }
+}
