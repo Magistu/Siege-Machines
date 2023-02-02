@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "siegemachines",
+  "version": "${version}",
+  "name": "Medieval Siege Machines",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "itzme1on"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "All Rights Reversed",
+  "icon": "assets/siegemachines/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ru.itzme1on.fabric.ExampleModFabric"
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18.2",
+    "architectury": ">=4.9.83"
+  }
+}
