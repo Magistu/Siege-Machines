@@ -1,13 +1,13 @@
 modLoader = "javafml"
 loaderVersion = "[40,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://discord.gg/2FC4QYxcGJ"
 license = "Insert License Here"
 
 [[mods]]
 modId = "siegemachines"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
+displayName = "Medieval Siege Machines"
+authors = "Magistu, itzme1on, Lexiolty"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''

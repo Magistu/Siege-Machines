@@ -5,18 +5,20 @@
   "name": "Medieval Siege Machines",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
-    "itzme1on"
+    "Magistu",
+    "itzme1on",
+    "Lexiolty"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/medieval-siege-machines/",
+    "issues": "https://discord.gg/2FC4QYxcGJ"
   },
   "license": "All Rights Reversed",
   "icon": "assets/siegemachines/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ru.itzme1on.fabric.ExampleModFabric"
+      "ru.itzme1on.fabric.SiegeMachines"
     ]
   },
   "depends": {
