@@ -17,6 +17,11 @@ public class PacketMachine {
     private final float turretPitch;
     private final float turretYaw;
 
+    public PacketMachine(FriendlyByteBuf buf) 
+    {
+        this(buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat());
+    }
+
     public PacketMachine(int entityId, int delayTicks, int useTicks, float turretPitch, float turretYaw) {
         this.entityId = entityId;
         this.delayTicks = delayTicks;
@@ -25,37 +30,25 @@ public class PacketMachine {
         this.turretYaw = turretYaw;
     }
 
-    public static PacketMachine read(FriendlyByteBuf buf) {
-        return new PacketMachine(buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat());
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(entityId);
+        buf.writeInt(delayTicks);
+        buf.writeInt(useTicks);
+        buf.writeFloat(turretPitch);
+        buf.writeFloat(turretYaw);
     }
 
-    public static void write(PacketMachine message, FriendlyByteBuf buf) {
-        buf.writeInt(message.entityId);
-        buf.writeInt(message.delayTicks);
-        buf.writeInt(message.useTicks);
-        buf.writeFloat(message.turretPitch);
-        buf.writeFloat(message.turretYaw);
-    }
-
-    public static class Handler {
-        public void handle(PacketMachine packet, Supplier<NetworkManager.PacketContext> context) {
-            NetworkManager.PacketContext ctx = context.get();
-            if (ctx.getEnv() == EnvType.CLIENT)
-                ctx.queue(() -> PacketMachine.handleClientSide(packet));
-        }
-    }
-
-    public static void handleClientSide(PacketMachine packet) {
+    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (packet == null || player == null || player.level == null)
+        if (contextSupplier.get() == null || player == null || player.level == null)
             return;
 
-        Entity entity = player.level.getEntity(packet.entityId);
+        Entity entity = player.level.getEntity(entityId);
         if (!(entity instanceof Machine machine))
             return;
 
-        machine.delayTicks = packet.delayTicks;
-        machine.useTicks = packet.useTicks;
-        machine.setTurretRotations(packet.turretPitch, packet.turretYaw);
+        machine.delayTicks = delayTicks;
+        machine.useTicks = useTicks;
+        machine.setTurretRotations(turretPitch, turretYaw);
     }
 }
