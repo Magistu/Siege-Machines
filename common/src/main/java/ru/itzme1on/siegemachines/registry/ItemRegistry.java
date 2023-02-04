@@ -16,6 +16,11 @@ public class ItemRegistry {
     public static final ItemGroup SIEGEMACHINES_GROUP = CreativeTabRegistry.create(new Identifier(SiegeMachines.MOD_ID, "medieval_siege_machines"),
             () -> new ItemStack(ItemRegistry.BEAM.get()));
 
+    public static final RegistrySupplier<Item> BALLISTA = ITEMS.register("ballista",
+            () -> new Item(new Item.Settings()
+                    .maxCount(1)
+                    .group(ItemRegistry.SIEGEMACHINES_GROUP)));
+
     public static final RegistrySupplier<Item> CANNONBALL = ITEMS.register("cannonball",
             () -> new Item(new Item.Settings()
                     .maxCount(16)
@@ -54,4 +59,8 @@ public class ItemRegistry {
             () -> new Item(new Item.Settings()
                     .maxCount(16)
                     .group(ItemRegistry.SIEGEMACHINES_GROUP)));
+
+    public static void init() {
+        ITEMS.register();
+    }
 }

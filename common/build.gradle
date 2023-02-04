@@ -16,7 +16,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
-    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.51:dev'
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.18:3.0.80'
 }
 
 publishing {

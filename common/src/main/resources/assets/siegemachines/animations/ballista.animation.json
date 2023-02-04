@@ -1,0 +1,195 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"Reloading": {
+			"animation_length": 5.0,
+			"bones": {
+				"ArcDroit": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [0, 20, 0]
+						}
+					}
+				},
+				"ArcGauche": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [0, -20, 0]
+						}
+					}
+				},
+				"Manivelles": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [-720, 0, 0]
+						}
+					}
+				},
+				"CordeGuide": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 1]
+						},
+						"5.0": {
+							"vector": [0, 0, 17]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"5.0": {
+							"vector": [1, 1, 0.2]
+						}
+					}
+				},
+				"Guide": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [0, 0, 17]
+						}
+					}
+				},
+				"CordeDroite": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [0, -42.5, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [4.4, 0, 5]
+						}
+					}
+				},
+				"CordeGauche": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [0, 42.5, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"5.0": {
+							"vector": [-4.4, 0, 5]
+						}
+					}
+				}
+			}
+		},
+		"Shooting": {
+			"loop": true,
+			"animation_length": 1.0,
+			"bones": {
+				"ArcDroit": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 20, 0]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"ArcGauche": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, -20, 0]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"Guide": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 17]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"CordeDroite": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, -42.5, 0]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [4.4, 0, 5]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"CordeGauche": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 42.5, 0]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [-4.4, 0, 5]
+						},
+						"0.05": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"CordeGuide": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 17]
+						},
+						"0.05": {
+							"vector": [0, 0, 1]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, "0.2+0.9s"]
+						},
+						"0.05": {
+							"vector": [1, 1, 1]
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

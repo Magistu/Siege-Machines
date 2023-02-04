@@ -14,7 +14,9 @@ import ru.itzme1on.siegemachines.registry.ItemRegistry;
 import java.util.function.Supplier;
 
 public class GiantArrow extends PersistentProjectileEntity {
-    public static final Supplier<EntityType<GiantArrow>> TYPE = Suppliers.memoize(() -> EntityType.Builder.create((EntityType.EntityFactory<GiantArrow>) GiantArrow::new, SpawnGroup.MISC).setDimensions(0.98F, 0.7F).maxTrackingRange(8).build("giant_arrow"));
+    public static final Supplier<EntityType<GiantArrow>> TYPE = Suppliers.memoize(() -> EntityType.Builder.create((EntityType.EntityFactory<GiantArrow>) GiantArrow::new, SpawnGroup.MISC)
+            .setDimensions(0.5F, 0.5F)
+            .build("giant_arrow"));
     
     public GiantArrow(EntityType<GiantArrow> entityType, World world) {
         super(entityType, world);
