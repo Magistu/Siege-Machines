@@ -1,5 +1,6 @@
 package ru.itzme1on.siegemachines;
 
+import ru.itzme1on.siegemachines.registry.EntityRegistry;
 import ru.itzme1on.siegemachines.registry.ItemRegistry;
 
 public class SiegeMachines {
@@ -8,7 +9,8 @@ public class SiegeMachines {
 
     public static void init() {
         System.out.println("Hello from " + SiegeMachines.MOD_ID + " init!");
-
+        
         ItemRegistry.ITEMS.register();
+        EntityRegistry.init();
     }
 }
