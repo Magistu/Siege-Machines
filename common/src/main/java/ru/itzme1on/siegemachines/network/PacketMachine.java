@@ -1,11 +1,10 @@
 package ru.itzme1on.siegemachines.network;
 
 import dev.architectury.networking.NetworkManager;
-import net.fabricmc.api.EnvType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.PacketByteBuf;
 import ru.itzme1on.siegemachines.entity.machine.Machine;
 
 import java.util.function.Supplier;
@@ -17,8 +16,7 @@ public class PacketMachine {
     private final float turretPitch;
     private final float turretYaw;
 
-    public PacketMachine(FriendlyByteBuf buf) 
-    {
+    public PacketMachine(PacketByteBuf buf) {
         this(buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat());
     }
 
@@ -30,7 +28,7 @@ public class PacketMachine {
         this.turretYaw = turretYaw;
     }
 
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(PacketByteBuf buf) {
         buf.writeInt(entityId);
         buf.writeInt(delayTicks);
         buf.writeInt(useTicks);
@@ -39,11 +37,11 @@ public class PacketMachine {
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (contextSupplier.get() == null || player == null || player.level == null)
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (contextSupplier.get() == null || player == null || player.world == null)
             return;
 
-        Entity entity = player.level.getEntity(entityId);
+        Entity entity = player.world.getEntityById(entityId);
         if (!(entity instanceof Machine machine))
             return;
 

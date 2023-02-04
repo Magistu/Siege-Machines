@@ -1,41 +1,46 @@
 package ru.itzme1on.siegemachines.entity.machine;
 
-import dev.architectury.networking.NetworkManager;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.HoneyBlock;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.HoneyBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.EntityDamageSource;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Nameable;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.network.PacketHandler;
+import ru.itzme1on.siegemachines.network.PacketMachine;
 
 import java.util.List;
 
-public abstract class Machine extends Mob implements MenuProvider {
+public abstract class Machine extends MobEntity implements NamedScreenHandlerFactory {
     public MachineInventory inventory = new MachineInventory();
 
     public static int rows = 1;
@@ -46,31 +51,31 @@ public abstract class Machine extends Mob implements MenuProvider {
     private float turretYaw = 0.0f;
     private float turretYawPrev = this.turretYaw;
     protected float turretYawDest = this.turretYaw;
-    protected float yawDest = this.getYRot();
+    protected float yawDest = this.getYaw();
     public int useTicks = -1;
     public int delayTicks;
     protected int renderUpdateTicks = 0;
     public int deploymentTicks = 0;
 
-    protected Machine(EntityType<? extends Mob> entityType, Level level, MachineType type) {
-        super(entityType, level);
+    protected Machine(EntityType<? extends MobEntity> entityType, World world, MachineType type) {
+        super(entityType, world);
         this.type = type;
         this.delayTicks = this.type.delayTime;
         rows = this.type.rows;
     }
 
-    public static AttributeSupplier.Builder setEntityAttributes(MachineType type) {
-        return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, type.health)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.5F)
-                .add(Attributes.MOVEMENT_SPEED, 0.0D)
-                .add(Attributes.ATTACK_DAMAGE, 0.0D)
-                .add(Attributes.FOLLOW_RANGE, 0.0D);
+    public static DefaultAttributeContainer.Builder setEntityAttributes(MachineType type) {
+        return MobEntity.createMobAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, type.health)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5F)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0D);
     }
 
     public ItemStack getMachineItemWithData() {
         ItemStack stack = new ItemStack(this.getMachineItem());
-        CompoundTag nbt = this.saveWithoutId(new CompoundTag());
+        NbtCompound nbt = this.writeNbt(new NbtCompound());
         nbt.remove("Pos");
         nbt.remove("Motion");
         nbt.remove("FallDistance");
@@ -83,7 +88,8 @@ public abstract class Machine extends Mob implements MenuProvider {
         nbt.remove("Passengers");
         nbt.remove("DelayTicks");
         nbt.remove("UseTicks");
-        stack.addTagElement("EntityTag", nbt);
+        stack.setSubNbt("EntityTag", nbt);
+
         return stack;
     }
 
@@ -101,13 +107,13 @@ public abstract class Machine extends Mob implements MenuProvider {
         if (damagesource.isFire())
             f *= 1.5f;
 
-        if (damagesource.isExplosion())
+        if (damagesource.isExplosive())
             f *= 1.25f;
 
-        if (damagesource.isCreativePlayer())
+        if (damagesource.isSourceCreativePlayer())
             f *= 2;
 
-        if (damagesource.getEntity() instanceof AbstractArrow)
+        if (damagesource.getAttacker() instanceof PersistentProjectileEntity)
             f *= 0.5f;
 
         return f;
@@ -124,99 +130,99 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource damageSource, float f) {
-//        if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, damageSource, f)) return false;
-        if (damageSource.getEntity() instanceof Player
-                && !damageSource.isProjectile()
-                && !damageSource.isExplosion()
-                && !damageSource.isMagic()
-                && this.getPassengers().isEmpty()) {
-            this.spawnAtLocation(this.getMachineItemWithData());
+    public boolean damage(DamageSource source, float amount) {
+        if (source.getAttacker() instanceof PlayerEntity
+                && !source.isProjectile()
+                && !source.isExplosive()
+                && !source.isMagic()
+                && this.getPassengerList().isEmpty()) {
+            this.dropStack(this.getMachineItemWithData());
             this.remove();
 
             return false;
         }
 
-        if (this.isInvulnerableTo(damageSource))
+        if (this.isInvulnerableTo(source))
             return false;
 
-        else if (this.level.isClientSide)
+        else if (this.world.isClient)
             return false;
 
-        else if (this.isDeadOrDying())
+        else if (this.isDead())
             return false;
 
-        else if (damageSource.isFire() && this.hasEffect(MobEffects.FIRE_RESISTANCE))
+        else if (source.isFire() && this.hasStatusEffect(StatusEffects.FIRE_RESISTANCE))
             return false;
 
         else {
-            f = adjustDamage(damageSource, f);
+            amount = adjustDamage(source, amount);
 
-            this.noActionTime = 0;
+            this.despawnCounter = 0;
 
-            this.animationSpeed = 1.5F;
+            this.limbDistance = 1.5F;
             boolean flag1 = true;
-            if ((float) this.invulnerableTime > 10.0F) {
-                if (f <= this.lastHurt)
+            if ((float) this.timeUntilRegen > 10.0F) {
+                if (amount <= this.lastDamageTaken)
                     return false;
 
-                this.actuallyHurt(damageSource, f - this.lastHurt);
-                this.lastHurt = f;
+                this.applyDamage(source, amount - this.lastDamageTaken);
+                this.lastDamageTaken = amount;
                 flag1 = false;
             }
 
             else {
-                this.lastHurt = f;
-                this.invulnerableTime = 20;
-                this.actuallyHurt(damageSource, f);
-                this.hurtDuration = 10;
-                this.hurtTime = this.hurtDuration;
+                this.lastDamageTaken = amount;
+                this.timeUntilRegen = 20;
+                this.applyDamage(source, amount);
+                this.maxHurtTime = 10;
+                this.hurtTime = this.maxHurtTime;
             }
 
-            this.hurtDir = 0.0F;
-            Entity entity1 = damageSource.getEntity();
+            this.knockbackVelocity = 0.0F;
+            Entity entity1 = source.getAttacker();
 
             if (entity1 != null) {
                 if (entity1 instanceof LivingEntity)
-                    this.setLastHurtByMob((LivingEntity) entity1);
+                    this.setAttacker((LivingEntity) entity1);
 
-                if (entity1 instanceof Player) {
-                    this.lastHurtByPlayerTime = 1;
-                    this.lastHurtByPlayer = (Player) entity1;
+                if (entity1 instanceof PlayerEntity) {
+                    this.playerHitTimer = 1;
+                    this.attackingPlayer = (PlayerEntity) entity1;
                 }
 
-                else if (entity1 instanceof TamableAnimal wolfEntity) {
-                    if (wolfEntity.isTame()) {
-                        this.lastHurtByPlayerTime = 100;
+                else if (entity1 instanceof TameableEntity wolfEntity) {
+                    if (wolfEntity.isTamed()) {
+                        this.playerHitTimer = 100;
                         LivingEntity livingentity = wolfEntity.getOwner();
 
-                        if (livingentity != null && livingentity.getType() == EntityType.PLAYER)
-                            this.lastHurtByPlayer = (Player) livingentity;
+                        if (livingentity != null && livingentity.getType() == EntityType.PLAYER) {
+                            this.attackingPlayer = (PlayerEntity) livingentity;
+                        }
 
-                        else this.lastHurtByPlayer = null;
+                        else {
+                            this.attackingPlayer = null;
+                        }
                     }
                 }
             }
 
             if (flag1) {
-                if (damageSource instanceof EntityDamageSource && ((EntityDamageSource) damageSource).isThorns())
-                    this.level.broadcastEntityEvent(this, (byte) 33);
+                if (source instanceof EntityDamageSource && ((EntityDamageSource) source).isThorns())
+                    this.world.sendEntityStatus(this, (byte) 33);
 
                 else {
                     byte b0;
 
-                    if (damageSource.isFire())
-                        b0 = 37;
+                    if (source.isFire()) b0 = 37;
 
-                    else if (damageSource == DamageSource.SWEET_BERRY_BUSH)
-                        b0 = 44;
+                    else if (source == DamageSource.SWEET_BERRY_BUSH) b0 = 44;
 
                     else b0 = 2;
 
-                    this.level.broadcastEntityEvent(this, b0);
+                    this.world.sendEntityStatus(this, b0);
                 }
 
-                this.markHurt();
+                this.scheduleVelocityUpdate();
 
                 if (entity1 != null) {
                     double d1 = entity1.getX() - this.getX();
@@ -225,24 +231,24 @@ public abstract class Machine extends Mob implements MenuProvider {
                     for (d0 = entity1.getZ() - this.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
                         d1 = (Math.random() - Math.random()) * 0.01D;
 
-                    this.hurtDir = (float) (Mth.atan2(d0, d1) * (double) (180F / (float) Math.PI) - (double) this.getYRot());
+                    this.knockbackVelocity = (float) (MathHelper.atan2(d0, d1) * (double) (180F / (float) Math.PI) - (double) this.getYaw());
+                } else {
+                    this.knockbackVelocity = (float) ((int) (Math.random() * 2.0D) * 180);
                 }
-
-                else this.hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
             }
 
-            if (this.isDeadOrDying()) {
+            if (this.isDead()) {
                 SoundEvent soundevent = this.getDeathSound();
                 if (flag1 && soundevent != null)
-                    this.playSound(soundevent, this.getSoundVolume(), this.getVoicePitch());
+                    this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
 
-                this.die(damageSource);
+                this.onDeath(source);
             }
-            else if (flag1)
-                this.playHurtSound(damageSource);
 
-            if (entity1 instanceof ServerPlayer)
-                CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((ServerPlayer) entity1, this, damageSource, f, f, false);
+            else if (flag1) this.playHurtSound(source);
+
+            if (entity1 instanceof ServerPlayerEntity)
+                Criteria.PLAYER_HURT_ENTITY.trigger((ServerPlayerEntity) entity1, this, source, amount, amount, false);
 
             return true;
         }
@@ -261,14 +267,14 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     @Override
-    public boolean removeWhenFarAway(double d) {
+    public boolean canImmediatelyDespawn(double distanceSquared) {
         return false;
     }
 
     @Nullable
     @Override
-    public Entity getControllingPassenger() {
-        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+    public Entity getPrimaryPassenger() {
+        return this.getPassengerList().isEmpty() ? null : this.getPassengerList().get(0);
     }
 
     @Override
@@ -277,116 +283,105 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
 
-        ListTag listNbt = new ListTag();
-
-        for(ItemStack itemstack : this.inventory.items) {
-            CompoundTag compoundNbt = new CompoundTag();
-            if (!itemstack.isEmpty())
-                itemstack.save(compoundNbt);
-
-            listNbt.add(compoundNbt);
+        NbtList nbtList = new NbtList();
+        for (ItemStack itemStack : this.inventory.items) {
+            NbtCompound nbtCompound = new NbtCompound();
+            if (!itemStack.isEmpty())
+                itemStack.writeNbt(nbtCompound);
+            nbtList.add(nbtCompound);
         }
-
-        nbt.put("Items", listNbt);
-        nbt.put("TurretRotations", this.newFloatList(this.turretPitch, this.turretYaw));
+        nbt.put("Items", nbtList);
+        nbt.put("TurretRotations", this.toNbtList(this.turretPitch, this.turretYaw));
         nbt.putInt("DelayTicks", this.delayTicks);
         nbt.putInt("UseTicks", this.useTicks);
     }
 
     @Override
-    protected void dropCustomDeathLoot(@NotNull DamageSource damageSource, int i, boolean bl) {
-        super.dropCustomDeathLoot(damageSource, i, bl);
-        this.inventory.items.forEach(this::spawnAtLocation);
-        this.inventory.clearContent();
+    protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
+        super.dropEquipment(source, lootingMultiplier, allowDrops);
+        this.inventory.items.forEach(this::dropStack);
+        this.inventory.clear();
     }
 
     public void remove() {
         if (!this.dead) {
             this.dead = true;
-            this.level.broadcastEntityEvent(this, (byte)3);
+            this.world.sendEntityStatus(this, (byte)3);
         }
 
         super.remove(RemovalReason.DISCARDED);
     }
 
-    @Override
-    public void handleEntityEvent(byte b) {
-        switch (b) {
+    public void handleStatus(byte status) {
+        switch (status) {
             case 2, 33, 36, 37, 44 -> {
-                boolean flag1 = b == 33;
-                boolean flag2 = b == 36;
-                boolean flag3 = b == 37;
-                boolean flag = b == 44;
-                this.animationSpeed = 1.5F;
-                this.invulnerableTime = 20;
-                this.hurtDuration = 10;
-                this.hurtTime = this.hurtDuration;
-                this.hurtDir = 0.0F;
+                boolean flag1 = status == 33;
+                boolean flag2 = status == 36;
+                boolean flag3 = status == 37;
+                boolean flag = status == 44;
+                this.limbDistance = 1.5F;
+                this.timeUntilRegen = 20;
+                this.maxHurtTime = 10;
+                this.hurtTime = this.maxHurtTime;
+                this.knockbackVelocity = 0.0F;
                 if (flag1)
-                    this.playSound(SoundEvents.THORNS_HIT, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-
+                    this.playSound(SoundEvents.ENCHANT_THORNS_HIT, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 DamageSource damagesource;
-                if (flag3)
+                if (flag3) {
                     damagesource = DamageSource.ON_FIRE;
-
-                else if (flag2)
+                } else if (flag2) {
                     damagesource = DamageSource.DROWN;
-
-                else if (flag)
+                } else if (flag) {
                     damagesource = DamageSource.SWEET_BERRY_BUSH;
-
-                else damagesource = DamageSource.GENERIC;
-
-                SoundEvent soundEvent = this.getHurtSound(damagesource);
-                if (soundEvent != null)
-                    this.playSound(soundEvent, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-
-                this.hurt(DamageSource.GENERIC, 0.0F);
+                } else {
+                    damagesource = DamageSource.GENERIC;
+                }
+                SoundEvent soundEvent1 = this.getHurtSound(damagesource);
+                if (soundEvent1 != null) {
+                    this.playSound(soundEvent1, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                }
+                this.damage(DamageSource.GENERIC, 0.0F);
             }
-
             case 3 -> {
                 SoundEvent soundevent = this.getDeathSound();
-                if (soundevent != null)
+                if (soundevent != null) {
                     this.playSound(soundevent, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-
+                }
                 this.setHealth(0.0F);
                 this.remove();
             }
-
             case 29, 30, 46 -> {
                 for (int j = 0; j < 128; ++j) {
                     double d0 = (double) j / 127.0D;
                     float f = (this.random.nextFloat() - 0.5F) * 0.2F;
                     float f1 = (this.random.nextFloat() - 0.5F) * 0.2F;
                     float f2 = (this.random.nextFloat() - 0.5F) * 0.2F;
-                    double d1 = Mth.lerp(d0, this.xo, this.getX()) + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth() * 2.0D;
-                    double d2 = Mth.lerp(d0, this.yo, this.getY()) + this.random.nextDouble() * (double) this.getBbHeight();
-                    double d3 = Mth.lerp(d0, this.zo, this.getZ()) + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth() * 2.0D;
-                    this.level.addParticle(ParticleTypes.PORTAL, d1, d2, d3, f, f1, f2);
+                    double d1 = MathHelper.lerp(d0, this.prevX, this.getX()) + (this.random.nextDouble() - 0.5D) * (double) this.getWidth() * 2.0D;
+                    double d2 = MathHelper.lerp(d0, this.prevY, this.getY()) + this.random.nextDouble() * (double) this.getHeight();
+                    double d3 = MathHelper.lerp(d0, this.prevZ, this.getZ()) + (this.random.nextDouble() - 0.5D) * (double) this.getWidth() * 2.0D;
+                    this.world.addParticle(ParticleTypes.PORTAL, d1, d2, d3, f, f1, f2);
                 }
             }
-
-            case 54 -> HoneyBlock.showJumpParticles(this);
-
-            default -> super.handleEntityEvent(b);
+            case 54 -> HoneyBlock.addRichParticles(this);
+            default -> super.handleStatus(status);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        if (nbt.contains("Items", 9)) {
-            ListTag listNbt = nbt.getList("Items", 10);
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
 
-            for(int i = 0; i < this.inventory.items.size(); ++i)
-                this.inventory.items.set(i, ItemStack.of(listNbt.getCompound(i)));
+        if (nbt.contains("Items", 9)) {
+            NbtList nbtList = nbt.getList("Items", 10);
+            for (int i = 0; i < this.inventory.items.size(); ++i)
+                this.inventory.items.set(i, ItemStack.fromNbt(nbtList.getCompound(i)));
         }
 
         if (nbt.contains("TurretRotations", 5)) {
-            ListTag turretRotations = nbt.getList("TurretRotations", 5);
+            NbtList turretRotations = nbt.getList("TurretRotations", 5);
             setTurretRotations(turretRotations.getFloat(0), turretRotations.getFloat(1));
         }
 
@@ -398,14 +393,14 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     public float getGlobalTurretYaw() {
-        return Mth.lerp(0.5f, this.yRotO, this.getYRot()) + Mth.lerp(0.5f, this.turretYawPrev, this.turretYaw);
+        return MathHelper.lerp(0.5f, this.prevYaw, this.getYaw()) + MathHelper.lerp(0.5f, this.turretYawPrev, this.turretYaw);
     }
 
-    public void setYaw(float yaw) {
-        this.setYRot(yaw);
-        this.yRotO = this.getYRot();
-        this.yBodyRot = this.getYRot();
-        this.yHeadRot = this.yBodyRot;
+    public void setY(float yaw) {
+        this.setYaw(yaw);
+        this.prevYaw = this.getYaw();
+        this.bodyYaw = this.getYaw();
+        this.headYaw = this.bodyYaw;
     }
 
     public float getYawDest() {
@@ -417,11 +412,11 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     public float getTurretPitch(float f) {
-        return Mth.lerp(f, this.turretPitchPrev, this.turretPitch);
+        return MathHelper.lerp(f, this.turretPitchPrev, this.turretPitch);
     }
 
     public float getTurretYaw(float f) {
-        return Mth.lerp(f, this.turretYawPrev, this.turretYaw);
+        return MathHelper.lerp(f, this.turretYawPrev, this.turretYaw);
     }
 
     public float getTurretPitch() {
@@ -432,8 +427,7 @@ public abstract class Machine extends Mob implements MenuProvider {
         return this.getTurretYaw(0.5f);
     }
 
-    public void setTurretRotations(float pitch, float yaw)
-    {
+    public void setTurretRotations(float pitch, float yaw) {
         this.turretPitchPrev = this.turretPitch;
         this.turretYawPrev = this.turretYaw;
         this.turretPitch = pitch;
@@ -454,26 +448,93 @@ public abstract class Machine extends Mob implements MenuProvider {
     }
 
     public void updateMachineRender() {
-        AABB RENDER_UPDATE_AABB = AABB.ofSize(Vec3.atCenterOf(this.blockPosition()), 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE);
-        List<Player> players = this.level.getNearbyPlayers(
-                TargetingConditions.forNonCombat().range(SiegeMachines.RENDER_UPDATE_RANGE),
-                this, RENDER_UPDATE_AABB);
-        if (!this.level.isClientSide()) {
-//            NetworkManager.sendToPlayer();
-//            PacketHandler.sendPacketToAllInArea(new PacketMachine(
-//                    this.getId(),
-//                    this.delayticks,
-//                    this.useticks,
-//                    this.turretpitch,
-//                    this.turretyaw), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+        if (!this.world.isClient()) {
+            Box RENDER_UPDATE_AABB = Box.of(Vec3d.ofCenter(this.getBlockPos()), 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE);
+            List<PlayerEntity> players = this.world.getPlayers(
+                    TargetPredicate.createNonAttackable().setBaseMaxDistance(SiegeMachines.RENDER_UPDATE_RANGE),
+                    this, RENDER_UPDATE_AABB);
+            players.forEach(player ->
+                    PacketHandler.CHANNEL.sendToPlayer((ServerPlayerEntity) player, new PacketMachine(
+                            this.getId(),
+                            this.delayTicks,
+                            this.useTicks,
+                            this.turretPitch,
+                            this.turretYaw
+                    )));
         }
     }
 
-    public static class MachineInventory implements Container, Nameable {
-        public NonNullList<ItemStack> items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
+    public void updateYaw() {
+        float newYaw = this.turn((float) this.getY(), this.getYawDest(), this.type.rotationSpeed);
+
+        if (this.yawDest != newYaw)
+            this.setYaw(newYaw);
+    }
+
+    public void updateTurretRotations() {
+        float newYaw = this.turn(this.getTurretYaw(), this.getTurretYawDest(), this.type.turretSpeed, this.type.turretMinYaw, this.type.turretMaxYaw);
+        boolean shouldRotate = this.checkYaw(newYaw, this.getTurretYaw(), this.type.turretSpeed);
+        float newPitch = shouldRotate ? this.turn(this.getTurretPitch(), this.getTurretPitchDest(), this.type.turretSpeed, this.type.turretMinPitch, this.type.turretMaxPitch) : this.getTurretPitch();
+
+        if (this.turretPitch != newPitch || this.turretYaw != newYaw)
+            this.setTurretRotations(newPitch, newYaw);
+    }
+
+    public boolean checkYaw(float yaw, float currentYaw, float speed) {
+        return !this.type.yawFirst || Math.abs(yaw - currentYaw) <= speed / 2 || yaw <= this.type.turretMinYaw || yaw >= this.type.turretMaxYaw;
+    }
+
+    public float turn(float rotation, float rotationDest, float speed) {
+        return this.turn(rotation, rotationDest, speed, -180, 180);
+    }
+
+    public float turn(float rotation, float rotationDest, float speed, float minRotation, float maxRotation) {
+        boolean hasLimit = maxRotation - minRotation < 360;
+
+        float deltaRotation = rotationDest - rotation;
+        deltaRotation = MathHelper.wrapDegrees(deltaRotation);
+
+        float newRotation;
+        if (deltaRotation > speed / 2)
+            newRotation = rotation + speed;
+
+        else if (deltaRotation < -speed / 2)
+            newRotation = rotation - speed;
+
+        else newRotation = rotation + deltaRotation / 2;
+
+        if (hasLimit) {
+            if (newRotation > -minRotation)
+                newRotation = -minRotation;
+
+            if (newRotation < -maxRotation)
+                newRotation = -maxRotation;
+        }
+
+        return newRotation;
+    }
+
+    protected static Vec3d applyRotations(Vec3d vec, double pitch, double yaw) {
+        double d0 = vec.x * Math.cos(yaw) - vec.y * Math.sin(pitch) * Math.sin(yaw) - vec.z * Math.sin(yaw) * Math.cos(pitch);
+        double d1 = vec.y * Math.cos(pitch) - vec.z * Math.sin(pitch);
+        double d2 = vec.x * Math.sin(yaw) + vec.y * Math.sin(pitch) * Math.cos(yaw) + vec.z * Math.cos(yaw) * Math.cos(pitch);
+
+        return new Vec3d(d0, d1, d2);
+    }
+
+    protected float getVolumeFromDist(float dist) {
+        return (float) 0.5 * Math.max((float) 6.0 - dist, 0.0f) / (float) 6.0;
+    }
+
+    public abstract void use(PlayerEntity player);
+
+    public abstract void useRealise();
+
+    public static class MachineInventory implements Inventory, Nameable {
+        public DefaultedList<ItemStack> items = DefaultedList.ofSize(9 * rows, ItemStack.EMPTY);
 
         @Override
-        public int getContainerSize() {
+        public int size() {
             return 9 * rows;
         }
 
@@ -483,36 +544,36 @@ public abstract class Machine extends Mob implements MenuProvider {
         }
 
         @Override
-        public ItemStack getItem(int id) {
-            return this.items.get(id);
+        public ItemStack getStack(int slot) {
+            return this.items.get(slot);
         }
 
         @Override
-        public ItemStack removeItem(int id, int j) {
-            return this.items.set(id, ItemStack.EMPTY);
+        public ItemStack removeStack(int slot, int amount) {
+            return this.items.set(slot, ItemStack.EMPTY);
         }
 
         @Override
-        public ItemStack removeItemNoUpdate(int id) {
-            return this.items.remove(id);
+        public ItemStack removeStack(int slot) {
+            return this.items.remove(slot);
         }
 
         @Override
-        public void setItem(int id, ItemStack itemStack) {
-            this.items.set(id, itemStack);
+        public void setStack(int slot, ItemStack stack) {
+            this.items.set(slot, stack);
         }
 
         @Override
-        public void setChanged() {}
+        public void markDirty() {}
 
         @Override
-        public boolean stillValid(Player player) {
+        public boolean canPlayerUse(PlayerEntity player) {
             return true;
         }
 
         @Override
-        public void clearContent() {
-            this.items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
+        public void clear() {
+            this.items = DefaultedList.ofSize(9 * rows, ItemStack.EMPTY);
         }
 
         public boolean containsItem(Item item) {
@@ -521,29 +582,29 @@ public abstract class Machine extends Mob implements MenuProvider {
 
         public void putItem(Item item) {
             for (int i = 0; i < this.items.size(); ++i) {
-                ItemStack itemstack = this.items.get(i);
-                if (itemstack.isEmpty()) {
+                ItemStack itemStack = this.items.get(i);
+                if (itemStack.isEmpty()) {
                     this.items.set(i, new ItemStack(item));
                     break;
                 }
-                if (itemstack.getItem().equals(item) && itemstack.getCount() < itemstack.getMaxStackSize()) {
-                    itemstack.setCount(itemstack.getCount() + 1);
+                if (itemStack.getItem().equals(item) && itemStack.getCount() < itemStack.getMaxCount()) {
+                    itemStack.setCount(itemStack.getCount() + 1);
                     break;
                 }
             }
         }
 
         public void shrinkItem(Item item) {
-            for (ItemStack itemstack : this.items) {
-                if (itemstack.getItem().equals(item)) {
-                    itemstack.shrink(1);
+            for (ItemStack itemStack : this.items) {
+                if (itemStack.getItem().equals(item)) {
+                    itemStack.decrement(1);
                     break;
                 }
             }
         }
 
         @Override
-        public Component getName() {
+        public Text getName() {
             return this.getName();
         }
     }

@@ -1,12 +1,12 @@
 package ru.itzme1on.siegemachines.entity.projectile;
 
-import com.mojang.math.Vector3d;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.math.Vector3d;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.item.Item;
+import net.minecraft.world.World;
 
-public interface IProjectileFactory<T extends Projectile> {
-    T create(EntityType<T> entityType, Level level, Vector3d pos, LivingEntity entity, Item item);
+public interface IProjectileFactory<T extends ProjectileEntity> {
+    T create(EntityType<T> entityType, World world, Vector3d pos, LivingEntity entity, Item item);
 }

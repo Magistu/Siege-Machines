@@ -2,9 +2,6 @@ package ru.itzme1on.siegemachines;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
-import net.minecraft.client.Minecraft;
-
-import java.nio.file.Path;
 
 public class ExampleExpectPlatform {
     /**
