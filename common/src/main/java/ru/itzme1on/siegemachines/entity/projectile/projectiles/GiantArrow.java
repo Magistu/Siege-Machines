@@ -2,7 +2,6 @@ package ru.itzme1on.siegemachines.entity.projectile.projectiles;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.client.util.math.Vector3d;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
