@@ -1,0 +1,16 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "p"
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks",
+      "count": 2
+    }
+  },
+  "result": {
+    "item": "siegemachines:beam",
+    "count": 4
+  }
+}
