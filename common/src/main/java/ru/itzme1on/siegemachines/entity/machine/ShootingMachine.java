@@ -13,8 +13,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.entity.IReloading;
 import ru.itzme1on.siegemachines.entity.projectile.Missile;
 import ru.itzme1on.siegemachines.entity.projectile.ProjectileBuilder;
+import ru.itzme1on.siegemachines.network.PacketHandler;
+import ru.itzme1on.siegemachines.network.PacketMachineInventorySlot;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -49,7 +53,9 @@ public abstract class ShootingMachine extends Machine implements IReloading {
                         this.getShotPos().x,
                         this.getShotPos().y,
                         this.getShotPos().z),
-                livingEntity == null ? this : livingEntity, projectileBuilder.projectileItem);
+                livingEntity == null ? this : livingEntity,
+                projectileBuilder.projectileItem
+        );
 
         if (projectile instanceof Missile missile)
             missile.setItem(new ItemStack(missile.getDefaultItem()));
@@ -97,7 +103,9 @@ public abstract class ShootingMachine extends Machine implements IReloading {
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getYaw(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
 
-        return this.getPos().add(applyRotations(this.type.turretPivot, 0.0, yaw).add(applyRotations(this.type.turretVector, pitch, yaw)));
+        return this.getPos()
+                .add(applyRotation(this.type.turretPivot, 0.0, yaw)
+                        .add(applyRotation(this.type.turretVector, pitch, yaw)));
     }
 
     protected Vec3d getShotView() {

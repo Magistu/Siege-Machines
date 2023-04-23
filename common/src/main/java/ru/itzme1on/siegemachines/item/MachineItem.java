@@ -37,7 +37,8 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachinesCore;
+import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.client.render.item.MachineItemGeoRenderer;
 import ru.itzme1on.siegemachines.entity.machine.Machine;
 import ru.itzme1on.siegemachines.entity.machine.MachineType;
 import ru.itzme1on.siegemachines.entity.projectile.ProjectileBuilder;
@@ -64,10 +65,10 @@ public class MachineItem extends Item implements IAnimatable {
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         ProjectileBuilder<?>[] ammo = MachineType.valueOf(this.typeKey).ammo;
         if (ammo.length > 0) {
-            tooltip.add(new TranslatableText(SiegeMachinesCore.MOD_ID + ".ammo").formatted(Formatting.BLUE));
+            tooltip.add(new TranslatableText(SiegeMachines.MOD_ID + ".ammo").formatted(Formatting.BLUE));
             for (ProjectileBuilder<?> builder : ammo) {
-                if (MachineType.valueOf(this.typeKey).usesGunpowder)
-                    tooltip.add(new TranslatableText(SiegeMachinesCore.MOD_ID + ".uses_gunpowder").formatted(Formatting.BLUE));
+                if (this.machineType.get().usesGunpowder)
+                    tooltip.add(new TranslatableText(SiegeMachines.MOD_ID + ".uses_gunpowder").formatted(Formatting.BLUE));
                 tooltip.add(new LiteralText("    ").append(new TranslatableText(builder.item.getTranslationKey())).formatted(Formatting.BLUE));
             }
         }
@@ -194,26 +195,30 @@ public class MachineItem extends Item implements IAnimatable {
     }
 
     @Nullable
-    public Entity create(EntityType<?> entityType, ServerWorld world, @Nullable NbtCompound nbt, @Nullable Text text, @Nullable PlayerEntity player, BlockPos pos, SpawnReason reason, boolean a, boolean b, float yaw) {
-        Entity t = entityType.create(world);
-        if (t == null)
+    public Entity create(EntityType<T> entitytype, ServerWorld p_20656_, @Nullable NbtCompound p_20657_, @Nullable Text p_20658_, @Nullable PlayerEntity p_20659_, BlockPos p_20660_, SpawnReason p_20661_, boolean p_20662_, boolean p_20663_, float yaw)
+    {
+        Entity t = entitytype.create(p_20656_);
+        if (t == null) {
             return null;
-
-        else {
+        } else {
             double d0;
-            if (a) {
-                t.setPos((double) pos.getX() + 0.5D, pos.getY() + 1, (double) pos.getZ() + 0.5D);
-                d0 = getYOffset(world, pos, b, t.getBoundingBox());
+            if (p_20662_)
+            {
+                t.setPos((double)p_20660_.getX() + 0.5D, (double)(p_20660_.getY() + 1), (double)p_20660_.getZ() + 0.5D);
+                d0 = getYOffset(p_20656_, p_20660_, p_20663_, t.getBoundingBox());
+            }
+            else
+            {
+                d0 = 0.0D;
             }
 
-            else d0 = 0.0D;
-
-            t.refreshPositionAndAngles((double)pos.getX() + 0.5D, (double)pos.getY() + d0, (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(yaw), 0.0F);
-            if (t instanceof MobEntity mobEntity) {
-                mobEntity.headYaw = mobEntity.getYaw();
-                mobEntity.bodyYaw = mobEntity.getYaw();
-                mobEntity.initialize(world, world.getLocalDifficulty(mobEntity.getBlockPos()), reason, null, nbt);
-                mobEntity.playAmbientSound();
+            t.refreshPositionAndAngles((double)p_20660_.getX() + 0.5D, (double)p_20660_.getY() + d0, (double)p_20660_.getZ() + 0.5D, MathHelper.wrapDegrees(yaw), 0.0F);
+            if (t instanceof MobEntity) {
+                MobEntity mobentity = (MobEntity) t;
+                mobentity.headYaw = mobentity.getYaw();
+                mobentity.bodyYaw = mobentity.getPitch();
+                mobentity.initialize(p_20656_, p_20656_.getLocalDifficulty(mobentity.getBlockPos()), p_20661_, null, p_20657_);
+                mobentity.playAmbientSound();
             }
 
             return t;
@@ -224,8 +229,9 @@ public class MachineItem extends Item implements IAnimatable {
         if (nbt != null && nbt.contains("EntityTag", 10)) {
             NbtCompound nbtCompound = nbt.getCompound("EntityTag");
             if (nbtCompound.contains("id", 8))
-                return EntityType.get(nbtCompound.getString("id")).orElse(null);
+                return (EntityType<T>) EntityType.get(nbtCompound.getString("id")).orElse(defaulttype);
         }
-        return null;
+
+        return defaulttype;
     }
 }

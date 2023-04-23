@@ -36,8 +36,8 @@
 //    }
 //
 //    private static Machine getMachine(final PlayerInventory inv) {
-//        Objects.requireNonNull(inv, "Player Inventory Cannot Be Null.");
-//        PlayerEntity player = inv.player;
+//        Objects.requireNonNull(inv, "PlayerEntity Inventory Cannot Be Null.");
+//        PlayerEntity PlayerEntity = inv.player;
 //        Entity entity;
 //        if (player.hasVehicle()) {
 //            entity = player.getVehicle();

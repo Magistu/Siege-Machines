@@ -33,6 +33,7 @@
 	"siegemachines.machine_inventory": "Open Inventory",
 	"siegemachines.no_ammo": "No ammo!",
 	"siegemachines.no_gunpowder": "No gunpowder!",
+	"siegemachines.wait": "Wait %1$f seconds.",
 
 	"category.siegemachines.siege_workbench_crafting": "Crafting"
 }

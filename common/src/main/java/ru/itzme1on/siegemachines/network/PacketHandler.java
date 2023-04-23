@@ -1,17 +1,32 @@
 package ru.itzme1on.siegemachines.network;
 
-import dev.architectury.networking.NetworkChannel;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import ru.itzme1on.siegemachines.SiegeMachinesCore;
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import ru.itzme1on.siegemachines.SiegeMachines;
 
-public class PacketHandler {
-    public static final NetworkChannel CHANNEL = NetworkChannel.create(new Identifier(SiegeMachinesCore.MOD_ID, "networking_channel"));
+import java.util.List;
 
-    protected static int currentId = 0;
+public class PacketHandler
+{
+    public static void init()
+    {
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketMachineUse.ID, PacketMachineUse::apply);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketMachineUseRealise.ID, PacketMachineUseRealise::apply);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketOpenMachineInventory.ID, PacketOpenMachineInventory::apply);
 
-    public static void init() {
-        CHANNEL.register(PacketMachine.class, PacketMachine::encode, PacketMachine::new, PacketMachine::apply);
+        if (Platform.getEnvironment() == Env.CLIENT)
+        {
+            NetworkManager.registerReceiver(NetworkManager.Side.S2C, PacketMachineUse.ID, PacketMachineUse::apply);
+            NetworkManager.registerReceiver(NetworkManager.Side.S2C, PacketMachineUseRealise.ID, PacketMachineUseRealise::apply);
+            NetworkManager.registerReceiver(NetworkManager.Side.S2C, PacketMachine.ID, PacketMachine::apply);
+            NetworkManager.registerReceiver(NetworkManager.Side.S2C, PacketMachineInventorySlot.ID, PacketMachineInventorySlot::apply);
+        }
     }
 
     public static void sendTo(Object packet, ServerPlayerEntity player) {

@@ -41,6 +41,17 @@ public class PacketMachine {
         if (contextSupplier.get() == null || player == null || player.world == null)
             return;
 
+        int entityId = buf.readInt();
+        int delayTicks = buf.readInt();
+        int useTicks = buf.readInt();
+        float turretPitch = buf.readFloat();
+        float turretYaw = buf.readFloat();
+
+        context.queue(() -> execute(player, entityId, delayTicks, useTicks, turretPitch, turretYaw));
+    }
+
+    static void execute(ClientPlayerEntity player, int entityId, int delayTicks, int useTicks, float turretPitch, float turretYaw)
+    {
         Entity entity = player.world.getEntityById(entityId);
         if (!(entity instanceof Machine machine))
             return;

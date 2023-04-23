@@ -5,7 +5,6 @@ import net.minecraft.block.HoneyBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -18,29 +17,24 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachinesCore;
-import ru.itzme1on.siegemachines.network.PacketHandler;
 import ru.itzme1on.siegemachines.network.PacketMachine;
 
-import java.util.List;
-
-public abstract class Machine extends MobEntity implements NamedScreenHandlerFactory {
+public abstract class Machine extends MobEntity /*implements NamedScreenHandlerFactory*/ {
     public MachineInventory inventory = new MachineInventory();
 
     public static int rows = 1;
@@ -195,13 +189,10 @@ public abstract class Machine extends MobEntity implements NamedScreenHandlerFac
                         this.playerHitTimer = 100;
                         LivingEntity livingentity = wolfEntity.getOwner();
 
-                        if (livingentity != null && livingentity.getType() == EntityType.PLAYER) {
+                        if (livingentity != null && livingentity.getType() == EntityType.PLAYER)
                             this.attackingPlayer = (PlayerEntity) livingentity;
-                        }
 
-                        else {
-                            this.attackingPlayer = null;
-                        }
+                        else this.attackingPlayer = null;
                     }
                 }
             }
@@ -448,20 +439,8 @@ public abstract class Machine extends MobEntity implements NamedScreenHandlerFac
     }
 
     public void updateMachineRender() {
-        if (!this.world.isClient()) {
-            Box RENDER_UPDATE_AABB = Box.of(Vec3d.ofCenter(this.getBlockPos()), 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE, 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE, 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE);
-            List<PlayerEntity> players = this.world.getPlayers(
-                    TargetPredicate.createNonAttackable().setBaseMaxDistance(SiegeMachinesCore.RENDER_UPDATE_RANGE),
-                    this, RENDER_UPDATE_AABB);
-            players.forEach(player ->
-                    PacketHandler.CHANNEL.sendToPlayer((ServerPlayerEntity) player, new PacketMachine(
-                            this.getId(),
-                            this.delayTicks,
-                            this.useTicks,
-                            this.turretPitch,
-                            this.turretYaw
-                    )));
-        }
+        if (!this.world.isClient)
+            PacketMachine.sendToAllAround(this);
     }
 
     public void updateYaw() {
@@ -488,8 +467,8 @@ public abstract class Machine extends MobEntity implements NamedScreenHandlerFac
         return this.turn(rotation, rotationDest, speed, -180, 180);
     }
 
-    public float turn(float rotation, float rotationDest, float speed, float minRotation, float maxRotation) {
-        boolean hasLimit = maxRotation - minRotation < 360;
+    public float turn(float rotation, float rotationDest, float speed, float minRotation, float mapitchation) {
+        boolean hasLimit = mapitchation - minRotation < 360;
 
         float deltaRotation = rotationDest - rotation;
         deltaRotation = MathHelper.wrapDegrees(deltaRotation);
@@ -507,14 +486,14 @@ public abstract class Machine extends MobEntity implements NamedScreenHandlerFac
             if (newRotation > -minRotation)
                 newRotation = -minRotation;
 
-            if (newRotation < -maxRotation)
-                newRotation = -maxRotation;
+            if (newRotation < -mapitchation)
+                newRotation = -mapitchation;
         }
 
         return newRotation;
     }
 
-    protected static Vec3d applyRotations(Vec3d vec, double pitch, double yaw) {
+    protected static Vec3d applyRotation(Vec3d vec, double pitch, double yaw) {
         double d0 = vec.x * Math.cos(yaw) - vec.y * Math.sin(pitch) * Math.sin(yaw) - vec.z * Math.sin(yaw) * Math.cos(pitch);
         double d1 = vec.y * Math.cos(pitch) - vec.z * Math.sin(pitch);
         double d2 = vec.x * Math.sin(yaw) + vec.y * Math.sin(pitch) * Math.cos(yaw) + vec.z * Math.cos(yaw) * Math.cos(pitch);

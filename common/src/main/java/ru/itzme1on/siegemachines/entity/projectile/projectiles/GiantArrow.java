@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 
 public class GiantArrow extends PersistentProjectileEntity {
     public static final Supplier<EntityType<GiantArrow>> TYPE = Suppliers.memoize(() -> EntityType.Builder.create((EntityType.EntityFactory<GiantArrow>) GiantArrow::new, SpawnGroup.MISC)
+            .maxTrackingRange(4)
+            .trackingTickInterval(20)
             .setDimensions(0.5F, 0.5F)
             .build("giant_arrow"));
     

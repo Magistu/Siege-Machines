@@ -31,6 +31,7 @@
 	"siegemachines.machine_inventory": "Открыть инвентарь",
 	"siegemachines.no_ammo": "Нет боеприпасов!",
 	"siegemachines.no_gunpowder":"Нет пороха!",
+	"siegemachines.wait": "Ждите %1$f секунд.",
 
 	"category.siegemachines.siege_workbench_crafting": "Крафт"
 }

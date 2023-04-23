@@ -17,7 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachinesCore;
+import ru.itzme1on.siegemachines.SiegeMachines;
 import ru.itzme1on.siegemachines.entity.machine.MachineType;
 import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
 import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
@@ -38,8 +38,8 @@ import java.util.function.Supplier;
 
 public class Ballista extends ShootingMachine implements IAnimatable {
     public static final Supplier<EntityType<Ballista>> TYPE = Suppliers.memoize(() -> EntityType.Builder.create(Ballista::new, SpawnGroup.MISC)
-            .setDimensions(0.5F, 0.5F)
-            .build("giant_arrow"));
+            .setDimensions(1.5F, 1.5F)
+            .build("ballista"));
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
@@ -47,12 +47,6 @@ public class Ballista extends ShootingMachine implements IAnimatable {
             .addAnimation("Shooting", ILoopType.EDefaultLoopTypes.LOOP);
     static AnimationBuilder RELOADING_ANIM = new AnimationBuilder()
             .addAnimation("Reloading", ILoopType.EDefaultLoopTypes.LOOP);
-
-    @Nullable
-    @Override
-    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return null;
-    }
 
     public enum State {
         SHOOTING,
@@ -184,7 +178,7 @@ public class Ballista extends ShootingMachine implements IAnimatable {
 
         if (this.renderUpdateTicks-- <= 0) {
             this.updateMachineRender();
-            this.renderUpdateTicks = SiegeMachinesCore.RENDER_UPDATE_TIME;
+            this.renderUpdateTicks = SiegeMachines.RENDER_UPDATE_TIME;
         }
 
         super.tick();
