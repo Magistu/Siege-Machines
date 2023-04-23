@@ -509,6 +509,11 @@ public abstract class Machine extends MobEntity /*implements NamedScreenHandlerF
 
     public abstract void useRealise();
 
+    public void openInventoryGui()
+    {
+        // TODO: implementation
+    }
+
     public static class MachineInventory implements Inventory, Nameable {
         public DefaultedList<ItemStack> items = DefaultedList.ofSize(9 * rows, ItemStack.EMPTY);
 

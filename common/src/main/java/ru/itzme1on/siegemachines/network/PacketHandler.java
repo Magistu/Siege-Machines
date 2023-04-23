@@ -28,8 +28,4 @@ public class PacketHandler
             NetworkManager.registerReceiver(NetworkManager.Side.S2C, PacketMachineInventorySlot.ID, PacketMachineInventorySlot::apply);
         }
     }
-
-    public static void sendTo(Object packet, ServerPlayerEntity player) {
-            CHANNEL.sendToPlayer(player, packet);
-    }
 }

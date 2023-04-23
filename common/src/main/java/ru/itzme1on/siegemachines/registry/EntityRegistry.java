@@ -1,5 +1,6 @@
 package ru.itzme1on.siegemachines.registry;
 
+import com.google.common.base.Suppliers;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.EntityType;

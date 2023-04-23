@@ -1,5 +1,7 @@
 package ru.itzme1on.siegemachines.item;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
@@ -49,21 +52,29 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
-public class MachineItem extends Item implements IAnimatable {
+public class MachineItem <T extends Machine> extends Item implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private final String entityKey;
-    private final String typeKey;
+    private final Supplier<EntityType<T>> entityType;
+    private final Supplier<MachineType> machineType;
 
-    public MachineItem(Settings settings, String entityKey, String typeKey) {
+    public MachineItem(Item.Settings settings, Supplier<EntityType<T>> entityType, Supplier<MachineType> machineType) {
         super(settings.maxCount(1));
-        this.entityKey = entityKey;
-        this.typeKey = typeKey;
+        this.entityType = entityType;
+        this.machineType = machineType;
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Nullable
+    public MachineItemGeoRenderer<T> getRenderer()
+    {
+        return null;
     }
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        ProjectileBuilder<?>[] ammo = MachineType.valueOf(this.typeKey).ammo;
+        ProjectileBuilder<?>[] ammo = machineType.get().ammo;
         if (ammo.length > 0) {
             tooltip.add(new TranslatableText(SiegeMachines.MOD_ID + ".ammo").formatted(Formatting.BLUE));
             for (ProjectileBuilder<?> builder : ammo) {
@@ -89,7 +100,7 @@ public class MachineItem extends Item implements IAnimatable {
                 BlockEntity tileEntity = world.getBlockEntity(blockpos);
                 if (tileEntity instanceof MobSpawnerBlockEntity) {
                     MobSpawnerLogic abstractSpawner = ((MobSpawnerBlockEntity) tileEntity).getLogic();
-                    EntityType<?> entityType = this.getType(itemstack.getNbt());
+                    EntityType<T> entityType = this.getType(itemstack.getNbt());
                     abstractSpawner.setEntityId(entityType);
                     tileEntity.markDirty();
                     world.updateListeners(blockpos, blockstate, blockstate, 3);
@@ -104,7 +115,7 @@ public class MachineItem extends Item implements IAnimatable {
 
             else blockPos = blockpos.offset(direction);
 
-            EntityType<?> entityType = this.getType(itemstack.getNbt());
+            EntityType<T> entityType = this.getType(itemstack.getNbt());
             Entity entity = this.spawn(
                     entityType,
                     (ServerWorld) world,
@@ -142,7 +153,7 @@ public class MachineItem extends Item implements IAnimatable {
                 return TypedActionResult.pass(itemStack);
 
             else if (world.canPlayerModifyAt(user, blockpos) && user.canPlaceOn(blockpos, raytraceResult.getSide(), itemStack)) {
-                EntityType<?> entityType = this.getType(itemStack.getNbt());
+                EntityType<T> entityType = this.getType(itemStack.getNbt());
                 Entity entity = this.spawn(entityType, (ServerWorld) world, itemStack, user, blockpos, SpawnReason.SPAWN_EGG, false, false, user.getYaw());
                 if (entity instanceof Machine)
                     ((Machine) entity).deploymentTicks = 200;
@@ -171,12 +182,12 @@ public class MachineItem extends Item implements IAnimatable {
     }
 
     @Nullable
-    public Entity spawn(EntityType<?> entityType, ServerWorld world, @Nullable ItemStack itemStack, @Nullable PlayerEntity player, BlockPos pos, SpawnReason reason, boolean a, boolean b, float yaw) {
+    public Entity spawn(EntityType<T> entityType, ServerWorld world, @Nullable ItemStack itemStack, @Nullable PlayerEntity player, BlockPos pos, SpawnReason reason, boolean a, boolean b, float yaw) {
         return this.spawn(entityType, world, itemStack == null ? null : itemStack.getNbt(), itemStack != null && itemStack.hasCustomName() ? itemStack.getName() : null, player, pos, reason, a, b, yaw);
     }
 
     @Nullable
-    public Entity spawn(EntityType<?> entityType, ServerWorld world, @Nullable NbtCompound nbt, @Nullable Text text, @Nullable PlayerEntity player, BlockPos pos, SpawnReason reason, boolean a, boolean b, float yaw) {
+    public Entity spawn(EntityType<T> entityType, ServerWorld world, @Nullable NbtCompound nbt, @Nullable Text text, @Nullable PlayerEntity player, BlockPos pos, SpawnReason reason, boolean a, boolean b, float yaw) {
         Entity t = this.create(entityType, world, nbt, text, player, pos, reason, a, b, yaw);
         if (t != null) {
             if (t instanceof MobEntity) return null;
@@ -225,7 +236,9 @@ public class MachineItem extends Item implements IAnimatable {
         }
     }
 
-    public EntityType<?> getType(@javax.annotation.Nullable NbtCompound nbt) {
+    public EntityType<T> getType(@javax.annotation.Nullable NbtCompound nbt) {
+        EntityType<T> defaulttype = this.entityType.get();
+
         if (nbt != null && nbt.contains("EntityTag", 10)) {
             NbtCompound nbtCompound = nbt.getCompound("EntityTag");
             if (nbtCompound.contains("id", 8))

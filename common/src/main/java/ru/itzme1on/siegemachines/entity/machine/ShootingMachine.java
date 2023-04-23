@@ -133,24 +133,12 @@ public abstract class ShootingMachine extends Machine implements IReloading {
 
     @Override
     public void updateMachineRender() {
-        if (!this.world.isClient()) {
+        if (!this.world.isClient) {
             for (int i = 0; i < rows * 9; ++i) {
-                if (this.isValidAmmo(this.inventory.getStack(i))) {
-
-                }
+                if (this.isValidAmmo(this.inventory.getStack(i)))
+                    PacketMachineInventorySlot.sendToAllAround(this, i);
             }
         }
-//        TODO
-//        if (!this.world.isClient) {
-//            for (int i = 0; i < rows * 9; ++i) {
-//                if (this.isValidAmmo(this.inventory.getItem(i))) {
-//                    PacketHandler.sendPacketToAllInArea(
-//                            new PacketMachineInventorySlot(this.getId(), i, this.inventory.getItem(i)),
-//                            this.blockPosition(),
-//                            SiegeMachines.RENDER_UPDATE_RANGE_SQR);
-//                }
-//            }
-//        }
     }
 
     public boolean isValidAmmo(Item entry) {

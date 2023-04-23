@@ -2,6 +2,8 @@ package ru.itzme1on.siegemachines;
 
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
+import ru.itzme1on.siegemachines.events.ClientEvents;
+import ru.itzme1on.siegemachines.network.PacketHandler;
 import ru.itzme1on.siegemachines.registry.EntityRegistry;
 import ru.itzme1on.siegemachines.registry.ItemRegistry;
 import ru.itzme1on.siegemachines.registry.SoundRegistry;
@@ -23,7 +25,7 @@ public class SiegeMachines {
         ItemRegistry.init();
         EntityRegistry.init();
         SoundRegistry.init();
-
-        EnvExecutor.runInEnv(Env.CLIENT, () -> SiegeMachinesClient::init);
+        PacketHandler.init();
+        ClientEvents.init();
     }
 }

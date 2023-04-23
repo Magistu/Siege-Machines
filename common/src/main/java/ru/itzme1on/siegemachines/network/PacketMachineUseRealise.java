@@ -2,6 +2,7 @@ package ru.itzme1on.siegemachines.network;
 
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
@@ -17,10 +18,9 @@ import ru.itzme1on.siegemachines.entity.machine.Machine;
 
 import java.util.List;
 
-
-public class PacketMachine
+public class PacketMachineUseRealise
 {
-    public static final Identifier ID = new Identifier(SiegeMachines.MOD_ID, "packet_machine");
+    public static final Identifier ID = new Identifier(SiegeMachines.MOD_ID, "packet_machine_use_realise");
 
     public static void sendToAllAround(Machine machine)
     {
@@ -37,40 +37,41 @@ public class PacketMachine
         NetworkManager.sendToPlayer(player, ID, encode(machine));
     }
 
+    public static void sendToServer(Machine machine)
+    {
+        NetworkManager.sendToServer(ID, encode(machine));
+    }
+
     static PacketByteBuf encode(Machine machine)
     {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(machine.getId());
-        buf.writeInt(machine.delayTicks);
-        buf.writeInt(machine.useTicks);
-        buf.writeFloat(machine.getTurretPitch(0.5f));
-        buf.writeFloat(machine.getTurretYaw(0.5f));
         return buf;
     }
 
     public static void apply(PacketByteBuf buf, NetworkManager.PacketContext context)
     {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (context == null || player == null || player.world == null)
+        if (context == null)
+            return;
+
+        // PlayerEntity player = context.getEnv() == EnvType.SERVER ? MinecraftClient.getInstance().player : context.getPlayer();
+        PlayerEntity player = context.getEnv() == EnvType.CLIENT ? MinecraftClient.getInstance().player : context.getPlayer();
+
+        if (player == null || player.world == null)
             return;
 
         int entityId = buf.readInt();
-        int delayTicks = buf.readInt();
-        int useTicks = buf.readInt();
-        float turretPitch = buf.readFloat();
-        float turretYaw = buf.readFloat();
 
-        context.queue(() -> execute(player, entityId, delayTicks, useTicks, turretPitch, turretYaw));
+        context.queue(() -> execute(player, entityId));
     }
 
-    static void execute(ClientPlayerEntity player, int entityId, int delayTicks, int useTicks, float turretPitch, float turretYaw)
+    static void execute(PlayerEntity player, int entityId)
     {
         Entity entity = player.world.getEntityById(entityId);
-        if (!(entity instanceof Machine machine))
+        if (!(entity instanceof Machine))
             return;
 
-        machine.delayTicks = delayTicks;
-        machine.useTicks = useTicks;
-        machine.setTurretRotations(turretPitch, turretYaw);
+        Machine machine = (Machine) entity;
+        machine.useRealise();
     }
 }
