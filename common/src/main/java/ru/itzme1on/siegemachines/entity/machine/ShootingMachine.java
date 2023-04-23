@@ -161,7 +161,7 @@ public abstract class ShootingMachine extends Machine implements IReloading {
         return this.inventory.items.stream().anyMatch(this::isValidAmmo);
     }
 
-    public ProjectileBuilder getProjectileBuilder() {
+    public ProjectileBuilder<?> getProjectileBuilder() {
         ItemStack ammo = this.getAmmo();
         if (ammo.equals(ItemStack.EMPTY))
             return ProjectileBuilder.NONE;

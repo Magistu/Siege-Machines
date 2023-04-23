@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 import ru.itzme1on.siegemachines.network.PacketHandler;
 import ru.itzme1on.siegemachines.network.PacketMachine;
 
@@ -449,9 +449,9 @@ public abstract class Machine extends MobEntity implements NamedScreenHandlerFac
 
     public void updateMachineRender() {
         if (!this.world.isClient()) {
-            Box RENDER_UPDATE_AABB = Box.of(Vec3d.ofCenter(this.getBlockPos()), 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE, 2 * SiegeMachines.RENDER_UPDATE_RANGE);
+            Box RENDER_UPDATE_AABB = Box.of(Vec3d.ofCenter(this.getBlockPos()), 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE, 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE, 2 * SiegeMachinesCore.RENDER_UPDATE_RANGE);
             List<PlayerEntity> players = this.world.getPlayers(
-                    TargetPredicate.createNonAttackable().setBaseMaxDistance(SiegeMachines.RENDER_UPDATE_RANGE),
+                    TargetPredicate.createNonAttackable().setBaseMaxDistance(SiegeMachinesCore.RENDER_UPDATE_RANGE),
                     this, RENDER_UPDATE_AABB);
             players.forEach(player ->
                     PacketHandler.CHANNEL.sendToPlayer((ServerPlayerEntity) player, new PacketMachine(

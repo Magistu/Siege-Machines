@@ -13,7 +13,7 @@ public class SiegeMachinesClient {
     public static void init() {
         if (Platform.getEnvironment() == Env.CLIENT) {
             EntityRendererRegistry.register(GiantArrow.TYPE, GiantArrowRenderer::new);
-            EntityModelLayerRegistry.register(Ballista.TYPE, BallistaGeoRenderer::new);
+//            EntityModelLayerRegistry.register(Ballista.TYPE, BallistaGeoRenderer::new);
         }
     }
 }

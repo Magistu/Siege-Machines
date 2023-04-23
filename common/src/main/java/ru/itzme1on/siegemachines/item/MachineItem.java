@@ -37,7 +37,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 import ru.itzme1on.siegemachines.entity.machine.Machine;
 import ru.itzme1on.siegemachines.entity.machine.MachineType;
 import ru.itzme1on.siegemachines.entity.projectile.ProjectileBuilder;
@@ -62,12 +62,12 @@ public class MachineItem extends Item implements IAnimatable {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        ProjectileBuilder[] ammo = MachineType.valueOf(this.typeKey).ammo;
+        ProjectileBuilder<?>[] ammo = MachineType.valueOf(this.typeKey).ammo;
         if (ammo.length > 0) {
-            tooltip.add(new TranslatableText(SiegeMachines.MOD_ID + ".ammo").formatted(Formatting.BLUE));
-            for (ProjectileBuilder builder : ammo) {
+            tooltip.add(new TranslatableText(SiegeMachinesCore.MOD_ID + ".ammo").formatted(Formatting.BLUE));
+            for (ProjectileBuilder<?> builder : ammo) {
                 if (MachineType.valueOf(this.typeKey).usesGunpowder)
-                    tooltip.add(new TranslatableText(SiegeMachines.MOD_ID + ".uses_gunpowder").formatted(Formatting.BLUE));
+                    tooltip.add(new TranslatableText(SiegeMachinesCore.MOD_ID + ".uses_gunpowder").formatted(Formatting.BLUE));
                 tooltip.add(new LiteralText("    ").append(new TranslatableText(builder.item.getTranslationKey())).formatted(Formatting.BLUE));
             }
         }
@@ -202,7 +202,7 @@ public class MachineItem extends Item implements IAnimatable {
         else {
             double d0;
             if (a) {
-                t.setPos((double) pos.getX() + 0.5D, (double) (pos.getY() + 1), (double) pos.getZ() + 0.5D);
+                t.setPos((double) pos.getX() + 0.5D, pos.getY() + 1, (double) pos.getZ() + 0.5D);
                 d0 = getYOffset(world, pos, b, t.getBoundingBox());
             }
 

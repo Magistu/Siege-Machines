@@ -17,10 +17,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 import ru.itzme1on.siegemachines.entity.machine.MachineType;
 import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
-import ru.itzme1on.siegemachines.entity.projectile.projectiles.GiantArrow;
 import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
 import ru.itzme1on.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
 import ru.itzme1on.siegemachines.registry.ItemRegistry;
@@ -185,7 +184,7 @@ public class Ballista extends ShootingMachine implements IAnimatable {
 
         if (this.renderUpdateTicks-- <= 0) {
             this.updateMachineRender();
-            this.renderUpdateTicks = SiegeMachines.RENDER_UPDATE_TIME;
+            this.renderUpdateTicks = SiegeMachinesCore.RENDER_UPDATE_TIME;
         }
 
         super.tick();

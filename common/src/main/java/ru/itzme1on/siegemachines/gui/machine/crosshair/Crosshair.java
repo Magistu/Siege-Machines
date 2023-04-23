@@ -6,11 +6,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 
 @Environment(EnvType.CLIENT)
 public abstract class Crosshair extends HudElement {
-    protected static final Identifier CROSSHAIR_TEXTURES = new Identifier(SiegeMachines.MOD_ID, "textures/gui/crosshair.png");
+    protected static final Identifier CROSSHAIR_TEXTURES = new Identifier(SiegeMachinesCore.MOD_ID, "textures/gui/crosshair.png");
 
     public Crosshair(int width, int height) {
         super(width, height);

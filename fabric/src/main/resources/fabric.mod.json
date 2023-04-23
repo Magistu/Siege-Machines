@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ru.itzme1on.fabric.SiegeMachines"
+      "ru.itzme1on.fabric.SiegeMachinesFabric"
     ]
   },
   "depends": {

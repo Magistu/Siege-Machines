@@ -1,7 +1,7 @@
 package ru.itzme1on.siegemachines.entity.client.model;
 
 import net.minecraft.util.Identifier;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 import ru.itzme1on.siegemachines.entity.machine.Machine;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -14,9 +14,9 @@ public class MachineModel <T extends Machine & IAnimatable> extends AnimatedGeoM
 
     public MachineModel(String name) {
         this.name = name;
-        this.animationLocation = new Identifier(SiegeMachines.MOD_ID, "animations/" + this.name + ".animation.json");
-        this.modelLocation = new Identifier(SiegeMachines.MOD_ID, "geo/" + this.name + ".geo.json");
-        this.textureLocation = new Identifier(SiegeMachines.MOD_ID, "textures/entity/" + this.name + ".png");
+        this.animationLocation = new Identifier(SiegeMachinesCore.MOD_ID, "animations/" + this.name + ".animation.json");
+        this.modelLocation = new Identifier(SiegeMachinesCore.MOD_ID, "geo/" + this.name + ".geo.json");
+        this.textureLocation = new Identifier(SiegeMachinesCore.MOD_ID, "textures/entity/" + this.name + ".png");
     }
 
     @Override

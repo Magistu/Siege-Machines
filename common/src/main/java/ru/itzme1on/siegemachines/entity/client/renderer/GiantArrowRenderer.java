@@ -8,12 +8,12 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 import ru.itzme1on.siegemachines.entity.client.model.GiantArrowModel;
 import ru.itzme1on.siegemachines.entity.projectile.projectiles.GiantArrow;
 
 public class GiantArrowRenderer extends EntityRenderer<GiantArrow> {
-    public static final Identifier TEXTURE_LOCATION = new Identifier(SiegeMachines.MOD_ID, "textures/entity/giant_arrow.png");
+    public static final Identifier TEXTURE_LOCATION = new Identifier(SiegeMachinesCore.MOD_ID, "textures/entity/giant_arrow.png");
 
     public GiantArrowModel model = new GiantArrowModel(GiantArrowModel.createModel());
 

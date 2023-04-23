@@ -3,10 +3,10 @@ package ru.itzme1on.siegemachines.network;
 import dev.architectury.networking.NetworkChannel;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.SiegeMachinesCore;
 
 public class PacketHandler {
-    public static final NetworkChannel CHANNEL = NetworkChannel.create(new Identifier(SiegeMachines.MOD_ID, "networking_channel"));
+    public static final NetworkChannel CHANNEL = NetworkChannel.create(new Identifier(SiegeMachinesCore.MOD_ID, "networking_channel"));
 
     protected static int currentId = 0;
 
