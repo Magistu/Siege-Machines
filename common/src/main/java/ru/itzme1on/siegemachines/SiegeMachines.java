@@ -1,12 +1,12 @@
 package ru.itzme1on.siegemachines;
 
-import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
+import ru.itzme1on.siegemachines.client.render.entity.EntityAttributes;
 import ru.itzme1on.siegemachines.events.ClientEvents;
+import ru.itzme1on.siegemachines.events.CommonEvents;
 import ru.itzme1on.siegemachines.network.PacketHandler;
-import ru.itzme1on.siegemachines.registry.EntityRegistry;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
-import ru.itzme1on.siegemachines.registry.SoundRegistry;
+import ru.itzme1on.siegemachines.entity.EntityTypes;
+import ru.itzme1on.siegemachines.item.ModItems;
+import ru.itzme1on.siegemachines.audio.ModSounds;
 
 import java.util.UUID;
 
@@ -22,10 +22,12 @@ public class SiegeMachines {
     public static void init() {
         System.out.println("Hello from " + SiegeMachines.MOD_ID + " init!");
         
-        ItemRegistry.init();
-        EntityRegistry.init();
-        SoundRegistry.init();
+        ModItems.init();
+        EntityTypes.init();
+        ModSounds.init();
         PacketHandler.init();
+        EntityAttributes.init();
         ClientEvents.init();
+        CommonEvents.init();
     }
 }

@@ -1,7 +1,6 @@
-package ru.itzme1on.siegemachines.entity.machine.machines;
+package ru.itzme1on.siegemachines.entity.machine;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
@@ -17,13 +16,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import ru.itzme1on.siegemachines.SiegeMachines;
 import ru.itzme1on.siegemachines.entity.Breakdown;
-import ru.itzme1on.siegemachines.entity.machine.Machine;
-import ru.itzme1on.siegemachines.entity.machine.MachineType;
-import ru.itzme1on.siegemachines.network.PacketHandler;
 import ru.itzme1on.siegemachines.network.PacketMachineUse;
 import ru.itzme1on.siegemachines.network.PacketMachineUseRealise;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
-import ru.itzme1on.siegemachines.registry.SoundRegistry;
+import ru.itzme1on.siegemachines.item.ModItems;
+import ru.itzme1on.siegemachines.audio.ModSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -182,7 +178,7 @@ public class BatteringRam extends Machine implements IAnimatable {
             this.hittingTicks = this.type.useRealiseTime;
 
             Vec3d pos = this.getHitPos();
-            this.world.playSound(pos.x, pos.y, pos.z, SoundRegistry.RAM_HITTING.get(), SoundCategory.BLOCKS, 0.5f, 0.9f, false);
+            this.world.playSound(pos.x, pos.y, pos.z, ModSounds.RAM_HITTING.get(), SoundCategory.BLOCKS, 0.5f, 0.9f, false);
         }
     }
 
@@ -218,7 +214,7 @@ public class BatteringRam extends Machine implements IAnimatable {
     @Override
     public Item getMachineItem()
     {
-        return ItemRegistry.BATTERING_RAM.get();
+        return ModItems.BATTERING_RAM.get();
     }
 
     protected Vec3d getHitPos() {

@@ -7,7 +7,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import ru.itzme1on.siegemachines.client.render.model.MachineModel;
-import ru.itzme1on.siegemachines.entity.machine.machines.Culverin;
+import ru.itzme1on.siegemachines.entity.machine.Culverin;
 
 public class CulverinGeoRenderer extends MachineGeoRenderer<Culverin>
 {

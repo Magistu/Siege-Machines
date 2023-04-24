@@ -1,9 +1,11 @@
-package ru.itzme1on.siegemachines.entity.machine.machines;
+package ru.itzme1on.siegemachines.entity.machine;
 
+import com.google.common.base.Suppliers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -14,12 +16,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import ru.itzme1on.siegemachines.SiegeMachines;
-import ru.itzme1on.siegemachines.entity.machine.MachineType;
-import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
-import ru.itzme1on.siegemachines.registry.SoundRegistry;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
+import ru.itzme1on.siegemachines.item.ModItems;
+import ru.itzme1on.siegemachines.audio.ModSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -30,9 +30,15 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
+import java.util.function.Supplier;
+
 
 public class Catapult extends ShootingMachine implements IAnimatable
 {
+    public static final Supplier<EntityType<Catapult>> TYPE = Suppliers.memoize(() -> EntityType.Builder.create(Catapult::new, SpawnGroup.MISC)
+            .setDimensions(3.0F, 3.0F)
+            .build("catapult"));
+    
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     static AnimationBuilder SHOOTING_ANIM = new AnimationBuilder().addAnimation("Shooting", ILoopType.EDefaultLoopTypes.LOOP);
@@ -116,7 +122,7 @@ public class Catapult extends ShootingMachine implements IAnimatable
             this.shootingTicks = this.type.useRealiseTime;
 
             Vec3d pos = this.getPos();
-            this.world.playSound(pos.x, pos.y, pos.z, SoundRegistry.CATAPULT_SHOOTING.get(), SoundCategory.BLOCKS, 1.5f, 1.0f, false);
+            this.world.playSound(pos.x, pos.y, pos.z, ModSounds.CATAPULT_SHOOTING.get(), SoundCategory.BLOCKS, 1.5f, 1.0f, false);
         }
     }
 
@@ -161,7 +167,7 @@ public class Catapult extends ShootingMachine implements IAnimatable
         if (this.delayTicks > 0 && this.hasPassengers()) {
             if (this.delayTicks % 20 == 0) {
                 Vec3d pos = this.getPos();
-                this.world.playSound(pos.x, pos.y, pos.z, SoundRegistry.CATAPULT_RELOADING.get(), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+                this.world.playSound(pos.x, pos.y, pos.z, ModSounds.CATAPULT_RELOADING.get(), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
             }
 
             if (--this.delayTicks <= 0) this.state = State.IDLE_RELOADED;
@@ -184,6 +190,6 @@ public class Catapult extends ShootingMachine implements IAnimatable
 
     @Override
     public Item getMachineItem() {
-        return ItemRegistry.CATAPULT.get();
+        return ModItems.CATAPULT.get();
     }
 }

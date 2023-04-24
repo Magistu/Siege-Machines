@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import ru.itzme1on.siegemachines.entity.projectile.Missile;
 import ru.itzme1on.siegemachines.entity.projectile.MissileType;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
+import ru.itzme1on.siegemachines.item.ModItems;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class Cannonball extends Missile {
 
     public Cannonball(EntityType<Cannonball> entityType, World world) {
         super(entityType, world);
-        this.item = ItemRegistry.CANNONBALL.get();
+        this.item = ModItems.CANNONBALL.get();
     }
 
     public Cannonball(EntityType<Cannonball> entityType, World world, Vector3d pos, LivingEntity entity, Item item) {

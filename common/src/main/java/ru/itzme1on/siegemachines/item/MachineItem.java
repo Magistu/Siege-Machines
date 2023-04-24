@@ -1,5 +1,6 @@
 package ru.itzme1on.siegemachines.item;
 
+import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -16,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
@@ -41,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import ru.itzme1on.siegemachines.SiegeMachines;
+import ru.itzme1on.siegemachines.client.render.Renderers;
 import ru.itzme1on.siegemachines.client.render.item.MachineItemGeoRenderer;
 import ru.itzme1on.siegemachines.entity.machine.Machine;
 import ru.itzme1on.siegemachines.entity.machine.MachineType;
@@ -54,22 +55,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class MachineItem <T extends Machine> extends Item implements IAnimatable {
+public class MachineItem<T extends Machine> extends Item implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private final Supplier<EntityType<T>> entityType;
     private final Supplier<MachineType> machineType;
+    private MachineItemGeoRenderer<T> renderer = null;
+    
 
-    public MachineItem(Item.Settings settings, Supplier<EntityType<T>> entityType, Supplier<MachineType> machineType) {
+    public MachineItem(Item.Settings settings, Supplier<EntityType<T>> entityType, Supplier<MachineType> machineType, Renderers.ItemEnum modelkey) {
         super(settings.maxCount(1));
         this.entityType = entityType;
         this.machineType = machineType;
+        if (Platform.getEnv() == EnvType.CLIENT)
+            this.renderer = (MachineItemGeoRenderer<T>) Renderers.ITEM_MAP.get(modelkey);
     }
 
     @Environment(EnvType.CLIENT)
-    @Nullable
     public MachineItemGeoRenderer<T> getRenderer()
     {
-        return null;
+        return this.renderer;
     }
 
     @Override

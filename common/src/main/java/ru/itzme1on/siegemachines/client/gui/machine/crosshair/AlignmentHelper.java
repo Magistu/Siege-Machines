@@ -1,4 +1,4 @@
-package ru.itzme1on.siegemachines.gui.machine.crosshair;
+package ru.itzme1on.siegemachines.client.gui.machine.crosshair;
 
 import java.util.Arrays;
 import java.util.List;

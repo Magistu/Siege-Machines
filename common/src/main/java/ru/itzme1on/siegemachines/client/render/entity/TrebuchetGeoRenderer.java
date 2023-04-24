@@ -7,7 +7,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import ru.itzme1on.siegemachines.client.render.model.MachineModel;
-import ru.itzme1on.siegemachines.entity.machine.machines.Trebuchet;
+import ru.itzme1on.siegemachines.entity.machine.Trebuchet;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;

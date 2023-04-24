@@ -30,11 +30,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.NotNull;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
+import ru.itzme1on.siegemachines.item.ModItems;
 
 public abstract class Missile extends ThrownItemEntity {
     public MissileType type = MissileType.STONE;
-    public Item item = ItemRegistry.STONE.get();
+    public Item item = ModItems.STONE.get();
 
     public Missile(EntityType<? extends ThrownItemEntity> entityType, World world) {
         super(entityType, world);
@@ -72,7 +72,7 @@ public abstract class Missile extends ThrownItemEntity {
 
             else if (this.type.armorPiercing > 0.0f && entity instanceof LivingEntity livingEntity) {
                 if(livingEntity instanceof PlayerEntity player)
-                    if(player.isBlocking() && (item == ItemRegistry.GIANT_ARROW.get() || item == Items.ARROW) && (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ShieldItem || player.isBlocking() && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof ShieldItem))
+                    if(player.isBlocking() && (item == ModItems.GIANT_ARROW.get() || item == Items.ARROW) && (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ShieldItem || player.isBlocking() && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof ShieldItem))
                         return;
 
                 damage -= (1.0f - this.type.armorPiercing) * (damage - DamageUtil.getDamageLeft(damage, 0, 0));

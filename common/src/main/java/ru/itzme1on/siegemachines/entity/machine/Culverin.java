@@ -1,4 +1,4 @@
-package ru.itzme1on.siegemachines.entity.machine.machines;
+package ru.itzme1on.siegemachines.entity.machine;
 
 import com.google.common.base.Suppliers;
 import net.fabricmc.api.EnvType;
@@ -9,12 +9,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -22,15 +20,12 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import ru.itzme1on.siegemachines.SiegeMachines;
 import ru.itzme1on.siegemachines.entity.IReloading;
-import ru.itzme1on.siegemachines.entity.machine.MachineType;
-import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
-import ru.itzme1on.siegemachines.registry.SoundRegistry;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
+import ru.itzme1on.siegemachines.item.ModItems;
+import ru.itzme1on.siegemachines.audio.ModSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -178,7 +173,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
         }
 
         if (this.getWheelsSpeed() > 0.0081 && this.wheelsSoundTicks-- <= 0) {
-            this.world.playSound(this.getX(), this.getY(), this.getZ(), SoundRegistry.CANNON_WHEELS.get(), SoundCategory.NEUTRAL, 0.3f, 1.0f, true);
+            this.world.playSound(this.getX(), this.getY(), this.getZ(), ModSounds.CANNON_WHEELS.get(), SoundCategory.NEUTRAL, 0.3f, 1.0f, true);
             this.wheelsSoundTicks = 20;
         }
 
@@ -189,7 +184,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
     public void startShooting(PlayerEntity player) {
         if (this.delayTicks <= 0 && this.useTicks <= 0 && this.shootingTicks <= 0) {
             if (!this.world.isClient)
-                this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundRegistry.FUSE.get(), SoundCategory.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.world.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.FUSE.get(), SoundCategory.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
 
             this.useTicks = this.type.useTime;
             this.shootingTicks = this.type.useRealiseTime;
@@ -209,7 +204,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
             Vec3d pos = this.getPos();
-            this.world.playSound(pos.x, pos.y, pos.z, SoundRegistry.MORTAR_SHOOTING.get(), SoundCategory.BLOCKS, 1.5f, 0.85f + this.world.random.nextFloat() * 0.3f, false);
+            this.world.playSound(pos.x, pos.y, pos.z, ModSounds.MORTAR_SHOOTING.get(), SoundCategory.BLOCKS, 1.5f, 0.85f + this.world.random.nextFloat() * 0.3f, false);
         }
     }
 
@@ -246,6 +241,6 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
 
     @Override
     public Item getMachineItem() {
-        return ItemRegistry.CULVERIN.get();
+        return ModItems.CULVERIN.get();
     }
 }

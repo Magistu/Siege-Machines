@@ -1,4 +1,4 @@
-package ru.itzme1on.siegemachines.gui.machine.crosshair;
+package ru.itzme1on.siegemachines.client.gui.machine.crosshair;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

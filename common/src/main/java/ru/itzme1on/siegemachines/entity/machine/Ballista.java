@@ -1,4 +1,4 @@
-package ru.itzme1on.siegemachines.entity.machine.machines;
+package ru.itzme1on.siegemachines.entity.machine;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.client.MinecraftClient;
@@ -7,23 +7,18 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import ru.itzme1on.siegemachines.SiegeMachines;
-import ru.itzme1on.siegemachines.entity.machine.MachineType;
-import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
-import ru.itzme1on.siegemachines.registry.SoundRegistry;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
+import ru.itzme1on.siegemachines.item.ModItems;
+import ru.itzme1on.siegemachines.audio.ModSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -104,7 +99,7 @@ public class Ballista extends ShootingMachine implements IAnimatable {
 
     @Override
     public Item getMachineItem() {
-        return ItemRegistry.BALLISTA.get();
+        return ModItems.BALLISTA.get();
     }
 
     @Override
@@ -119,7 +114,7 @@ public class Ballista extends ShootingMachine implements IAnimatable {
                     pos.x,
                     pos.y,
                     pos.z,
-                    (SoundEvent) SoundRegistry.BALLISTA_SHOOTING,
+                    (SoundEvent) ModSounds.BALLISTA_SHOOTING,
                     SoundCategory.BLOCKS,
                     1.0f,
                     1.0f,
@@ -174,7 +169,7 @@ public class Ballista extends ShootingMachine implements IAnimatable {
 
                 assert PlayerEntity != null;
 
-                PlayerEntity.playSound((SoundEvent) SoundRegistry.BALLISTA_RELOADING, 1, 1);
+                PlayerEntity.playSound((SoundEvent) ModSounds.BALLISTA_RELOADING, 1, 1);
             }
             --this.delayTicks;
         }

@@ -1,4 +1,4 @@
-package ru.itzme1on.siegemachines.registry;
+package ru.itzme1on.siegemachines.audio;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import ru.itzme1on.siegemachines.SiegeMachines;
 
-public class SoundRegistry {
+public class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(SiegeMachines.MOD_ID, Registry.SOUND_EVENT_KEY);
 
     public static final RegistrySupplier<SoundEvent> BALLISTA_SHOOTING = registerSound("ballista_shooting");

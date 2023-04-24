@@ -8,22 +8,22 @@ import net.minecraft.item.Items;
 import ru.itzme1on.siegemachines.entity.projectile.projectiles.Cannonball;
 import ru.itzme1on.siegemachines.entity.projectile.projectiles.GiantArrow;
 import ru.itzme1on.siegemachines.entity.projectile.projectiles.Stone;
-import ru.itzme1on.siegemachines.registry.EntityRegistry;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
+import ru.itzme1on.siegemachines.entity.EntityTypes;
+import ru.itzme1on.siegemachines.item.ModItems;
 
 public class ProjectileBuilder<T extends ProjectileEntity> {
-    public final static ProjectileBuilder<Stone> NONE = new ProjectileBuilder<>(Items.AIR, EntityRegistry.STONE.get(), Stone::new);
+    public final static ProjectileBuilder<Stone> NONE = new ProjectileBuilder<>(Items.AIR, EntityTypes.STONE.get(), Stone::new);
 
     public final static ProjectileBuilder<?>[] NO_AMMO = new ProjectileBuilder[] {};
     public final static ProjectileBuilder<?>[] CANNON_AMMO = new ProjectileBuilder[] {
-            new ProjectileBuilder<>(ItemRegistry.CANNONBALL.get(), EntityRegistry.CANNONBALL.get(), Cannonball::new)
+            new ProjectileBuilder<>(ModItems.CANNONBALL.get(), EntityTypes.CANNONBALL.get(), Cannonball::new)
     };
     public final static ProjectileBuilder<?>[] THROWING_AMMO = new ProjectileBuilder[] {
-            new ProjectileBuilder<>(Items.COBBLESTONE, ItemRegistry.STONE.get(), EntityRegistry.STONE.get(), Stone::new)
+            new ProjectileBuilder<>(Items.COBBLESTONE, ModItems.STONE.get(), EntityTypes.STONE.get(), Stone::new)
     };
 
     public final static ProjectileBuilder<?>[] BALLISTA_AMMO = new ProjectileBuilder[] {
-            new ProjectileBuilder<>(ItemRegistry.GIANT_ARROW.get(), EntityRegistry.GIANT_ARROW.get(), GiantArrow::new),
+            new ProjectileBuilder<>(ModItems.GIANT_ARROW.get(), EntityTypes.GIANT_ARROW.get(), GiantArrow::new),
             new ProjectileBuilder<>(Items.ARROW, EntityType.ARROW, (entityType, world, pos, entity, item) -> {
                 ArrowEntity arrow = new ArrowEntity(world, entity);
                 arrow.setPos(pos.x, pos.y, pos.z);

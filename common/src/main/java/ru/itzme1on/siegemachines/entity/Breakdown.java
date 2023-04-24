@@ -84,8 +84,8 @@ public class Breakdown {
     }
 
 
-    private ExplosionBehavior makeDamageCalculator(@Nullable Entity p_234894_1_) {
-        return (p_234894_1_ == null ? EXPLOSION_DAMAGE_CALCULATOR : new EntityExplosionBehavior(p_234894_1_));
+    private ExplosionBehavior makeDamageCalculator(@Nullable Entity entity) {
+        return (entity == null ? EXPLOSION_DAMAGE_CALCULATOR : new EntityExplosionBehavior(entity));
     }
 
     public static float getSeenPercent(Vec3d vec, Entity entity) {
@@ -123,7 +123,6 @@ public class Breakdown {
 
     public void explode() {
         Set<BlockPos> set = Sets.newHashSet();
-        int i = 16;
 
         for(int j = 0; j < 16; ++j) {
             for(int k = 0; k < 16; ++k) {
@@ -141,7 +140,7 @@ public class Breakdown {
                         double d6 = this.y;
                         double d8 = this.z;
 
-                        for(float f1 = 0.3F; f > 0.0F; f -= this.power * 0.5F) {
+                        for(; f > 0.0F; f -= this.power * 0.5F) {
                             BlockPos blockpos = new BlockPos(d4, d6, d8);
                             BlockState blockstate = this.world.getBlockState(blockpos);
                             FluidState fluidstate = this.world.getFluidState(blockpos);
@@ -171,8 +170,7 @@ public class Breakdown {
         List<Entity> list = this.world.getOtherEntities(this.source, new Box(k1, i2, j2, l1, i1, j1));
         Vec3d vector3d = new Vec3d(this.x, this.y, this.z);
 
-        for (int k2 = 0; k2 < list.size(); ++k2) {
-            Entity entity = list.get(k2);
+        for (Entity entity : list) {
             if (!entity.isImmuneToExplosion() && !entity.equals(this.machine) && !entity.equals(this.source)) {
                 double d12 = (MathHelper.sqrt((float) entity.squaredDistanceTo(vector3d)) / f2);
 
@@ -195,10 +193,11 @@ public class Breakdown {
 
                         double d11 = d10;
 
-                        if (entity instanceof LivingEntity) d11 = ProtectionEnchantment.transformExplosionKnockback((LivingEntity)entity, d10);
+                        if (entity instanceof LivingEntity)
+                            d11 = ProtectionEnchantment.transformExplosionKnockback((LivingEntity) entity, d10);
 
                         entity.setVelocity(entity.getVelocity().add(d5 * d11, d7 * d11, d9 * d11));
-                        
+
                         if (entity instanceof PlayerEntity playerEntity) {
                             if (!playerEntity.isSpectator() && (!playerEntity.isCreative() || !playerEntity.getAbilities().flying))
                                 this.hitPlayers.put(playerEntity, new Vec3d(d5 * d10, d7 * d10, d9 * d10));

@@ -9,7 +9,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
+import ru.itzme1on.siegemachines.item.ModItems;
 
 import java.util.function.Supplier;
 
@@ -32,6 +32,6 @@ public class GiantArrow extends PersistentProjectileEntity {
 
     @Override
     protected ItemStack asItemStack() {
-        return new ItemStack(ItemRegistry.GIANT_ARROW.get());
+        return new ItemStack(ModItems.GIANT_ARROW.get());
     }
 }

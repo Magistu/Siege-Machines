@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import ru.itzme1on.siegemachines.entity.projectile.Missile;
 import ru.itzme1on.siegemachines.entity.projectile.MissileType;
-import ru.itzme1on.siegemachines.registry.ItemRegistry;
+import ru.itzme1on.siegemachines.item.ModItems;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class Stone extends Missile {
 
     public Stone(EntityType<Stone> entityType, World world) {
         super(entityType, world);
-        this.item = ItemRegistry.STONE.get();
+        this.item = ModItems.STONE.get();
     }
 
     public Stone(EntityType<Stone> entityType, World world, Vector3d pos, LivingEntity entity, Item item) {

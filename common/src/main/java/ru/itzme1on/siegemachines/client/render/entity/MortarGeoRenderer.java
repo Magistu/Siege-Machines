@@ -8,10 +8,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import ru.itzme1on.siegemachines.client.render.model.MachineModel;
-import ru.itzme1on.siegemachines.entity.machine.machines.Mortar;
+import ru.itzme1on.siegemachines.entity.machine.Mortar;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
 
 import java.util.Optional;

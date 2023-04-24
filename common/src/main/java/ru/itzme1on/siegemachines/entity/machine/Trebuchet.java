@@ -1,18 +1,13 @@
-package ru.itzme1on.siegemachines.entity.machine.machines;
+package ru.itzme1on.siegemachines.entity.machine;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
-import ru.itzme1on.siegemachines.entity.machine.MachineType;
-import ru.itzme1on.siegemachines.entity.machine.ShootingMachine;
-import ru.itzme1on.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.itzme1on.siegemachines.client.gui.machine.crosshair.Crosshair;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;

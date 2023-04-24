@@ -7,7 +7,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import ru.itzme1on.siegemachines.client.render.model.MachineModel;
-import ru.itzme1on.siegemachines.entity.machine.machines.BatteringRam;
+import ru.itzme1on.siegemachines.entity.machine.BatteringRam;
 
 public class BatteringRamGeoRenderer extends MachineGeoRenderer<BatteringRam>
 {
