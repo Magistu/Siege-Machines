@@ -15,7 +15,7 @@ public class Cannonball extends Missile
         this.item = ModItems.CANNONBALL.get();
     }
 
-	public Cannonball(EntityType<Stone> entitytype, Level level, Vector3d pos, LivingEntity entity, Item item)
+	public Cannonball(EntityType<Cannonball> entitytype, Level level, Vector3d pos, LivingEntity entity, Item item)
     {
 		super(entitytype, level, pos, entity, MissileType.CANNONBALL, item);
 	}

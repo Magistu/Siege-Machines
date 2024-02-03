@@ -1,7 +1,8 @@
 {
   "type": "siegemachines:siege_workbench",
   "pattern": [
-    "bp"
+    "bp",
+    "  "
   ],
   "key": {
     "b": {

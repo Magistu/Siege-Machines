@@ -4,9 +4,10 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import ru.magistu.siegemachines.block.ModBlocks;
 import ru.magistu.siegemachines.client.ClientProxy;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.data.recipes.ModRecipes;
+import ru.magistu.siegemachines.config.SpecsConfig;
+import ru.magistu.siegemachines.item.recipes.ModRecipes;
 import ru.magistu.siegemachines.entity.EntityTypes;
-import ru.magistu.siegemachines.gui.ModMenuTypes;
+import ru.magistu.siegemachines.client.gui.ModMenuTypes;
 import ru.magistu.siegemachines.item.ModItems;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.proxy.IProxy;
@@ -52,6 +53,7 @@ public class SiegeMachines {
         ModBlocks.register(eventBus);
         ModItems.register(eventBus);
         ModRecipes.register(eventBus);
+        SpecsConfig.register();
 
         PacketHandler.init();
 

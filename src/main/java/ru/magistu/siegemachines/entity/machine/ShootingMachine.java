@@ -21,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -53,13 +54,14 @@ public abstract class ShootingMachine extends Machine implements IReloading
             return;
         }
         LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
-        Projectile projectile = projectilebuilder.factory.create(projectilebuilder.entitytype, this.level, new Vector3d(this.getShotPos().x, this.getShotPos().y, this.getShotPos().z), livingentity == null ? this : livingentity, projectilebuilder.projectilitem);
+        Vec3 shotpos = this.getShotPos();
+        Projectile projectile = projectilebuilder.build(this.level, new Vector3d(shotpos.x, shotpos.y, shotpos.z), livingentity == null ? this : livingentity);
         if (projectile instanceof Missile)
         {
             Missile missile = (Missile) projectile;
             missile.setItem(new ItemStack(missile.getDefaultItem()));
         }
-        projectile.shootFromRotation(this, this.getTurretPitch(), this.getGlobalTurretYaw(), 0.0f, this.type.projectilespeed, this.type.inaccuracy);
+        projectile.shootFromRotation(this, this.getTurretPitch(), this.getGlobalTurretYaw(), 0.0f, this.type.specs.projectilespeed.get(), this.type.specs.inaccuracy.get());
         this.level.addFreshEntity(projectile);
         this.inventory.shrinkItem(projectilebuilder.item);
     }
@@ -110,7 +112,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
 
-        return this.position().add(applyRotations(this.type.turretpivot, 0.0, yaw).add(applyRotations(this.type.turretvector, pitch, yaw)));
+        return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
     protected Vec3 getShotView()
@@ -145,7 +147,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
         super.updateMachineRender();
 		if (!this.level.isClientSide())
 		{
-            for (int i = 0; i < rows * 9; ++i)
+            for (int i = 0; i < this.inventory.getContainerSize(); ++i)
             {
                 if (this.isValidAmmo(this.inventory.getItem(i)))
                 {

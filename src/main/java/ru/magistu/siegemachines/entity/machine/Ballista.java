@@ -2,8 +2,8 @@ package ru.magistu.siegemachines.entity.machine;
 
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -59,21 +59,21 @@ public class Ballista extends ShootingMachine implements IAnimatable
             }
         }
         return PlayState.CONTINUE;
-	}
+    }
 
     @Override
-	public void registerControllers(AnimationData data)
+    public void registerControllers(AnimationData data)
     {
         AnimationController<?> controller = new AnimationController<>(this, "controller", 1, (t) ->
         {
             if (this.state.equals(State.RELOADING))
             {
-                return (double) (this.type.delaytime - this.delayticks) / this.type.delaytime;
+                return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
             }
             return t;
         }, this::predicate);
-		data.addAnimationController(controller);
-	}
+        data.addAnimationController(controller);
+    }
 
     @Override
     public AnimationFactory getFactory()
@@ -90,11 +90,11 @@ public class Ballista extends ShootingMachine implements IAnimatable
         }
         if (!this.level.isClientSide() && !this.isVehicle())
         {
-			player.startRiding(this);
-			return InteractionResult.SUCCESS;
-		}
+            player.startRiding(this);
+            return InteractionResult.SUCCESS;
+        }
 
-		return InteractionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public void startShooting(Player player)
@@ -106,7 +106,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
             this.shootingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_SHOOTING.get(), SoundSource.BLOCKS, 1.4f, 1.0f, false);
+            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_SHOOTING.get(), this.getSoundSource(), 1.4f, 1.0f, false);
         }
     }
 
@@ -120,21 +120,21 @@ public class Ballista extends ShootingMachine implements IAnimatable
     }
 
 //    @Override
-//	public void travel(Vec3 pos)
+//  public void travel(Vec3 pos)
 //    {
-//		if (this.isAlive())
+//      if (this.isAlive())
 //        {
 //            if (this.isVehicle())
 //            {
-//			    LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+//              LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
 //
 //                this.setTurretRotationsDest(livingentity.getXRot(), livingentity.getYRot() - this.getYaw());
 //                this.updateTurretRotations();
-//			}
+//          }
 //            super.travel(pos);
-//		}
+//      }
 //
-//	}
+//  }
 
     @Override
     public void travel(Vec3 pos)
@@ -163,7 +163,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
         {
             this.state = State.RELOADING;
             this.useticks = 0;
-            this.delayticks = this.type.delaytime;
+            this.delayticks = this.type.specs.delaytime.get();
         }
 
         if (this.shootingticks != 0 && --this.shootingticks <= 0)
@@ -182,7 +182,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
             if (this.delayticks % 21 == 0)
             {
                 Vec3 pos = this.position();
-                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_RELOADING.get(), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_RELOADING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
             }
             --this.delayticks;
         }

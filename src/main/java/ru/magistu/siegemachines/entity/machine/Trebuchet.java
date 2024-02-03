@@ -2,8 +2,8 @@ package ru.magistu.siegemachines.entity.machine;
 
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -81,7 +82,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
         }
 
         return PlayState.CONTINUE;
-	}
+    }
 
     private void tickPart(MachinePartEntity subentity, double p_226526_2_, double p_226526_4_, double p_226526_6_)
     {
@@ -93,7 +94,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
     {
         Vec3[] avector3d = new Vec3[this.subentities.length];
 
-        Vec3 pos = this.position().add(applyRotations(this.backsidepos, 0.0, this.getYaw()));
+        Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.backsidepos, 0.0, this.getYaw()));
         this.tickPart(this.backside, pos.x, pos.y, pos.z);
 
         for(int i = 0; i < this.subentities.length; ++i)
@@ -103,20 +104,20 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
 
         for(int i = 0; i < this.subentities.length; ++i)
         {
-           this.subentities[i].xo = avector3d[i].x;
-           this.subentities[i].yo = avector3d[i].y;
-           this.subentities[i].zo = avector3d[i].z;
-           this.subentities[i].xOld = avector3d[i].x;
-           this.subentities[i].yOld = avector3d[i].y;
-           this.subentities[i].zOld = avector3d[i].z;
+            this.subentities[i].xo = avector3d[i].x;
+            this.subentities[i].yo = avector3d[i].y;
+            this.subentities[i].zo = avector3d[i].z;
+            this.subentities[i].xOld = avector3d[i].x;
+            this.subentities[i].yOld = avector3d[i].y;
+            this.subentities[i].zOld = avector3d[i].z;
         }
 
         super.aiStep();
     }
 
     public MachinePartEntity[] getSubEntities() {
-      return this.subentities;
-   }
+        return this.subentities;
+    }
 
     @Override
     public net.minecraftforge.entity.PartEntity<?>[] getParts()
@@ -125,18 +126,18 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
     }
 
     @Override
-	public void registerControllers(AnimationData data)
+    public void registerControllers(AnimationData data)
     {
         AnimationController<?> controller = new AnimationController<>(this, "controller", 1, (t) ->
         {
             if (this.state.equals(State.RELOADING))
             {
-                return (double) (this.type.delaytime - this.delayticks) / this.type.delaytime;
+                return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
             }
             return t;
         }, this::predicate);
-		data.addAnimationController(controller);
-	}
+        data.addAnimationController(controller);
+    }
 
     @Override
     public AnimationFactory getFactory()
@@ -155,11 +156,11 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
         }
         if (!this.level.isClientSide() && !this.isVehicle())
         {
-			player.startRiding(this);
-			return InteractionResult.SUCCESS;
-		}
+            player.startRiding(this);
+            return InteractionResult.SUCCESS;
+        }
 
-		return InteractionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public void startShooting(Player player)
@@ -171,7 +172,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
             this.shootingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.TREBUCHET_SHOOTING.get(), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.TREBUCHET_SHOOTING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
         }
     }
 
@@ -185,23 +186,23 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
     }
 
     @Override
-	public void travel(Vec3 pos)
+    public void travel(Vec3 pos)
     {
-		if (this.isAlive())
+        if (this.isAlive())
         {
             if (this.isVehicle() && this.useticks <= 0 && this.delayticks <= 0)
             {
-			    LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
 
                 this.setTurretRotations(livingentity.getXRot(), this.getTurretYaw());
                 this.updateTurretRotations();
 
                 this.setYawDest(livingentity.getYRot());
                 this.updateYaw();
-			}
+            }
             super.travel(pos);
-		}
-	}
+        }
+    }
 
     @Override
     public void tick()
@@ -210,7 +211,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
         {
             this.state = State.RELOADING;
             this.useticks = 0;
-            this.delayticks = this.type.delaytime;
+            this.delayticks = this.type.specs.delaytime.get();
         }
 
         if (this.shootingticks != 0 && --this.shootingticks <= 0)
@@ -229,7 +230,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
             if (this.delayticks % 40 == 0)
             {
                 Vec3 pos = this.position();
-                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.TREBUCHET_RELOADING.get(), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.TREBUCHET_RELOADING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
             }
             if (--this.delayticks <= 0)
             {

@@ -51,7 +51,7 @@ public class ReloadingCrosshair extends Crosshair
             }
             else if (machine.delayticks > 0)
             {
-                int number = (int) (((double) animationsize) * ((double) (machine.type.delaytime - machine.delayticks) / (double) machine.type.delaytime));
+                int number = (int) (((double) animationsize) * ((double) (machine.type.specs.delaytime.get() - machine.delayticks) / (double) machine.type.specs.delaytime.get()));
                 imagex = width;
                 imagey = height * number;
             }

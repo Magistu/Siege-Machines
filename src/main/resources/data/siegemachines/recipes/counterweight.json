@@ -2,7 +2,8 @@
   "type": "siegemachines:siege_workbench",
   "pattern": [
     "bsb",
-    "ibi"
+    "ibi",
+    "   "
   ],
   "key": {
     "b": {

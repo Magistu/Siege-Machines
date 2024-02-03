@@ -1,14 +1,15 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
 import ru.magistu.siegemachines.entity.IReloading;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -56,18 +57,18 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         event.getController().setAnimation(MOVING_ANIM);
 
         return PlayState.CONTINUE;
-	}
+    }
 
     @Override
-	public void registerControllers(AnimationData data)
+    public void registerControllers(AnimationData data)
     {
         AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller", 1, (t) -> {
             double d = this.getWheelsSpeed();
             this.wheelsspeed = d > 0 ? Math.min(d, 1.0) : Math.max(d, -1.0);
             return wheelspitch += 0.013 * this.wheelsspeed;
         }, this::wheels_predicate);
-		data.addAnimationController(wheels_controller);
-	}
+        data.addAnimationController(wheels_controller);
+    }
 
     @Override
     public AnimationFactory getFactory()
@@ -111,21 +112,21 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         }
         if (!this.level.isClientSide() && !this.isVehicle())
         {
-			player.startRiding(this);
-			return InteractionResult.SUCCESS;
-		}
+            player.startRiding(this);
+            return InteractionResult.SUCCESS;
+        }
 
-		return InteractionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-	public void travel(Vec3 pos)
+    public void travel(Vec3 pos)
     {
-		if (this.isAlive())
+        if (this.isAlive())
         {
             if (this.isVehicle())
             {
-			    LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
 
                 this.setTurretRotationsDest(livingentity.getXRot(), livingentity.getYRot() - this.getYaw());
                 this.setYawDest(livingentity.getYRot());
@@ -133,19 +134,19 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
                 this.updateYaw();
                 this.updateTurretRotations();
 
-				float f0 = livingentity.xxa * 0.2f;
-				float f1 = livingentity.zza;
-				if (f1 <= 0.0f)
+                float f0 = livingentity.xxa * 0.2f;
+                float f1 = livingentity.zza;
+                if (f1 <= 0.0f)
                 {
-					f1 *= 0.5f;
-				}
-				this.setSpeed(0.04f);
+                    f1 *= 0.5f;
+                }
+                this.setSpeed(0.04f);
 
                 pos = new Vec3(f0, pos.y, f1);
-			}
+            }
             super.travel(pos);
-		}
-	}
+        }
+    }
 
     @Override
     public void tick()
@@ -153,7 +154,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         if (this.useticks != 0 && --this.useticks <= 0)
         {
             this.useticks = 0;
-            this.delayticks = this.type.delaytime;
+            this.delayticks = this.type.specs.delaytime.get();
         }
 
         if (this.shootingticks != 0 && --this.shootingticks <= 0)
@@ -189,10 +190,15 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
         }
 
-        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+        if (this.level.isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
         {
-            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundTypes.CANNON_WHEELS.get(), SoundSource.NEUTRAL, 0.3f, 1.0f, true);
-            this.wheelssoundticks = 20;
+            Entity passenger = this.getControllingPassenger();
+            if (Minecraft.getInstance().player == passenger)
+            {
+                Vec3 pos = this.position();
+                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CANNON_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+                this.wheelssoundticks = 20;
+            }
         }
 
         super.tick();
@@ -205,7 +211,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         {
             if (!this.level.isClientSide())
             {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
             this.shootingticks = this.type.userealisetime;
@@ -227,7 +233,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), SoundSource.BLOCKS, 1.5f/*this.getVolumeFromDist(1.5f, 64.0f, this.distanceTo(player))*/, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), this.getSoundSource(), 0.3f, 1.0f, false);
         }
     }
 

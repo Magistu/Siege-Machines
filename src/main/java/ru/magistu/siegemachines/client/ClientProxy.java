@@ -1,8 +1,8 @@
 package ru.magistu.siegemachines.client;
 
-import ru.magistu.siegemachines.gui.ModMenuTypes;
-import ru.magistu.siegemachines.gui.workbench.SiegeWorkbenchScreen;
-import ru.magistu.siegemachines.gui.machine.MachineInventoryScreen;
+import ru.magistu.siegemachines.client.gui.ModMenuTypes;
+import ru.magistu.siegemachines.client.gui.workbench.SiegeWorkbenchScreen;
+import ru.magistu.siegemachines.client.gui.machine.MachineInventoryScreen;
 import ru.magistu.siegemachines.proxy.IProxy;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.eventbus.api.IEventBus;

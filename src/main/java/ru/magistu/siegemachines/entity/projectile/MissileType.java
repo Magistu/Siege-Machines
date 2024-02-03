@@ -1,24 +1,26 @@
 package ru.magistu.siegemachines.entity.projectile;
 
+import ru.magistu.siegemachines.config.MissileSpecs;
+import ru.magistu.siegemachines.config.SpecsConfig;
+
 public enum MissileType
 {
-    CANNONBALL(15.0f, 1.5f, true, 3.0f, FlightType.SPINNING, 1.0f),
-    STONE(50.0f, 1.5f, true, 3.0f, FlightType.SPINNING, 1.0f),
-    GIANT_ARROW(5.0f, 1.5f, false, 0.0f, FlightType.AHEAD, 0.5f);
+    CANNONBALL(SpecsConfig.CANNONBALL, 1.5f, true, FlightType.SPINNING, 1.0f),
+    STONE(SpecsConfig.STONE, 1.5f, true, FlightType.SPINNING, 1.0f),
+    GIANT_STONE(SpecsConfig.GIANT_STONE, 3.0f, true, FlightType.SPINNING, 1.0f);
+    //GIANT_ARROW(SpecsConfig.GIANT_ARROW, 1.5f, false, FlightType.AHEAD, 0.5f);
 
-    public final float mass;
+    public final MissileSpecs specs;
     public final float knockback;
-	public final boolean explosive;
-	public final float explosionradius;
+    public final boolean explosive;
     public final FlightType flighttype;
     public final float armorpiercing;
 
-    MissileType(float mass, float knockback, boolean explosive, float explosionradius, FlightType headingtype, float armorpiercing)
+    MissileType(MissileSpecs specs, float knockback, boolean explosive, FlightType headingtype, float armorpiercing)
     {
-        this.mass = mass;
+        this.specs = specs;
         this.knockback = knockback;
         this.explosive = explosive;
-        this.explosionradius = explosionradius;
         this.flighttype = headingtype;
         this.armorpiercing = armorpiercing;
     }

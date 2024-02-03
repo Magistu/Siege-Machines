@@ -5,6 +5,7 @@
 	"item.siegemachines.catapult": "Catapult",
 	"item.siegemachines.ballista": "Ballista",
 	"item.siegemachines.battering_ram": "Battering Ram",
+	"item.siegemachines.siege_ladder": "Siege Ladder",
 	"item.siegemachines.cannonball": "Cannonball",
 	"item.siegemachines.giant_arrow": "Giant Arrow",
 	"item.siegemachines.stone": "Stone",
@@ -26,13 +27,17 @@
 
 	"itemGroup.siegemachines.medieval_siege_machines": "Medieval Siege Machines",
 
-	"siegemachines.uses_gunpowder": "Uses Gunpowder",
+	"siegemachines.uses_gunpowder": "Gunpowder Required",
 	"siegemachines.ammo": "Ammo:",
 	"siegemachines.category": "Medieval Siege Machines",
 	"siegemachines.machine_use": "Use Machine",
+	"siegemachines.ladder_climb": "Start climbing the ladder",
 	"siegemachines.machine_inventory": "Open Inventory",
 	"siegemachines.no_ammo": "No ammo!",
 	"siegemachines.no_gunpowder": "No gunpowder!",
+	"siegemachines.wait": "Wait %1$f seconds.",
 
-	"category.siegemachines.siege_workbench_crafting": "Crafting"
+	"category.siegemachines.siege_workbench_crafting": "Crafting",
+
+	"siegemachines.usage": "Press %1$s to use the engine"
 }

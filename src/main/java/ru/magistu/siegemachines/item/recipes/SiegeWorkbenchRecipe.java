@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.data.recipes;
+package ru.magistu.siegemachines.item.recipes;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
@@ -19,8 +19,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import ru.magistu.siegemachines.block.ModBlocks;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

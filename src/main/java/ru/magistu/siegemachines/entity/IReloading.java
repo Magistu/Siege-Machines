@@ -1,6 +1,6 @@
 package ru.magistu.siegemachines.entity;
 
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

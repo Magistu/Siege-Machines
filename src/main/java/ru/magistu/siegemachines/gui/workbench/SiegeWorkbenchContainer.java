@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import ru.magistu.siegemachines.block.ModBlocks;
-import ru.magistu.siegemachines.data.recipes.ModRecipes;
-import ru.magistu.siegemachines.data.recipes.SiegeWorkbenchRecipe;
+import ru.magistu.siegemachines.item.recipes.ModRecipes;
+import ru.magistu.siegemachines.item.recipes.SiegeWorkbenchRecipe;
 import ru.magistu.siegemachines.gui.ModMenuTypes;
 
 import java.util.Optional;

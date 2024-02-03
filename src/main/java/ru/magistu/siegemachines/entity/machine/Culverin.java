@@ -1,14 +1,7 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.entity.IReloading;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.client.SoundTypes;
+import ru.magistu.siegemachines.entity.IReloading;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
+import ru.magistu.siegemachines.item.ModItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -46,6 +45,9 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
     public Culverin(EntityType<? extends Mob> entitytype, Level level)
     {
         super(entitytype, level, MachineType.CULVERIN);
+        this.turretpitch = -18.5f;
+        this.turretpitchprev = this.turretpitch;
+        this.turretpitchdest = this.turretpitch;
     }
 
     private <E extends IAnimatable> PlayState wheels_predicate(AnimationEvent<E> event)
@@ -53,18 +55,18 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
         event.getController().setAnimation(MOVING_ANIM);
 
         return PlayState.CONTINUE;
-	}
+    }
 
     @Override
-	public void registerControllers(AnimationData data)
+    public void registerControllers(AnimationData data)
     {
         AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller", 1, (t) -> {
             double d = this.getWheelsSpeed();
             this.wheelsspeed = d > 0 ? Math.min(d, 1.0) : Math.max(d, -1.0);
-            return wheelspitch += 0.013 * this.wheelsspeed;
+            return wheelspitch += 0.015 * this.wheelsspeed;
         }, this::wheels_predicate);
-		data.addAnimationController(wheels_controller);
-	}
+        data.addAnimationController(wheels_controller);
+    }
 
     @Override
     public AnimationFactory getFactory()
@@ -79,7 +81,7 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
 
         if (stack.getItem().equals(Items.FLINT_AND_STEEL))
         {
-            if (this.useticks <= 0 && this.shootingticks <= 0)
+            if (this.useticks < 0)
             {
                 stack.hurtAndBreak(1, player, (p_213833_1_) ->
                 {
@@ -108,21 +110,21 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
         }
         if (!this.level.isClientSide() && !this.isVehicle())
         {
-			player.startRiding(this);
-			return InteractionResult.SUCCESS;
-		}
+            player.startRiding(this);
+            return InteractionResult.SUCCESS;
+        }
 
-		return InteractionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-	public void travel(Vec3 pos)
+    public void travel(Vec3 pos)
     {
-		if (this.isAlive())
+        if (this.isAlive())
         {
             if (this.isVehicle())
             {
-			    LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
 
                 this.setTurretRotationsDest(livingentity.getXRot(), livingentity.getYRot() - this.getYaw());
                 this.setYawDest(livingentity.getYRot());
@@ -130,51 +132,31 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
                 this.updateYaw();
                 this.updateTurretRotations();
 
-				float f0 = livingentity.xxa * 0.2f;
-				float f1 = livingentity.zza;
-				if (f1 <= 0.0f)
-                {
-					f1 *= 0.5f;
-				}
-				this.setSpeed(0.04f);
+                float f0 = livingentity.xxa * 0.2f;
+                float f1 = livingentity.zza;
+                this.setSpeed(0.02f);
 
                 pos = new Vec3(f0, pos.y, f1);
-			}
+            }
             super.travel(pos);
-		}
-	}
+        }
+    }
 
     @Override
     public void tick()
     {
         if (this.useticks != 0 && --this.useticks <= 0)
         {
-            this.useticks = 0;
-            this.delayticks = this.type.delaytime;
-        }
-
-        if (this.shootingticks != 0 && --this.shootingticks <= 0)
-        {
             if (this.inventory.containsItem(Items.GUNPOWDER))
             {
                 this.useRealise();
             }
-            else if (!this.level.isClientSide())
-            {
-                Entity passenger = this.getControllingPassenger();
-                if (passenger instanceof Player)
-                {
-                    passenger.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".no_gunpowder").withStyle(ChatFormatting.RED));
-                }
-            }
-            this.shootingticks = 0;
+            this.useticks = 0;
         }
-
-        if (!level.isClientSide() && this.isOnGround())
+        if (!level.isClientSide() && (this.isOnGround() || this.isInWater()))
         {
             this.setDeltaMovement(this.getWheelsDeltaMovement());
         }
-
         if (this.delayticks > 0 && this.isVehicle())
         {
             --this.delayticks;
@@ -186,10 +168,15 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
             this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
         }
 
-        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+        if (this.level.isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
         {
-            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundTypes.CANNON_WHEELS.get(), SoundSource.NEUTRAL, 0.3f, 1.0f, true);
-            this.wheelssoundticks = 20;
+            Entity passenger = this.getControllingPassenger();
+            if (Minecraft.getInstance().player == passenger)
+            {
+                Vec3 pos = this.position();
+                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CANNON_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+                this.wheelssoundticks = 20;
+            }
         }
 
         super.tick();
@@ -198,14 +185,13 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
     @Override
     public void startShooting(Player player)
     {
-        if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
+        if (this.delayticks <= 0 && this.useticks <= 0)
         {
             if (!this.level.isClientSide())
             {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), SoundSource.BLOCKS, this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
-            this.shootingticks = this.type.userealisetime;
         }
     }
 
@@ -224,8 +210,10 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), SoundSource.BLOCKS, 1.5f/*this.getVolumeFromDist(1.5f, 64.0f, this.distanceTo(player))*/, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), this.getSoundSource(), 1.5f/*this.getVolumeFromDist(1.5f, 64.0f, this.distanceTo(player))*/, 0.85f + this.level.random.nextFloat() * 0.3f, false);
         }
+
+        this.delayticks = this.type.specs.delaytime.get();
     }
 
     public double getWheelsSpeed()
@@ -267,7 +255,6 @@ public class Culverin extends ShootingMachine implements IAnimatable, IReloading
     @Override
     public Item getMachineItem()
     {
-        return null;
-//        return ModItems.CULVERIN.get();
+        return ModItems.CULVERIN.get();
     }
 }

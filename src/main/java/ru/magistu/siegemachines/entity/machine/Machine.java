@@ -1,7 +1,9 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.client.KeyMapping;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.gui.machine.MachineContainer;
+import ru.magistu.siegemachines.client.KeyBindings;
+import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.PacketMachine;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -35,22 +37,21 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-
+import ru.magistu.siegemachines.util.CartesianGeometry;
 import javax.annotation.Nullable;
 
 public abstract class Machine extends Mob implements MenuProvider
 {
-	public MachineInventory inventory = new MachineInventory();
 
-	public static int rows = 1;
-
+	public KeyMapping usekey;
+	public MachineInventory inventory;
 	public final MachineType type;
 
-	private float turretpitch = -25.0f;
-	private float turretpitchprev = this.turretpitch;
+	protected float turretpitch = -25.0f;
+	protected float turretpitchprev = this.turretpitch;
 	protected float turretpitchdest = this.turretpitch;
-	private float turretyaw = 0.0f;
-	private float turretyawprev = this.turretyaw;
+	protected float turretyaw = 0.0f;
+	protected float turretyawprev = this.turretyaw;
 	protected float turretyawdest = this.turretyaw;
 	protected float yawdest = this.getYRot();
 
@@ -63,13 +64,18 @@ public abstract class Machine extends Mob implements MenuProvider
     {
         super(entitytype, level);
 		this.type = type;
-		this.delayticks = this.type.delaytime;
-		rows = this.type.rows;
+		this.delayticks = this.type.specs.delaytime.get();
+		this.inventory = new MachineInventory(9 * this.type.containerrows);
+		if (level.isClientSide())
+			this.usekey = KeyBindings.getUseKey(type);
+		
+		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(type.specs.durability.get());
+		this.setHealth(type.specs.durability.get());
 	}
 
 	public static AttributeSupplier.Builder setEntityAttributes(MachineType type) {
 		return Mob.createMobAttributes()
-				.add(Attributes.MAX_HEALTH, type.health)
+				.add(Attributes.MAX_HEALTH, type.specs.durability.getDefault())
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.5F)
 				.add(Attributes.MOVEMENT_SPEED, 0.0D)
 				.add(Attributes.ATTACK_DAMAGE, 0.0D)
@@ -138,148 +144,141 @@ public abstract class Machine extends Mob implements MenuProvider
 	@Override
 	public boolean hurt(@NotNull DamageSource damagesource, float f) {
 		if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, damagesource, f)) return false;
-		if (damagesource.getEntity() instanceof Player
-				&& !damagesource.isProjectile()
-				&& !damagesource.isExplosion()
-				&& !damagesource.isMagic()
-				&& this.getPassengers().isEmpty()) {
+		if (this.isInvulnerableTo(damagesource))
+			return false;
+		if (this.level.isClientSide)
+			return false;
+		if (this.isDeadOrDying())
+			return false;
+		if (damagesource.isFire() && this.hasEffect(MobEffects.FIRE_RESISTANCE))
+			return false;
+		if (damagesource.getEntity() instanceof Player && !damagesource.isProjectile() && !damagesource.isExplosion() && !damagesource.isMagic() && this.getPassengers().isEmpty())
+		{
 			this.spawnAtLocation(this.getMachineItemWithData());
 			this.remove();
-
-            return false;
-        }
-
-		if (this.isInvulnerableTo(damagesource)) {
 			return false;
-		} else if (this.level.isClientSide) {
-			return false;
-		} else if (this.isDeadOrDying()) {
-			return false;
-		} else if (damagesource.isFire() && this.hasEffect(MobEffects.FIRE_RESISTANCE)) {
-			return false;
-		} else {
-			f = adjustDamage(damagesource, f);
+		}
+		f = adjustDamage(damagesource, f);
 
-			this.noActionTime = 0;
+		this.noActionTime = 0;
 
-			this.animationSpeed = 1.5F;
-			boolean flag1 = true;
-			if ((float) this.invulnerableTime > 10.0F)
+		this.animationSpeed = 1.5F;
+		boolean flag1 = true;
+		if ((float) this.invulnerableTime > 10.0F)
+		{
+			if (f <= this.lastHurt)
 			{
-				if (f <= this.lastHurt)
-				{
-					return false;
-				}
-
-				this.actuallyHurt(damagesource, f - this.lastHurt);
-				this.lastHurt = f;
-				flag1 = false;
-			}
-			else
-			{
-				this.lastHurt = f;
-				this.invulnerableTime = 20;
-				this.actuallyHurt(damagesource, f);
-				this.hurtDuration = 10;
-				this.hurtTime = this.hurtDuration;
+				return false;
 			}
 
-			this.hurtDir = 0.0F;
-			Entity entity1 = damagesource.getEntity();
-			if (entity1 != null)
+			this.actuallyHurt(damagesource, f - this.lastHurt);
+			this.lastHurt = f;
+			flag1 = false;
+		}
+		else
+		{
+			this.lastHurt = f;
+			this.invulnerableTime = 20;
+			this.actuallyHurt(damagesource, f);
+			this.hurtDuration = 10;
+			this.hurtTime = this.hurtDuration;
+		}
+
+		this.hurtDir = 0.0F;
+		Entity entity1 = damagesource.getEntity();
+		if (entity1 != null)
+		{
+			if (entity1 instanceof LivingEntity)
 			{
-				if (entity1 instanceof LivingEntity)
-				{
-					this.setLastHurtByMob((LivingEntity) entity1);
-				}
-
-				if (entity1 instanceof Player)
-				{
-					this.lastHurtByPlayerTime = 1;
-					this.lastHurtByPlayer = (Player) entity1;
-				}
-
-				else if (entity1 instanceof TamableAnimal wolfEntity) {
-					if (wolfEntity.isTame()) {
-						this.lastHurtByPlayerTime = 100;
-						LivingEntity livingentity = wolfEntity.getOwner();
-
-						if (livingentity != null && livingentity.getType() == EntityType.PLAYER) {
-							this.lastHurtByPlayer = (Player) livingentity;
-						}
-
-						else {
-							this.lastHurtByPlayer = null;
-						}
-					}
-				}
+				this.setLastHurtByMob((LivingEntity) entity1);
 			}
 
-			if (flag1) {
-				if (damagesource instanceof EntityDamageSource && ((EntityDamageSource) damagesource).isThorns()) {
-					this.level.broadcastEntityEvent(this, (byte) 33);
-				}
+			if (entity1 instanceof Player)
+			{
+				this.lastHurtByPlayerTime = 1;
+				this.lastHurtByPlayer = (Player) entity1;
+			}
 
-				else {
-					byte b0;
+			else if (entity1 instanceof TamableAnimal wolfEntity) {
+				if (wolfEntity.isTame()) {
+					this.lastHurtByPlayerTime = 100;
+					LivingEntity livingentity = wolfEntity.getOwner();
 
-					if (damagesource.isFire()) {
-						b0 = 37;
-					}
-
-					else if (damagesource == DamageSource.SWEET_BERRY_BUSH) {
-						b0 = 44;
+					if (livingentity != null && livingentity.getType() == EntityType.PLAYER) {
+						this.lastHurtByPlayer = (Player) livingentity;
 					}
 
 					else {
-						b0 = 2;
+						this.lastHurtByPlayer = null;
 					}
-
-					this.level.broadcastEntityEvent(this, b0);
-				}
-
-				this.markHurt();
-
-				if (entity1 != null)
-				{
-					double d1 = entity1.getX() - this.getX();
-
-					double d0;
-					for (d0 = entity1.getZ() - this.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
-					{
-						d1 = (Math.random() - Math.random()) * 0.01D;
-					}
-
-					this.hurtDir = (float) (Mth.atan2(d0, d1) * (double) (180F / (float) Math.PI) - (double) this.getYRot());
-				}
-				else
-				{
-					this.hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
 				}
 			}
-
-			if (this.isDeadOrDying())
-			{
-				SoundEvent soundevent = this.getDeathSound();
-				if (flag1 && soundevent != null)
-				{
-					this.playSound(soundevent, this.getSoundVolume(), this.getVoicePitch());
-				}
-
-				this.die(damagesource);
-			}
-			else if (flag1)
-			{
-				this.playHurtSound(damagesource);
-			}
-
-			if (entity1 instanceof ServerPlayer)
-			{
-				CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((ServerPlayer) entity1, this, damagesource, f, f, false);
-			}
-
-			return true;
 		}
+
+		if (flag1) {
+			if (damagesource instanceof EntityDamageSource && ((EntityDamageSource) damagesource).isThorns()) {
+				this.level.broadcastEntityEvent(this, (byte) 33);
+			}
+
+			else {
+				byte b0;
+
+				if (damagesource.isFire()) {
+					b0 = 37;
+				}
+
+				else if (damagesource == DamageSource.SWEET_BERRY_BUSH) {
+					b0 = 44;
+				}
+
+				else {
+					b0 = 2;
+				}
+
+				this.level.broadcastEntityEvent(this, b0);
+			}
+
+			this.markHurt();
+
+			if (entity1 != null)
+			{
+				double d1 = entity1.getX() - this.getX();
+
+				double d0;
+				for (d0 = entity1.getZ() - this.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
+				{
+					d1 = (Math.random() - Math.random()) * 0.01D;
+				}
+
+				this.hurtDir = (float) (Mth.atan2(d0, d1) * (double) (180F / (float) Math.PI) - (double) this.getYRot());
+			}
+			else
+			{
+				this.hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
+			}
+		}
+
+		if (this.isDeadOrDying())
+		{
+			SoundEvent soundevent = this.getDeathSound();
+			if (flag1 && soundevent != null)
+			{
+				this.playSound(soundevent, this.getSoundVolume(), this.getVoicePitch());
+			}
+
+			this.die(damagesource);
+		}
+		else if (flag1)
+		{
+			this.playHurtSound(damagesource);
+		}
+
+		if (entity1 instanceof ServerPlayer)
+		{
+			CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((ServerPlayer) entity1, this, damagesource, f, f, false);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -332,7 +331,7 @@ public abstract class Machine extends Mob implements MenuProvider
     	}
     	nbt.put("Items", listnbt);
 		nbt.put("TurretRotations", this.newFloatList(this.turretpitch, this.turretyaw));
-		nbt.putInt("DealyTicks", this.delayticks);
+		nbt.putInt("DelayTicks", this.delayticks);
 		nbt.putInt("UseTicks", this.useticks);
 	}
 
@@ -430,9 +429,9 @@ public abstract class Machine extends Mob implements MenuProvider
 			ListTag turretrotations = nbt.getList("TurretRotations", 5);
 			setTurretRotations(turretrotations.getFloat(0), turretrotations.getFloat(1));
 		}
-		if (nbt.contains("DealyTicks"))
+		if (nbt.contains("DelayTicks"))
 		{
-			this.delayticks = nbt.getInt("DealyTicks");
+			this.delayticks = nbt.getInt("DelayTicks");
 		}
 		if (nbt.contains("UseTicks"))
 		{
@@ -613,7 +612,7 @@ public abstract class Machine extends Mob implements MenuProvider
 	public Vec3 getDismountLocationForPassenger(LivingEntity entity) {
 		double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
 
-		return this.position().add(applyRotations(this.type.passengerpos, 0.0, yaw));
+		return this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
 	}
 
 	@Override
@@ -626,18 +625,27 @@ public abstract class Machine extends Mob implements MenuProvider
 		MoveFunction setPos = Entity::setPos;
         if (this.hasPassenger(entity)) {
             double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
-            Vec3 pos = this.position().add(applyRotations(this.type.passengerpos, 0.0, yaw));
+            Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
 			setPos.accept(entity, pos.x, pos.y, pos.z);
         }
     }
 
 
-	public static class MachineInventory implements Container, Nameable {
-		public NonNullList<ItemStack> items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
+	public static class MachineInventory implements Container, Nameable 
+	{
+		private final int containersize;
+		public NonNullList<ItemStack> items;
+
+		public MachineInventory(int rows)
+		{
+			this.containersize = 9 * rows;
+			this.items = NonNullList.withSize(this.containersize, ItemStack.EMPTY);
+		}
 
 		@Override
-		public int getContainerSize() {
-			return 9 * rows;
+		public int getContainerSize()
+		{
+			return this.containersize;
 		}
 
 		@Override
@@ -675,8 +683,9 @@ public abstract class Machine extends Mob implements MenuProvider
 		}
 
 		@Override
-		public void clearContent() {
-			this.items = NonNullList.withSize(9 * rows, ItemStack.EMPTY);
+		public void clearContent() 
+		{
+			this.items = NonNullList.withSize(this.containersize, ItemStack.EMPTY);
 		}
 
 		public boolean containsItem(Item item) {

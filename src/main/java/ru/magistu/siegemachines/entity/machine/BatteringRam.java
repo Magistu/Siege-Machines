@@ -1,5 +1,9 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
 import ru.magistu.siegemachines.entity.Breakdown;
@@ -19,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -91,7 +96,7 @@ public class BatteringRam extends Machine implements IAnimatable
         {
             if (this.state.equals(State.RELOADING))
             {
-                return (double) (this.type.delaytime - this.delayticks) / this.type.delaytime;
+                return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
             }
             return t;
         }, this::reloading_predicate);
@@ -149,7 +154,7 @@ public class BatteringRam extends Machine implements IAnimatable
         {
             this.state = State.RELOADING;
             this.useticks = 0;
-            this.delayticks = this.type.delaytime;
+            this.delayticks = this.type.specs.delaytime.get();
         }
 
         if (this.hittingticks != 0 && --this.hittingticks <= 0)
@@ -173,12 +178,17 @@ public class BatteringRam extends Machine implements IAnimatable
             this.updateMachineRender();
             this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
         }
-
-//        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
-//        {
-//            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundTypes.RAM_WHEELS.get(), SoundCategory.NEUTRAL, 0.6f, 1.0f, true);
-//            this.wheelssoundticks = 20;
-//        }
+        
+        if (this.level.isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+        {
+            Entity passenger = this.getControllingPassenger();
+            if (Minecraft.getInstance().player == passenger)
+            {
+                Vec3 pos = this.position();
+                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+                this.wheelssoundticks = 20;
+            }
+        }
 
         super.tick();
     }
@@ -186,10 +196,14 @@ public class BatteringRam extends Machine implements IAnimatable
     @Override
     public void use(Player player)
     {
-        if (!this.level.isClientSide())
+        if (this.deploymentticks > 0)
         {
-            PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
+            return;
         }
+        
+        if (!this.level.isClientSide())
+            PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
 
         if (this.delayticks <= 0 && this.useticks <= 0 && this.hittingticks <= 0)
         {
@@ -198,7 +212,7 @@ public class BatteringRam extends Machine implements IAnimatable
             this.hittingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), SoundSource.BLOCKS, 0.5f, 0.9f, false);
+            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), this.getSoundSource(), 0.5f, 0.9f, false);
         }
     }
 
@@ -215,6 +229,9 @@ public class BatteringRam extends Machine implements IAnimatable
     @Override
     public void useRealise()
     {
+        if (this.deploymentticks > 0)
+            return;
+        
         if (!this.level.isClientSide())
         {
             PacketHandler.sendPacketToAllInArea(new PacketMachineUseRealise(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
@@ -251,6 +268,6 @@ public class BatteringRam extends Machine implements IAnimatable
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
 
-        return this.position().add(applyRotations(this.type.turretpivot, 0.0, yaw).add(applyRotations(this.type.turretvector, pitch, yaw)));
+        return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 }

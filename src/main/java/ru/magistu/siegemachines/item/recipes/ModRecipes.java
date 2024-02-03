@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.data.recipes;
+package ru.magistu.siegemachines.item.recipes;
 
 import net.minecraft.world.item.crafting.RecipeType;
 import ru.magistu.siegemachines.SiegeMachines;

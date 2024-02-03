@@ -2,7 +2,10 @@ package ru.magistu.siegemachines.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.world.phys.AABB;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
+import ru.magistu.siegemachines.entity.machine.SiegeLadder;
 import ru.magistu.siegemachines.entity.machine.Trebuchet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -42,5 +45,22 @@ public class TrebuchetGeoRenderer extends MachineGeoRenderer<Trebuchet>
 		projectile.ifPresent(bone -> bone.setScaleZ(projectilesize));
 
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, partialTicks);
+	}
+
+	@Override
+	public boolean shouldRender(Trebuchet animatable, Frustum camera, double camx, double camy, double camz)
+	{
+		if (!animatable.shouldRender(camx, camy, camz)) {
+			return false;
+		} else if (animatable.noCulling) {
+			return true;
+		} else {
+			AABB aabb = animatable.getBoundingBoxForCulling().inflate(10.0D);
+			if (aabb.hasNaN() || aabb.getSize() == 0.0D) {
+				aabb = new AABB(animatable.getX() - 2.0D, animatable.getY() - 2.0D, animatable.getZ() - 2.0D, animatable.getX() + 2.0D, animatable.getY() + 2.0D, animatable.getZ() + 2.0D);
+			}
+
+			return camera.isVisible(aabb);
+		}
 	}
 }

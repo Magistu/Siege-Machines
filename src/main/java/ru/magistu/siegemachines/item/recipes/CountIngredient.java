@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.data.recipes;
+package ru.magistu.siegemachines.item.recipes;
 
 import java.util.Arrays;
 import java.util.List;
