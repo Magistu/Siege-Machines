@@ -1,10 +1,6 @@
 package ru.magistu.siegemachines.event;
 
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.event.RegistryEvent;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.data.recipes.ModRecipes;
-import ru.magistu.siegemachines.data.recipes.SiegeWorkbenchRecipe;
 import ru.magistu.siegemachines.entity.EntityTypes;
 import ru.magistu.siegemachines.entity.machine.*;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -21,5 +17,6 @@ public class ModEventBusEvents {
         event.put(EntityTypes.CATAPULT.get(), Catapult.setEntityAttributes(MachineType.CATAPULT).build());
         event.put(EntityTypes.BALLISTA.get(), Ballista.setEntityAttributes(MachineType.BALLISTA).build());
         event.put(EntityTypes.BATTERING_RAM.get(), Ballista.setEntityAttributes(MachineType.BATTERING_RAM).build());
+        event.put(EntityTypes.SIEGE_LADDER.get(), Ballista.setEntityAttributes(MachineType.SIEGE_LADDER).build());
     }
 }

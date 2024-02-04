@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.gui.workbench;
+package ru.magistu.siegemachines.client.gui.workbench;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
@@ -8,13 +8,7 @@ import net.minecraft.world.inventory.RecipeHolder;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
-import ru.magistu.siegemachines.data.recipes.CountIngredient;
-import ru.magistu.siegemachines.data.recipes.ModRecipes;
-import ru.magistu.siegemachines.data.recipes.SiegeWorkbenchRecipe;
-
-import java.util.List;
-import java.util.Optional;
+import ru.magistu.siegemachines.item.recipes.ModRecipes;
 
 public class SiegeWorkbenchResultSlot extends Slot {
     private final CraftingContainer craftSlots;

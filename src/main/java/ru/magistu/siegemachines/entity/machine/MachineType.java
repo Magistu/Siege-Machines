@@ -41,10 +41,16 @@ public class MachineType
             new ItemStack[] {new ItemStack(Items.OAK_PLANKS, 2), new ItemStack(ModItems.BEAM.get(), 1), new ItemStack(Items.STICK, 5), new ItemStack(Items.IRON_NUGGET, 8)});
 
     public static MachineType BATTERING_RAM = new MachineType(
-            SpecsConfig.BATTERING_RAM, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f, false, 5, 5,
+            SpecsConfig.BATTERING_RAM, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, false, 5, 5,
             new Vec3(12.0, 0.0, -48.0).scale(1 / 16.0), new Vec3(0.0, 26.0, 36.0).scale(1 / 16.0), new Vec3(0.0, 0.0, 32.0).scale(1 / 16.0),
             ProjectileBuilder.NO_AMMO, false,
             new ItemStack[] {new ItemStack(Items.OAK_PLANKS, 6), new ItemStack(ModItems.BEAM.get(), 8), new ItemStack(Items.STICK, 12), new ItemStack(Items.IRON_NUGGET, 8)});
+
+    public static MachineType SIEGE_LADDER = new MachineType(
+            SpecsConfig.SIEGE_LADDER, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, false, 5, 5,
+            new Vec3(0.0, 0.0, -56.0).scale(1 / 16.0), new Vec3(0.0, 26.0, 36.0).scale(1 / 16.0), new Vec3(0.0, 0.0, 32.0).scale(1 / 16.0),
+            ProjectileBuilder.NO_AMMO, false,
+            new ItemStack[] {new ItemStack(ModItems.BEAM.get(), 4), new ItemStack(Items.STICK, 20)});
 
     public final SiegeMachineSpecs specs;
     public final int containerrows;

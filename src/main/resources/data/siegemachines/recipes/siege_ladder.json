@@ -1,0 +1,30 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "l  ",
+    "bl ",
+    "wBl"
+  ],
+  "key": {
+    "B": {
+      "item": "siegemachines:turret_base",
+      "count": 8
+    },
+    "b": {
+      "item": "siegemachines:beam",
+      "count": 20
+    },
+    "l": {
+      "item": "minecraft:ladder",
+      "count": 4
+    },
+    "w": {
+      "item": "siegemachines:wheel",
+      "count": 6
+    }
+  },
+  "result": {
+    "item": "siegemachines:siege_ladder",
+    "count": 1
+  }
+}

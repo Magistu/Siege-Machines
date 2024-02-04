@@ -3,7 +3,7 @@ loaderVersion="[40,)" #mandatory
 license="All rights reserved"
 [[mods]] #mandatory
 modId="siegemachines" #mandatory
-version="${file.jarVersion}" #mandatory
+version="${version}" #mandatory
 # A display name for the mod
 displayName="Medieval Siege Machines" #mandatory
 # logoFile="siegemachines.png" #optional // TODO Logo

@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.gui.machine.crosshair;
+package ru.magistu.siegemachines.client.gui.machine.crosshair;
 
 import java.util.Arrays;
 import java.util.List;

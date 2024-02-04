@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.gui.machine;
+package ru.magistu.siegemachines.client.gui.machine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

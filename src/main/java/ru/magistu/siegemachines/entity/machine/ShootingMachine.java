@@ -21,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -117,7 +118,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
 
-        return this.position().add(applyRotations(this.type.turretpivot, 0.0, yaw).add(applyRotations(this.type.turretvector, pitch, yaw)));
+        return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
     protected Vec3 getShotView()

@@ -20,10 +20,13 @@ public class ClientListener
         event.registerEntityRenderer(EntityTypes.CATAPULT.get(), CatapultGeoRenderer::new);
 		event.registerEntityRenderer(EntityTypes.BALLISTA.get(), BallistaGeoRenderer::new);
 		event.registerEntityRenderer(EntityTypes.BATTERING_RAM.get(), BatteringRamGeoRenderer::new);
+		event.registerEntityRenderer(EntityTypes.SIEGE_LADDER.get(), SiegeLadderGeoRenderer::new);
 
 		event.registerEntityRenderer(EntityTypes.CANNONBALL.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(EntityTypes.STONE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(EntityTypes.GIANT_STONE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(EntityTypes.GIANT_ARROW.get(), GiantArrowRenderer::new);
+
+		event.registerEntityRenderer(EntityTypes.SEAT.get(), SeatRenderer::new);
 	}
 }

@@ -1,7 +1,7 @@
-package ru.magistu.siegemachines.gui;
+package ru.magistu.siegemachines.client.gui;
 
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.gui.machine.MachineContainer;
+import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -10,7 +10,7 @@ import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import ru.magistu.siegemachines.gui.workbench.SiegeWorkbenchContainer;
+import ru.magistu.siegemachines.client.gui.workbench.SiegeWorkbenchContainer;
 
 public class ModMenuTypes {
 	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, SiegeMachines.ID);

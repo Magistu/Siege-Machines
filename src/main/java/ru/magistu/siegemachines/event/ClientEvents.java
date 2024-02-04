@@ -3,7 +3,7 @@ package ru.magistu.siegemachines.event;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.entity.IReloading;
 import ru.magistu.siegemachines.entity.machine.Machine;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.PacketOpenMachineInventory;
 import ru.magistu.siegemachines.network.PacketMachineUse;
@@ -36,7 +36,16 @@ public class ClientEvents
         if (KeyBindings.MACHINE_USE.isDown())
         {
             LocalPlayer player = Minecraft.getInstance().player;
-            if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine)
+            if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine machine && machine.usekey == KeyBindings.MACHINE_USE)
+            {
+                PacketHandler.sendToServer(new PacketMachineUse(player.getVehicle().getId()));
+            }
+        }
+
+        if (KeyBindings.LADDER_CLIMB.isDown())
+        {
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine machine && machine.usekey == KeyBindings.LADDER_CLIMB)
             {
                 PacketHandler.sendToServer(new PacketMachineUse(player.getVehicle().getId()));
             }

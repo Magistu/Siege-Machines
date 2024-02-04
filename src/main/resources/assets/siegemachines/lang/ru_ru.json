@@ -5,6 +5,7 @@
 	"item.siegemachines.catapult": "Катапульта",
 	"item.siegemachines.ballista": "Баллиста",
 	"item.siegemachines.battering_ram": "Таран",
+	"item.siegemachines.siege_ladder": "Осадная лестница",
 	"item.siegemachines.cannonball": "Пушечное ядро",
 	"item.siegemachines.giant_arrow": "Гигантская стрела",
 	"item.siegemachines.stone": "Валун",
@@ -28,10 +29,13 @@
 	"siegemachines.ammo": "Боеприпасы:",
 	"siegemachines.category": "Medieval Siege Machines",
 	"siegemachines.machine_use": "Использовать машину",
+	"siegemachines.ladder_climb": "Начать поднматься по лестнице",
 	"siegemachines.machine_inventory": "Открыть инвентарь",
 	"siegemachines.no_ammo": "Нет боеприпасов!",
 	"siegemachines.no_gunpowder":"Нет пороха!",
 	"siegemachines.wait": "Ждите %1$f секунд.",
 
-	"category.siegemachines.siege_workbench_crafting": "Крафт"
+	"category.siegemachines.siege_workbench_crafting": "Крафт",
+
+	"siegemachines.usage": "Нажми %1$s, чтобы использовать осадное орудие"
 }

@@ -41,7 +41,7 @@ public class MissileExplosion extends Explosion
 {
    private static final ExplosionDamageCalculator EXPLOSION_DAMAGE_CALCULATOR = new ExplosionDamageCalculator();
    private final boolean fire;
-   private final Explosion.BlockInteraction blockInteraction;
+   private final BlockInteraction blockInteraction;
    private final Random random = new Random();
    private final Level level;
    private final double x;
@@ -59,26 +59,26 @@ public class MissileExplosion extends Explosion
 
    public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius)
    {
-      this(level, source, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY);
+      this(level, source, x, y, z, radius, false, BlockInteraction.DESTROY);
    }
 
    public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, List<BlockPos> pPositions)
    {
-      this(level, source, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY, pPositions);
+      this(level, source, x, y, z, radius, false, BlockInteraction.DESTROY, pPositions);
    }
 
-   public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, boolean fired, Explosion.BlockInteraction blockinteraction, List<BlockPos> pPositions)
+   public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, boolean fired, BlockInteraction blockinteraction, List<BlockPos> pPositions)
    {
       this(level, source, x, y, z, radius, fired, blockinteraction);
       this.toBlow.addAll(pPositions);
    }
 
-   public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, boolean fired, Explosion.BlockInteraction blockinteraction)
+   public MissileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, boolean fired, BlockInteraction blockinteraction)
    {
       this(level, source, null, null, x, y, z, radius, fired, blockinteraction);
    }
 
-   public MissileExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damagesource, @Nullable ExplosionDamageCalculator damagecalculator, double x, double y, double z, float radius, boolean fired, Explosion.BlockInteraction blockinteraction)
+   public MissileExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damagesource, @Nullable ExplosionDamageCalculator damagecalculator, double x, double y, double z, float radius, boolean fired, BlockInteraction blockinteraction)
    {
       super(level, source, damagesource, damagecalculator, x, y, z, radius, fired, blockinteraction);
       this.level = level;
@@ -271,7 +271,7 @@ public class MissileExplosion extends Explosion
          this.level.playLocalSound(this.x, this.y, this.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
       }
 
-      boolean flag = this.blockInteraction != Explosion.BlockInteraction.NONE;
+      boolean flag = this.blockInteraction != BlockInteraction.NONE;
       if (pSpawnParticles)
       {
          if (!(this.radius < 2.0F) && flag)
@@ -301,7 +301,7 @@ public class MissileExplosion extends Explosion
                {
                   BlockEntity blockentity = blockstate.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
                   LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerLevel)this.level)).withRandom(this.level.random).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
-                  if (this.blockInteraction == Explosion.BlockInteraction.DESTROY)
+                  if (this.blockInteraction == BlockInteraction.DESTROY)
                   {
                      lootcontext$builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
                   }

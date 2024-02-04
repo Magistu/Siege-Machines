@@ -12,6 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.renderer.*;
+import ru.magistu.siegemachines.client.renderer.model.MachineItemModel;
 import ru.magistu.siegemachines.entity.EntityTypes;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
@@ -28,17 +29,19 @@ public class ModItems
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SiegeMachines.ID);
 
     public static final RegistryObject<Item> MORTAR = ITEMS.register("mortar", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.MORTAR, () -> MachineType.MORTAR)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MortarItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("mortar"));}});
     public static final RegistryObject<Item> CULVERIN = ITEMS.register("culverin", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.CULVERIN, () -> MachineType.CULVERIN)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new CulverinItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("culverin"));}});
     public static final RegistryObject<Item> CATAPULT = ITEMS.register("catapult", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.CATAPULT, () -> MachineType.CATAPULT)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new CatapultItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("catapult"));}});
     public static final RegistryObject<Item> TREBUCHET = ITEMS.register("trebuchet", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.TREBUCHET, () -> MachineType.TREBUCHET)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new TrebuchetItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("trebuchet"));}});
     public static final RegistryObject<Item> BALLISTA = ITEMS.register("ballista", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.BALLISTA, () -> MachineType.BALLISTA)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new BallistaItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("ballista"));}});
     public static final RegistryObject<Item> BATTERING_RAM = ITEMS.register("battering_ram", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.BATTERING_RAM, () -> MachineType.BATTERING_RAM)
-    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new BatteringRamItemGeoRenderer();}});
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("battering_ram"));}});
+    public static final RegistryObject<Item> SIEGE_LADDER = ITEMS.register("siege_ladder", () -> new MachineItem<>(new Item.Properties().tab(ModItems.GROUP_SM), EntityTypes.SIEGE_LADDER, () -> MachineType.SIEGE_LADDER)
+    {@Override @OnlyIn(Dist.CLIENT) public MachineItemGeoRenderer getRenderer() {return new MachineItemGeoRenderer(new MachineItemModel<>("siege_ladder"));}});
 
     public static final RegistryObject<Item> CANNONBALL = ITEMS.register("cannonball", () -> new Item(new Item.Properties().stacksTo(16).tab(ModItems.GROUP_SM)));
     public static final RegistryObject<Item> STONE = ITEMS.register("stone", () -> new Item(new Item.Properties().stacksTo(16)));

@@ -2,8 +2,8 @@ package ru.magistu.siegemachines.entity.machine;
 
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
+import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -93,7 +94,7 @@ public class Trebuchet extends ShootingMachine implements IAnimatable
     {
         Vec3[] avector3d = new Vec3[this.subentities.length];
 
-        Vec3 pos = this.position().add(applyRotations(this.backsidepos, 0.0, this.getYaw()));
+        Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.backsidepos, 0.0, this.getYaw()));
         this.tickPart(this.backside, pos.x, pos.y, pos.z);
 
         for(int i = 0; i < this.subentities.length; ++i)

@@ -1,7 +1,10 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.gui.machine.MachineContainer;
+import ru.magistu.siegemachines.client.KeyBindings;
+import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.PacketMachine;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -35,11 +38,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-
+import ru.magistu.siegemachines.util.CartesianGeometry;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 
 public abstract class Machine extends Mob implements MenuProvider
 {
+
+	public KeyMapping usekey;
 	public MachineInventory inventory;
 	public final MachineType type;
 
@@ -62,6 +69,8 @@ public abstract class Machine extends Mob implements MenuProvider
 		this.type = type;
 		this.delayticks = this.type.specs.delaytime.get();
 		this.inventory = new MachineInventory(9 * this.type.containerrows);
+		if (level.isClientSide())
+			this.usekey = KeyBindings.getUseKey(type);
 		
 		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(type.specs.durability.get());
 		this.setHealth(type.specs.durability.get());
@@ -325,7 +334,7 @@ public abstract class Machine extends Mob implements MenuProvider
     	}
     	nbt.put("Items", listnbt);
 		nbt.put("TurretRotations", this.newFloatList(this.turretpitch, this.turretyaw));
-		nbt.putInt("DealyTicks", this.delayticks);
+		nbt.putInt("DelayTicks", this.delayticks);
 		nbt.putInt("UseTicks", this.useticks);
 	}
 
@@ -423,9 +432,9 @@ public abstract class Machine extends Mob implements MenuProvider
 			ListTag turretrotations = nbt.getList("TurretRotations", 5);
 			setTurretRotations(turretrotations.getFloat(0), turretrotations.getFloat(1));
 		}
-		if (nbt.contains("DealyTicks"))
+		if (nbt.contains("DelayTicks"))
 		{
-			this.delayticks = nbt.getInt("DealyTicks");
+			this.delayticks = nbt.getInt("DelayTicks");
 		}
 		if (nbt.contains("UseTicks"))
 		{
@@ -574,13 +583,6 @@ public abstract class Machine extends Mob implements MenuProvider
 		return newRotation;
 	}
 
-	protected static Vec3 applyRotations(Vec3 vec, double pitch, double yaw) {
-		double d0 = vec.x * Math.cos(yaw) - vec.y * Math.sin(pitch) * Math.sin(yaw) - vec.z * Math.sin(yaw) * Math.cos(pitch);
-		double d1 = vec.y * Math.cos(pitch) - vec.z * Math.sin(pitch);
-		double d2 = vec.x * Math.sin(yaw) + vec.y * Math.sin(pitch) * Math.cos(yaw) + vec.z * Math.cos(yaw) * Math.cos(pitch);
-		return new Vec3(d0, d1, d2);
-	}
-
 	protected float getVolumeFromDist(float dist) {
 		return (float) 0.5 * Math.max((float) 6.0 - dist, 0.0f) / (float) 6.0;
 	}
@@ -606,7 +608,7 @@ public abstract class Machine extends Mob implements MenuProvider
 	public Vec3 getDismountLocationForPassenger(LivingEntity entity) {
 		double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
 
-		return this.position().add(applyRotations(this.type.passengerpos, 0.0, yaw));
+		return this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
 	}
 
 	@Override
@@ -619,7 +621,7 @@ public abstract class Machine extends Mob implements MenuProvider
 		MoveFunction setPos = Entity::setPos;
         if (this.hasPassenger(entity)) {
             double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
-            Vec3 pos = this.position().add(applyRotations(this.type.passengerpos, 0.0, yaw));
+            Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
 			setPos.accept(entity, pos.x, pos.y, pos.z);
         }
     }

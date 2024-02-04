@@ -36,7 +36,7 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.client.ClientProxy;
+import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.MachineType;
@@ -59,7 +59,7 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
     private final Supplier<EntityType<T>> entitytype;
     private final Supplier<MachineType> machinetype;
 
-    public MachineItem(Item.Properties prop, Supplier<EntityType<T>> entitytype, Supplier<MachineType> machinetype)
+    public MachineItem(Properties prop, Supplier<EntityType<T>> entitytype, Supplier<MachineType> machinetype)
     {
         super(prop.stacksTo(1));
         this.entitytype = entitytype;
@@ -75,6 +75,9 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
+        if (KeyBindings.getUseKey(this.machinetype.get()) != null)
+            tooltip.add(new TranslatableComponent(SiegeMachines.ID + ".usage", KeyBindings.getUseKey(this.machinetype.get()).getKey().getDisplayName()).withStyle(ChatFormatting.BLUE));
+
         ProjectileBuilder<?>[] ammo = this.machinetype.get().ammo;
         if (ammo.length > 0)
         {
