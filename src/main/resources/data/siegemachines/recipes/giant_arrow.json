@@ -1,9 +1,9 @@
 {
   "type": "siegemachines:siege_workbench",
   "pattern": [
-    " i ",
+    "  i",
     " s ",
-    " f "
+    "f  "
   ],
   "key": {
     "i": {

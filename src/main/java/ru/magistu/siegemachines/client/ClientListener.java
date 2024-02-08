@@ -23,6 +23,7 @@ public class ClientListener
 		event.registerEntityRenderer(EntityTypes.SIEGE_LADDER.get(), SiegeLadderGeoRenderer::new);
 
 		event.registerEntityRenderer(EntityTypes.CANNONBALL.get(), ThrownItemRenderer::new);
+		event.registerEntityRenderer(EntityTypes.GIANT_STONE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(EntityTypes.STONE.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(EntityTypes.GIANT_ARROW.get(), GiantArrowRenderer::new);
 
