@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.phys.AABB;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
-import ru.magistu.siegemachines.entity.machine.SiegeLadder;
 import ru.magistu.siegemachines.entity.machine.Trebuchet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

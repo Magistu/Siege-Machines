@@ -1,7 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
@@ -40,7 +39,6 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 
 public abstract class Machine extends Mob implements MenuProvider

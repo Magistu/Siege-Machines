@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
-import ru.magistu.siegemachines.entity.machine.BatteringRam;
 import ru.magistu.siegemachines.entity.machine.SiegeLadder;
 
 public class SiegeLadderGeoRenderer extends MachineGeoRenderer<SiegeLadder>

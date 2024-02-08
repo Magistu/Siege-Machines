@@ -3,7 +3,6 @@ package ru.magistu.siegemachines.entity.projectile;
 import com.mojang.math.Vector3d;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.entity.EntityTypes;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.world.entity.EntityType;

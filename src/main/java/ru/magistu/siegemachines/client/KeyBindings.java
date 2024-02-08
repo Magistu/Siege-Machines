@@ -5,8 +5,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.ClientRegistry;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
-import java.util.function.Supplier;
-
 public class KeyBindings
 {
     public static KeyMapping MACHINE_USE = new KeyMapping(SiegeMachines.ID + ".machine_use", 70, SiegeMachines.ID + ".category");
