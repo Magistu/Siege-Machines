@@ -1,0 +1,29 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "i i",
+    "ioi",
+    " s "
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:string",
+      "count": 1
+    },
+    "i": {
+      "type": "siegemachines:count",
+      "base": {
+        "tag": "c:ingots/iron"
+      },
+      "count": 2
+    },
+    "o": {
+      "tag": "c:ingots/iron",
+      "count": 1
+    }
+  },
+  "result": {
+    "id": "siegemachines:barrel",
+    "count": 1
+  }
+}

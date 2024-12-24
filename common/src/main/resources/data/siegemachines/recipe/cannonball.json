@@ -1,0 +1,16 @@
+{
+  "type": "siegemachines:siege_workbench",
+  "pattern": [
+    "i"
+  ],
+  "key": {
+    "i": {
+      "tag": "c:ingots/iron",
+      "count": 2
+    }
+  },
+  "result": {
+    "id": "siegemachines:cannonball",
+    "count": 1
+  }
+}
