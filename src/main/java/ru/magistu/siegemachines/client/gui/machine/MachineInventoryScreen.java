@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.client.gui.machine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import ru.magistu.siegemachines.SiegeMachines;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,31 +30,31 @@ public class MachineInventoryScreen extends AbstractContainerScreen<MachineConta
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-		this.renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		this.renderTooltip(matrixStack, mouseX, mouseY);
+		this.renderBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
     @Override
-	protected void renderTooltip(@NotNull PoseStack matrixStack, int x, int y)
+	protected void renderTooltip(GuiGraphics guiGraphics, int x, int y)
     {
 		if (this.minecraft.player.getInventory().getSelected().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem())
 		{
-    		this.renderTooltip(matrixStack, this.hoveredSlot.getItem(), x, y);
+    		guiGraphics.renderTooltip(this.minecraft.font, this.hoveredSlot.getItem(), x, y);
 		}
 	}
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY)
     {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       	RenderSystem.setShaderTexture(0, DISPLAY_CASE_GUI);
 		int x = (this.width - this.imageWidth) / 2;
 		int y = (this.height - this.imageHeight) / 2;
-		this.blit(matrixStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(DISPLAY_CASE_GUI, x, y, 0, 0, this.imageWidth, this.imageHeight);
 	}
 
 	@Override

@@ -21,27 +21,28 @@ public class ModBlocks
 {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, SiegeMachines.ID);
     
-    public static final RegistryObject<SiegeWorkbench> SIEGE_WORKBENCH = registerBlock("siege_workbench", () -> new SiegeWorkbench(BlockBehaviour.Properties.copy(Blocks.CRAFTING_TABLE).noOcclusion()), ModItems.GROUP_SM);
+    public static final RegistryObject<SiegeWorkbench> SIEGE_WORKBENCH = registerBlock("siege_workbench", () -> new SiegeWorkbench(BlockBehaviour.Properties.copy(Blocks.CRAFTING_TABLE).noOcclusion()));
 
-    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, String tooltipKey) {
-        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
-                new Item.Properties().tab(tab)) {
-            @Override
-            public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
-                pTooltip.add(Component.translatable(tooltipKey));
-            }
-        });
-    }
+    public static RegistryObject<Item> SIEGE_WORKBENCH_ITEM;
+//    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, String tooltipKey) {
+//        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
+//                new Item.Properties().tab(tab)) {
+//            @Override
+//            public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+//                pTooltip.add(Component.translatable(tooltipKey));
+//            }
+//        });
+//    }
 
-    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
+    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
-        registerBlockItem(name, toReturn, tab);
+        SIEGE_WORKBENCH_ITEM = registerBlockItem(name, toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab) {
+    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
         return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
-                new Item.Properties().tab(tab)));
+                new Item.Properties()));
     }
 
     public static void register(IEventBus eventBus) {

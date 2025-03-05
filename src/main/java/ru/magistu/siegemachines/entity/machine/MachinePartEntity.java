@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.entity.machine;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -40,7 +41,7 @@ public class MachinePartEntity extends net.minecraftforge.entity.PartEntity<Mach
         return this == entity || this.parentmob == entity;
     }
 
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         throw new UnsupportedOperationException();
     }
 

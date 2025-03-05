@@ -1,6 +1,7 @@
 package ru.magistu.siegemachines.client.gui.machine.crosshair;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import ru.magistu.siegemachines.SiegeMachines;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +20,7 @@ public abstract class Crosshair extends HudElement
         super(width, height);
     }
 
-    public final void render(PoseStack matrixstack, float partialticks) {}
+    public final void render(GuiGraphics guiGraphics, float partialticks) {}
 
-    public abstract void render(PoseStack matrixstack, float ticks, Minecraft mc, Player player);
+    public abstract void render(GuiGraphics guiGraphics, float ticks, Minecraft mc, Player player);
 }

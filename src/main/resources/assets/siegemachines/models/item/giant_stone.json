@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "siegemachines:entity/stone",
-		"particle": "siegemachines:entity/stone"
+		"0": "siegemachines:item/stone",
+		"particle": "siegemachines:item/stone"
 	},
 	"elements": [
 		{

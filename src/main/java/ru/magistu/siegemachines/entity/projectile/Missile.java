@@ -1,6 +1,7 @@
 package ru.magistu.siegemachines.entity.projectile;
 
-import com.mojang.math.Vector3d;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import org.joml.Vector3d;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.core.BlockPos;
@@ -60,7 +61,7 @@ public abstract class Missile extends ThrowableItemProjectile
 	}
 
 	@Override
-	public @NotNull Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
@@ -76,10 +77,10 @@ public abstract class Missile extends ThrowableItemProjectile
 			Entity entity = entityRTR.getEntity();
 			float damage = this.type.specs.mass.get() * (float) this.getDeltaMovement().length();
 
-			DamageSource damagesource = DamageSource.thrown(this, this.getOwner());
+			DamageSource damagesource = damageSources().thrown(this, this.getOwner());
 			if (this.type.armorpiercing >= 1.0f)
 			{
-				damagesource = damagesource.bypassArmor();
+				//damagesource = damagesource.bypassArmor(); TODO
 			}
 			else if (this.type.armorpiercing > 0.0f && entity instanceof LivingEntity livingentity)
 			{
@@ -91,9 +92,9 @@ public abstract class Missile extends ThrowableItemProjectile
 				damage -= (1.0f - this.type.armorpiercing) * (damage - CombatRules.getDamageAfterAbsorb(damage, 0, 0));
 			}
 
-			if (!this.level.isClientSide() && this.type.explosive)
+			if (!this.level().isClientSide() && this.type.explosive)
 			{
-				this.explode(pos.x, pos.y, pos.z, 3.0F, Explosion.BlockInteraction.NONE);
+				this.explode(pos.x, pos.y, pos.z, 3.0F, Explosion.BlockInteraction.KEEP);
 				this.remove(RemovalReason.KILLED);
 			}
 
@@ -109,7 +110,7 @@ public abstract class Missile extends ThrowableItemProjectile
 		{
 			BlockHitResult blockRTR = (BlockHitResult)result;
 			BlockPos blockpos = blockRTR.getBlockPos();
-			BlockState blockstate = this.level.getBlockState(blockpos);
+			BlockState blockstate = this.level().getBlockState(blockpos);
 			boolean smoothimpact = (blockstate == Blocks.SAND.defaultBlockState() ||
 					blockstate == Blocks.RED_SAND.defaultBlockState() ||
 					blockstate == Blocks.DIRT.defaultBlockState() ||
@@ -127,21 +128,21 @@ public abstract class Missile extends ThrowableItemProjectile
 					{
 						for (float a = 0; a < 2 * Math.PI; a += Math.PI / 4)
 						{
-							BlockPos pos = blockRTR.getBlockPos().offset(r * Math.cos(a), 0, -r * Math.sin(a));
-							if (this.level.getBlockState(pos) == Blocks.GRASS_BLOCK.defaultBlockState())
+							BlockPos pos = blockRTR.getBlockPos().offset((int) (r * Math.cos(a)), 0, (int) (-r * Math.sin(a)));
+							if (this.level().getBlockState(pos) == Blocks.GRASS_BLOCK.defaultBlockState())
 							{
-								this.level.setBlockAndUpdate(pos, Blocks.DIRT.defaultBlockState());
+								this.level().setBlockAndUpdate(pos, Blocks.DIRT.defaultBlockState());
 							}
 						}
 					}
 				}
-				if (!this.level.isClientSide())
+				if (!this.level().isClientSide())
 				{
 					this.remove(RemovalReason.KILLED);
 					if (smoothimpact && this.type.explosive)
 					{
 
-						this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.NONE);
+						this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.KEEP);
 					}
 				}
 				else if (smoothimpact)
@@ -149,21 +150,21 @@ public abstract class Missile extends ThrowableItemProjectile
 					this.dustExplosion(new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos), blockpos, this.type.specs.explosionpower.get() / 2, 50);
 				}
 			}
-			if (!this.level.isClientSide() && !smoothimpact && this.type.explosive)
+			if (!this.level().isClientSide() && !smoothimpact && this.type.explosive)
 			{
-				this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.BREAK);
+				this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.DESTROY);
 			}
 		}
 
 		if (result.getType() == HitResult.Type.MISS)
 		{
-			this.level.playSound((Player)this.getOwner(), this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
-			if(!this.level.isClientSide())
+			this.level().playSound((Player)this.getOwner(), this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
+			if(!this.level().isClientSide())
 			{
 				this.remove(RemovalReason.KILLED);
 			}
 		}
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 		{
 			this.remove(RemovalReason.KILLED);
 		}
@@ -179,13 +180,13 @@ public abstract class Missile extends ThrowableItemProjectile
 		for (int i = 0; i < amount; ++i)
 		{
 			Vec3 movement = this.getDeltaMovement();
-			double d0 = x - 0.05 + this.level.random.nextDouble() * 0.3;
+			double d0 = x - 0.05 + this.level().random.nextDouble() * 0.3;
 			double d1 = y + 1.0;
-			double d2 = z - 0.05 + this.level.random.nextDouble() * 0.3;
-			double d3 = movement.x * this.level.random.nextDouble() * speed;
-			double d4 = -movement.y * this.level.random.nextDouble() * speed * 10.0f;
-			double d5 = movement.z * this.level.random.nextDouble() * speed;
-			this.level.addParticle(particle, d0, d1, d2, d3, d4, d5);
+			double d2 = z - 0.05 + this.level().random.nextDouble() * 0.3;
+			double d3 = movement.x * this.level().random.nextDouble() * speed;
+			double d4 = -movement.y * this.level().random.nextDouble() * speed * 10.0f;
+			double d5 = movement.z * this.level().random.nextDouble() * speed;
+			this.level().addParticle(particle, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -207,8 +208,8 @@ public abstract class Missile extends ThrowableItemProjectile
 
 	public MissileExplosion explode(@Nullable DamageSource source, @Nullable ExplosionDamageCalculator context, double x, double y, double z, float size, boolean fired, Explosion.BlockInteraction mode)
 	{
-		MissileExplosion explosion = new MissileExplosion(this.level, this.getOwner(), source, context, x, y, z, size, fired, mode);
-		if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level, explosion)) return explosion;
+		MissileExplosion explosion = new MissileExplosion(this.level(), this.getOwner(), source, context, x, y, z, size, fired, mode);
+		if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
 		explosion.explode();
 		explosion.finalizeExplosion(true);
 		return explosion;

@@ -3,11 +3,11 @@ package ru.magistu.siegemachines.client.renderer.model;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.item.MachineItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
 
 
-public class MachineItemModel<T extends MachineItem & IAnimatable> extends AnimatedGeoModel<T>
+public class MachineItemModel<T extends MachineItem & GeoAnimatable> extends GeoModel<T>
 {
     public final String name;
 	public final ResourceLocation animationlocation;

@@ -85,7 +85,7 @@ public class ClientEvents
                     if (CROSSHAIR == null)
                         CROSSHAIR = ((IReloading) entity).createCrosshair();
                     
-                    CROSSHAIR.render(ev.getPoseStack(), ev.getPartialTick(), mc, player);
+                    CROSSHAIR.render(ev.getGuiGraphics(), ev.getPartialTick(), mc, player);
                     ev.setCanceled(true);
                 }
             }

@@ -3,7 +3,7 @@
 	"gui_light": "front",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "siegemachines:entity/giant_arrow"
+		"0": "siegemachines:item/giant_arrow"
 	},
 	"elements": [
 		{

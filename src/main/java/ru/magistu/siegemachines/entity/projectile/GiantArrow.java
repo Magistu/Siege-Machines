@@ -1,6 +1,7 @@
 package ru.magistu.siegemachines.entity.projectile;
 
-import com.mojang.math.Vector3d;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import org.joml.Vector3d;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GiantArrow extends AbstractArrow
 {
-    private final Packet<?> spawningpacket = NetworkHooks.getEntitySpawningPacket(this);
+    private final Packet<ClientGamePacketListener> spawningpacket = NetworkHooks.getEntitySpawningPacket(this);
 
     public GiantArrow(EntityType<GiantArrow> type, Level level)
     {
@@ -35,7 +36,7 @@ public class GiantArrow extends AbstractArrow
     }
 
     @Override
-	public @NotNull Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
     {
 		return spawningpacket;
 	}

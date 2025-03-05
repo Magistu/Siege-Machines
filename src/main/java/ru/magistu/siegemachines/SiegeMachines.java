@@ -20,8 +20,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
-
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(SiegeMachines.ID)
 public class SiegeMachines {
@@ -47,6 +45,7 @@ public class SiegeMachines {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
+        ModItems.CREATIVE_TABS.register(eventBus);
         EntityTypes.register(eventBus);
         SoundTypes.register(eventBus);
         ModMenuTypes.register(eventBus);

@@ -1,6 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import com.mojang.math.Vector3d;
+import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.entity.IReloading;
 import ru.magistu.siegemachines.entity.projectile.Missile;
@@ -55,21 +55,21 @@ public abstract class ShootingMachine extends Machine implements IReloading
         }
         LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
         Vec3 shotpos = this.getShotPos();
-        Projectile projectile = projectilebuilder.build(this.level, new Vector3d(shotpos.x, shotpos.y, shotpos.z), livingentity == null ? this : livingentity);
+        Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), livingentity == null ? this : livingentity);
         if (projectile instanceof Missile)
         {
             Missile missile = (Missile) projectile;
             missile.setItem(new ItemStack(missile.getDefaultItem()));
         }
         projectile.shootFromRotation(this, this.getTurretPitch(), this.getGlobalTurretYaw(), 0.0f, this.type.specs.projectilespeed.get(), this.type.specs.inaccuracy.get());
-        this.level.addFreshEntity(projectile);
+        this.level().addFreshEntity(projectile);
         this.inventory.shrinkItem(projectilebuilder.item);
     }
 
     @Override
     public void use(Player player)
     {
-        if (!this.level.isClientSide())
+        if (!this.level().isClientSide())
         {
             PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
@@ -80,7 +80,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
     @Override
     public void useRealise()
     {
-        if (!this.level.isClientSide())
+        if (!this.level().isClientSide())
         {
             PacketHandler.sendPacketToAllInArea(new PacketMachineUseRealise(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
@@ -137,7 +137,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
                                                new Random().nextGaussian() * 0.2);
             Vec3 velocity = this.getShotView().add(inaccuracy).scale(speed);
 
-            this.level.addParticle(particle, pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z);
+            this.level().addParticle(particle, pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z);
         }
     }
 
@@ -145,7 +145,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
     public void updateMachineRender()
 	{
         super.updateMachineRender();
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 		{
             for (int i = 0; i < this.inventory.getContainerSize(); ++i)
             {

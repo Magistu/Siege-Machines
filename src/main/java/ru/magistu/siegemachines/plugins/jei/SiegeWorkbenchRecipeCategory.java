@@ -8,9 +8,13 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.block.ModBlocks;
 import ru.magistu.siegemachines.item.recipes.CountIngredient;
@@ -55,13 +59,24 @@ public class SiegeWorkbenchRecipeCategory implements IRecipeCategory<SiegeWorkbe
 	@Override
 	public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull SiegeWorkbenchRecipe recipe, @Nonnull IFocusGroup focusGroup) 
 	{
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 18).addItemStack(recipe.getResultItem());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 18).addItemStack(getResultItem(recipe));
 		List<CountIngredient> grid = recipe.getRecipeItems();
 
 		for (int i = 0; i < recipe.getWidth(); ++i)
 		{
 			for (int j = 0; j < recipe.getHeight(); ++j)
 				builder.addSlot(RecipeIngredientRole.INPUT, i * 18, j * 18).addItemStacks(grid.get(i + j * 3).getCountModifiedItemStacks());
+		}
+	}
+
+	public static ItemStack getResultItem(Recipe<?> recipe) {
+		Minecraft minecraft = Minecraft.getInstance();
+		ClientLevel level = minecraft.level;
+		if (level == null) {
+			throw new NullPointerException("level must not be null.");
+		} else {
+			RegistryAccess registryAccess = level.registryAccess();
+			return recipe.getResultItem(registryAccess);
 		}
 	}
 }

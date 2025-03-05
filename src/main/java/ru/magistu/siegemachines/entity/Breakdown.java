@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -75,7 +76,7 @@ public class Breakdown
       this.fire = p_i231610_12_;
       this.power = power;
       this.blockInteraction = p_i231610_13_;
-      this.damageSource = p_i231610_3_ == null && p_i231610_2_ instanceof LivingEntity ? DamageSource.explosion((LivingEntity) p_i231610_2_) : p_i231610_3_;
+      this.damageSource = p_i231610_3_ == null && p_i231610_2_ instanceof LivingEntity ? p_i231610_2_.damageSources().explosion(explosion) : p_i231610_3_;
       this.damageCalculator = p_i231610_4_ == null ? this.makeDamageCalculator(p_i231610_2_) : p_i231610_4_;
       this.position = new Vec3(this.x, this.y, this.z);
    }
@@ -102,7 +103,7 @@ public class Breakdown
                   double d6 = Mth.lerp((double)f1, axisalignedbb.minY, axisalignedbb.maxY);
                   double d7 = Mth.lerp((double)f2, axisalignedbb.minZ, axisalignedbb.maxZ);
                   Vec3 vector3d = new Vec3(d5 + d3, d6, d7 + d4);
-                  if (p_222259_1_.level.clip(new ClipContext(vector3d, p_222259_0_, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, p_222259_1_)).getType() == HitResult.Type.MISS) {
+                  if (p_222259_1_.level().clip(new ClipContext(vector3d, p_222259_0_, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, p_222259_1_)).getType() == HitResult.Type.MISS) {
                      ++i;
                   }
 
@@ -139,7 +140,7 @@ public class Breakdown
                   double d8 = this.z;
 
                   for(float f1 = 0.3F; f > 0.0F; f -= this.power * 0.5F) {
-                     BlockPos blockpos = new BlockPos(d4, d6, d8);
+                     BlockPos blockpos = new BlockPos((int) d4, (int) d6, (int) d8);
                      BlockState blockstate = this.level.getBlockState(blockpos);
                      FluidState fluidstate = this.level.getFluidState(blockpos);
                      Optional<Float> optional = this.damageCalculator.getBlockExplosionResistance(this.explosion, this.level, blockpos, blockstate, fluidstate);
@@ -213,7 +214,7 @@ public class Breakdown
          //this.level.playLocalSound(this.x, this.y, this.z, SoundEvents.GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
       }
 
-      boolean flag = this.blockInteraction != Explosion.BlockInteraction.NONE;
+      boolean flag = this.blockInteraction != Explosion.BlockInteraction.KEEP;
       if (p_77279_1_) {
          if (!(this.radius < 2.0F) && flag) {
             this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
@@ -234,7 +235,7 @@ public class Breakdown
                this.level.getProfiler().push("explosion_blocks");
                if (this.level instanceof ServerLevel) {
                   BlockEntity tileentity = blockstate.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
-                  LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerLevel)this.level)).withRandom(this.level.random).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
+                  LootParams.Builder lootcontext$builder = (new LootParams.Builder((ServerLevel)this.level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
                   if (this.blockInteraction == Explosion.BlockInteraction.DESTROY) {
                      lootcontext$builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
                   }

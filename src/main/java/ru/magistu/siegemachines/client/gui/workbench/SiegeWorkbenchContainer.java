@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class SiegeWorkbenchContainer extends AbstractContainerMenu
 {
-    private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
+    private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
     private final ContainerLevelAccess access;
     private final Player player;
@@ -69,7 +69,7 @@ public class SiegeWorkbenchContainer extends AbstractContainerMenu
             if (optional.isPresent()) {
                 SiegeWorkbenchRecipe craftingrecipe = optional.get();
                 if (resultcontainer.setRecipeUsed(level, serverplayer, craftingrecipe)) {
-                    itemstack = craftingrecipe.assemble(craftingcontainer);
+                    itemstack = craftingrecipe.assemble(craftingcontainer, level.registryAccess());
                 }
             }
 
@@ -94,7 +94,7 @@ public class SiegeWorkbenchContainer extends AbstractContainerMenu
     }
 
     public boolean recipeMatches(Recipe<? super CraftingContainer> recipe) {
-        return recipe.matches(this.craftSlots, this.player.level);
+        return recipe.matches(this.craftSlots, this.player.level());
     }
 
     /**

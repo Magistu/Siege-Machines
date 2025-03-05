@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -89,7 +90,7 @@ public class MissileExplosion extends Explosion
       this.z = z;
       this.fire = fired;
       this.blockInteraction = blockinteraction;
-      this.damageSource = damagesource == null ? DamageSource.explosion(this) : damagesource;
+      this.damageSource = damagesource == null ? level.damageSources().explosion(this) : damagesource;
       this.damageCalculator = damagecalculator == null ? this.makeDamageCalculator(source) : damagecalculator;
       this.position = new Vec3(this.x, this.y, this.z);
       if (source != null && source.isPassenger())
@@ -130,7 +131,7 @@ public class MissileExplosion extends Explosion
                   double d9 = Mth.lerp(d6, aabb.minY, aabb.maxY);
                   double d10 = Mth.lerp(d7, aabb.minZ, aabb.maxZ);
                   Vec3 vec3 = new Vec3(d8 + d3, d9, d10 + d4);
-                  if (pEntity.level.clip(new ClipContext(vec3, pExplosionVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pEntity)).getType() == HitResult.Type.MISS)
+                  if (pEntity.level().clip(new ClipContext(vec3, pExplosionVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pEntity)).getType() == HitResult.Type.MISS)
                   {
                      ++i;
                   }
@@ -154,7 +155,7 @@ public class MissileExplosion extends Explosion
    @Override
    public void explode()
    {
-      this.level.gameEvent(this.source, GameEvent.EXPLODE, new BlockPos(this.x, this.y, this.z));
+      this.level.gameEvent(this.source, GameEvent.EXPLODE, new BlockPos((int) this.x, (int) this.y, (int) this.z));
       Set<BlockPos> set = Sets.newHashSet();
 
       for (int j = 0; j < 16; ++j)
@@ -179,7 +180,7 @@ public class MissileExplosion extends Explosion
 
                   for (; f > 0.0F; f -= 0.22500001F)
                   {
-                     BlockPos blockpos = new BlockPos(d4, d6, d8);
+                     BlockPos blockpos = new BlockPos((int) d4, (int) d6, (int) d8);
                      BlockState blockstate = this.level.getBlockState(blockpos);
                      FluidState fluidstate = this.level.getFluidState(blockpos);
                      if (!this.level.isInWorldBounds(blockpos))
@@ -271,7 +272,7 @@ public class MissileExplosion extends Explosion
          this.level.playLocalSound(this.x, this.y, this.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
       }
 
-      boolean flag = this.blockInteraction != BlockInteraction.NONE;
+      boolean flag = this.blockInteraction != BlockInteraction.KEEP;
       if (pSpawnParticles)
       {
          if (!(this.radius < 2.0F) && flag)
@@ -300,7 +301,7 @@ public class MissileExplosion extends Explosion
                if (blockstate.canDropFromExplosion(this.level, blockpos, this) && this.level instanceof ServerLevel)
                {
                   BlockEntity blockentity = blockstate.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
-                  LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerLevel)this.level)).withRandom(this.level.random).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
+                  LootParams.Builder lootcontext$builder = (new LootParams.Builder((ServerLevel)this.level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
                   if (this.blockInteraction == BlockInteraction.DESTROY)
                   {
                      lootcontext$builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
@@ -369,13 +370,8 @@ public class MissileExplosion extends Explosion
       return this.hitPlayers;
    }
 
-   /**
-    * Returns either the entity that placed the explosive block, the entity that caused the explosion or null.
-    */
-   @Nullable
    @Override
-   public LivingEntity getSourceMob()
-   {
+   public @org.jetbrains.annotations.Nullable LivingEntity getIndirectSourceEntity() {
       if (this.source == null)
       {
          return null;

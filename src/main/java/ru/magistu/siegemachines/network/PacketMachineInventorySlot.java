@@ -57,12 +57,12 @@ public class PacketMachineInventorySlot
     public static void handleClientSide(PacketMachineInventorySlot packet)
     {
         LocalPlayer player = Minecraft.getInstance().player;
-        if(packet == null || player == null || player.level == null)
+        if(packet == null || player == null || player.level() == null)
         {
             return;
         }
 
-        Entity entity = player.level.getEntity(packet.entityid);
+        Entity entity = player.level().getEntity(packet.entityid);
         if (!(entity instanceof Machine))
         {
             return;

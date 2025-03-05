@@ -17,22 +17,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class Ballista extends ShootingMachine implements IAnimatable
+public class Ballista extends ShootingMachine implements GeoAnimatable
 {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
-    static AnimationBuilder SHOOTING_ANIM = new AnimationBuilder().addAnimation("Shooting", ILoopType.EDefaultLoopTypes.LOOP);
-    static AnimationBuilder RELOADING_ANIM = new AnimationBuilder().addAnimation("Reloading", ILoopType.EDefaultLoopTypes.LOOP);
+    static RawAnimation SHOOTING_ANIM = RawAnimation.begin().thenLoop("Shooting");
+    static RawAnimation RELOADING_ANIM = RawAnimation.begin().thenLoop("Reloading");
 
     public enum State
     {
@@ -46,7 +45,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
         super(entitytype, level, MachineType.BALLISTA);
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
+    private PlayState predicate(AnimationState<Ballista> event)
     {
         switch (state) {
             case SHOOTING -> {
@@ -62,22 +61,22 @@ public class Ballista extends ShootingMachine implements IAnimatable
     }
 
     @Override
-    public void registerControllers(AnimationData data)
+    public void registerControllers(AnimatableManager.ControllerRegistrar data)
     {
-        AnimationController<?> controller = new AnimationController<>(this, "controller", 1, (t) ->
+        AnimationController<?> controller = new AnimationController<>(this, "controller", 1, this::predicate);
+        controller.setOverrideEasingType((dbl)->(t) ->
         {
             if (this.state.equals(State.RELOADING))
             {
                 return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
             }
             return t;
-        }, this::predicate);
-        data.addAnimationController(controller);
+        });
+        data.add(controller);
     }
 
     @Override
-    public AnimationFactory getFactory()
-    {
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.factory;
     }
 
@@ -88,7 +87,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
         {
             return InteractionResult.SUCCESS;
         }
-        if (!this.level.isClientSide() && !this.isVehicle())
+        if (!this.level().isClientSide() && !this.isVehicle())
         {
             player.startRiding(this);
             return InteractionResult.SUCCESS;
@@ -106,17 +105,22 @@ public class Ballista extends ShootingMachine implements IAnimatable
             this.shootingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_SHOOTING.get(), this.getSoundSource(), 1.4f, 1.0f, false);
+            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_SHOOTING.get(), this.getSoundSource(), 1.4f, 1.0f, false);
         }
     }
 
     @Override
     public void shoot()
     {
-        if (!level.isClientSide())
+        if (!level().isClientSide())
         {
             super.shoot();
         }
+    }
+
+    @Override
+    public double getTick(Object entity) {
+        return tickCount;
     }
 
 //    @Override
@@ -137,8 +141,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
 //  }
 
     @Override
-    public void travel(Vec3 pos)
-    {
+    protected void tickRidden(Player p_278262_, Vec3 pos) {
         if (this.isAlive())
         {
             if (this.isVehicle() && this.useticks <= 0 && this.delayticks <= 0)
@@ -172,7 +175,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
             this.shootingticks = 0;
         }
 
-        if (!level.isClientSide() && this.isOnGround())
+        if (!level().isClientSide() && this.onGround())
         {
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.0, 1.0, 0.0));
         }
@@ -182,7 +185,7 @@ public class Ballista extends ShootingMachine implements IAnimatable
             if (this.delayticks % 21 == 0)
             {
                 Vec3 pos = this.position();
-                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_RELOADING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
+                this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.BALLISTA_RELOADING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
             }
             --this.delayticks;
         }

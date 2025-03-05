@@ -38,11 +38,12 @@ import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.MachineType;
+import ru.magistu.siegemachines.entity.machine.Mortar;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,9 +51,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class MachineItem<T extends Machine> extends Item implements IAnimatable
+public class MachineItem<T extends Machine> extends Item implements GeoAnimatable
 {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     private final Supplier<EntityType<T>> entitytype;
     private final Supplier<MachineType> machinetype;
@@ -65,7 +66,7 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
     }
 
     @OnlyIn(Dist.CLIENT)
-    public MachineItemGeoRenderer<T> getRenderer()
+    public MachineItemGeoRenderer<Mortar> getRenderer()
     {
         return null;
     }
@@ -122,7 +123,7 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
             {
                 BaseSpawner abstractspawner = ((SpawnerBlockEntity)tileentity).getSpawner();
                 EntityType<T> entitytype1 = this.getType(itemstack.getTag());
-                abstractspawner.setEntityId(entitytype1);
+                abstractspawner.setEntityId(entitytype1, world, world.getRandom(), blockpos);
                 tileentity.setChanged();
                 world.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
                 itemstack.shrink(1);
@@ -170,7 +171,7 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
         Machine machine = this.create(entitytype, level, nbt, component, player, pos, type, bl, bl2, yaw);
         if (machine != null)
         {
-            if (net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn(machine, (LevelAccessor)level, pos.getX(), pos.getY(), pos.getZ(), null, type)) return null;
+            if (!net.minecraftforge.event.ForgeEventFactory.checkSpawnPosition(machine, level, type)) return null;
             level.addFreshEntityWithPassengers(machine);
         }
 
@@ -259,14 +260,18 @@ public class MachineItem<T extends Machine> extends Item implements IAnimatable
     }
 
     @Override
-    public void registerControllers(AnimationData data)
+    public void registerControllers(AnimatableManager.ControllerRegistrar data)
     {
 
     }
 
     @Override
-    public AnimationFactory getFactory()
-    {
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.factory;
+    }
+
+    @Override
+    public double getTick(Object o) {
+        return 0;
     }
 }

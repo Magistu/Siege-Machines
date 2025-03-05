@@ -14,27 +14,27 @@ public class SoundTypes
 			SiegeMachines.ID);
 
 	public static RegistryObject<SoundEvent> TREBUCHET_SHOOTING = SOUNDS.register("trebuchet_shooting",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "trebuchet_shooting")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "trebuchet_shooting")));
 	public static RegistryObject<SoundEvent> TREBUCHET_RELOADING = SOUNDS.register("trebuchet_reloading",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "trebuchet_reloading")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "trebuchet_reloading")));
 	public static RegistryObject<SoundEvent> CATAPULT_SHOOTING = SOUNDS.register("catapult_shooting",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "catapult_shooting")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "catapult_shooting")));
 	public static RegistryObject<SoundEvent> CATAPULT_RELOADING = SOUNDS.register("catapult_reloading",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "catapult_reloading")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "catapult_reloading")));
 	public static RegistryObject<SoundEvent> BALLISTA_SHOOTING = SOUNDS.register("ballista_shooting",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "ballista_shooting")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "ballista_shooting")));
 	public static RegistryObject<SoundEvent> BALLISTA_RELOADING = SOUNDS.register("ballista_reloading",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "ballista_reloading")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "ballista_reloading")));
 	public static RegistryObject<SoundEvent> MORTAR_SHOOTING = SOUNDS.register("mortar_shooting",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "mortar_shooting")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "mortar_shooting")));
 	public static RegistryObject<SoundEvent> FUSE = SOUNDS.register("fuse",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "fuse")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "fuse")));
     public static RegistryObject<SoundEvent> CANNON_WHEELS = SOUNDS.register("cannon_wheels",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "cannon_wheels")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "cannon_wheels")));
 	public static RegistryObject<SoundEvent> RAM_WHEELS = SOUNDS.register("ram_wheels",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "ram_wheels")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "ram_wheels")));
 	public static RegistryObject<SoundEvent> RAM_HITTING = SOUNDS.register("ram_hitting",
-			() -> new SoundEvent(new ResourceLocation(SiegeMachines.ID, "ram_hitting")));
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "ram_hitting")));
 
 	public static void register(IEventBus eventBus)
     {

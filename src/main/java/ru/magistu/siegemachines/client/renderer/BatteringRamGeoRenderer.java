@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.Nullable;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
 import ru.magistu.siegemachines.entity.machine.BatteringRam;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,10 +18,7 @@ public class BatteringRamGeoRenderer extends MachineGeoRenderer<BatteringRam>
 	}
 
 	@Override
-	public RenderType getRenderType(BatteringRam animatable, float partialTicks, PoseStack stack,
-									MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-									ResourceLocation textureLocation)
-	{
+	public RenderType getRenderType(BatteringRam animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
 		return RenderType.entityTranslucent(getTextureLocation(animatable));
 	}
 }

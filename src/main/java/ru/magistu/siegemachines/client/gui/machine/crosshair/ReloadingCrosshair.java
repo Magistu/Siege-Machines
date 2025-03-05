@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.client.gui.machine.crosshair;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -24,7 +25,7 @@ public class ReloadingCrosshair extends Crosshair
         this.y = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2;
     }
 
-    public void render(PoseStack matrixstack, float ticks, Minecraft mc, Player player)
+    public void render(GuiGraphics guiGraphics, float ticks, Minecraft mc, Player player)
     {
         RenderSystem.assertOnRenderThread();
 
@@ -60,7 +61,7 @@ public class ReloadingCrosshair extends Crosshair
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
       	    RenderSystem.setShaderTexture(0, CROSSHAIR_TEXTURES);
 
-            mc.gui.blit(matrixstack, originx, originy, imagex, imagey, width, height);
+            guiGraphics.blit(CROSSHAIR_TEXTURES, originx, originy, imagex, imagey, width, height);
 
             RenderSystem.backupProjectionMatrix();
         }

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
     "gui_light": "side",
     "textures": {
-		"0": "siegemachines:entity/cannonball",
-		"particle": "siegemachines:entity/cannonball"
+		"0": "siegemachines:item/cannonball",
+		"particle": "siegemachines:item/cannonball"
 	},
 	"elements": [
 		{

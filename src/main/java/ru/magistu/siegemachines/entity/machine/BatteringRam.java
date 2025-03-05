@@ -24,24 +24,24 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.util.CartesianGeometry;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 
-public class BatteringRam extends Machine implements IAnimatable
+
+public class BatteringRam extends Machine implements GeoAnimatable
 {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
-    static AnimationBuilder MOVING_ANIM = new AnimationBuilder().addAnimation("Moving", ILoopType.EDefaultLoopTypes.LOOP);
-    static AnimationBuilder HITTING_ANIM = new AnimationBuilder().addAnimation("Hitting", ILoopType.EDefaultLoopTypes.LOOP);
-    static AnimationBuilder RELOADING_ANIM = new AnimationBuilder().addAnimation("Reloading", ILoopType.EDefaultLoopTypes.LOOP);
+    static RawAnimation MOVING_ANIM = RawAnimation.begin().thenLoop("Moving");
+    static RawAnimation HITTING_ANIM = RawAnimation.begin().thenLoop("Hitting");
+    static RawAnimation RELOADING_ANIM = RawAnimation.begin().thenLoop("Reloading");
 
     public int hittingticks = 0;
     private int wheelssoundticks = 10;
@@ -61,14 +61,14 @@ public class BatteringRam extends Machine implements IAnimatable
         super(entitytype, level, MachineType.BATTERING_RAM);
     }
 
-    private <E extends IAnimatable> PlayState wheels_predicate(AnimationEvent<E> event)
+    private PlayState wheels_predicate(AnimationState<BatteringRam> event)
     {
         event.getController().setAnimation(MOVING_ANIM);
 
         return PlayState.CONTINUE;
 	}
 
-    private <E extends IAnimatable> PlayState reloading_predicate(AnimationEvent<E> event)
+    private PlayState reloading_predicate(AnimationState<BatteringRam> event)
     {
         switch (state)
         {
@@ -83,36 +83,42 @@ public class BatteringRam extends Machine implements IAnimatable
 	}
 
     @Override
-	public void registerControllers(AnimationData data)
+	public void registerControllers(AnimatableManager.ControllerRegistrar data)
     {
-        AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller", 1, (t) -> {
+        AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller",  1, this::wheels_predicate);
+		wheels_controller.setOverrideEasingType((dbl)->(t) -> {
             double d = this.getWheelsSpeed();
             this.wheelsspeed = d > 0 ? Math.min(d, 1.0) : Math.max(d, -1.0);
             return wheelspitch += 0.015 * this.wheelsspeed;
-        }, this::wheels_predicate);
-		data.addAnimationController(wheels_controller);
+        });
+        data.add(wheels_controller);
 
-        AnimationController<?> reloading_controller = new AnimationController<>(this, "controller", 1, (t) ->
+        AnimationController<?> reloading_controller = new AnimationController<>(this, "controller", 1, this::reloading_predicate);
+        reloading_controller.setOverrideEasingType((dbl)->(t) ->
         {
             if (this.state.equals(State.RELOADING))
             {
                 return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
             }
             return t;
-        }, this::reloading_predicate);
-		data.addAnimationController(reloading_controller);
+        });
+		data.add(reloading_controller);
 	}
 
     @Override
-    public AnimationFactory getFactory()
-    {
+    public double getTick(Object entity) {
+        return tickCount;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.factory;
     }
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand)
     {
-        if (!this.level.isClientSide() && !this.isVehicle())
+        if (!this.level().isClientSide() && !this.isVehicle())
         {
 			player.startRiding(this);
 			return InteractionResult.SUCCESS;
@@ -163,7 +169,7 @@ public class BatteringRam extends Machine implements IAnimatable
             this.hittingticks = 0;
         }
 
-        if (!level.isClientSide() && this.isOnGround())
+        if (!level().isClientSide() && this.onGround())
         {
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.0, 1.0, 0.0));
         }
@@ -179,13 +185,13 @@ public class BatteringRam extends Machine implements IAnimatable
             this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
         }
         
-        if (this.level.isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+        if (this.level().isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
         {
             Entity passenger = this.getControllingPassenger();
             if (Minecraft.getInstance().player == passenger)
             {
                 Vec3 pos = this.position();
-                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+                this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level().random.nextFloat() * 0.3f, false);
                 this.wheelssoundticks = 20;
             }
         }
@@ -202,7 +208,7 @@ public class BatteringRam extends Machine implements IAnimatable
             return;
         }
         
-        if (!this.level.isClientSide())
+        if (!this.level().isClientSide())
             PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
 
         if (this.delayticks <= 0 && this.useticks <= 0 && this.hittingticks <= 0)
@@ -212,15 +218,15 @@ public class BatteringRam extends Machine implements IAnimatable
             this.hittingticks = this.type.userealisetime;
 
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), this.getSoundSource(), 0.5f, 0.9f, false);
+            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), this.getSoundSource(), 0.5f, 0.9f, false);
         }
     }
 
     public void ramHit(BlockPos blockpos)
     {
-        if (!this.level.isClientSide())
+        if (!this.level().isClientSide())
         {
-            Breakdown breakdown = new Breakdown(this.level, this, this.getControllingPassenger(), blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, 3.0f, Explosion.BlockInteraction.BREAK);
+            Breakdown breakdown = new Breakdown(this.level(), this, this.getControllingPassenger(), blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, 3.0f, Explosion.BlockInteraction.DESTROY);
             breakdown.explode();
             breakdown.finalizeExplosion(true);
         }
@@ -232,18 +238,18 @@ public class BatteringRam extends Machine implements IAnimatable
         if (this.deploymentticks > 0)
             return;
         
-        if (!this.level.isClientSide())
+        if (!this.level().isClientSide())
         {
             PacketHandler.sendPacketToAllInArea(new PacketMachineUseRealise(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
 
-            BlockPos blockpos = new BlockPos(this.getHitPos());
+            BlockPos blockpos = new BlockPos((int) this.getHitPos().x, (int) this.getHitPos().y, (int) this.getHitPos().z);
             this.ramHit(blockpos);
         }
     }
 
     public double getWheelsSpeed()
     {
-        if (this.isOnGround())
+        if (this.onGround())
         {
             return this.getViewVector(5.0f).multiply(1, 0, 1).dot(this.getDeltaMovement());
         }

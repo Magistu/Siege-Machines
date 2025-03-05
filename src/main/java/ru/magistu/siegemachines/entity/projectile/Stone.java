@@ -1,6 +1,6 @@
 package ru.magistu.siegemachines.entity.projectile;
 
-import com.mojang.math.Vector3d;
+import org.joml.Vector3d;
 import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

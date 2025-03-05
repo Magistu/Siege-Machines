@@ -4,16 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
-import ru.magistu.siegemachines.entity.machine.SiegeLadder;
 import ru.magistu.siegemachines.entity.machine.Trebuchet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.util.Optional;
 
@@ -25,26 +24,19 @@ public class TrebuchetGeoRenderer extends MachineGeoRenderer<Trebuchet>
 	}
 
 	@Override
-	public RenderType getRenderType(Trebuchet animatable, float partialTicks, PoseStack stack,
-									MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-									ResourceLocation textureLocation)
-	{
+	public RenderType getRenderType(Trebuchet animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
 		return RenderType.entityTranslucent(getTextureLocation(animatable));
 	}
 
 	@Override
-	public void renderEarly(Trebuchet animatable, PoseStack stackIn, float ticks, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float partialTicks)
-	{
-		GeoModelProvider<Trebuchet> modelProvider = this.getGeoModelProvider();
-		GeoModel model = modelProvider.getModel(modelProvider.getModelResource(animatable));
-
+	public void preRender(PoseStack poseStack, Trebuchet animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		Optional<GeoBone> projectile = model.getBone("Cobblestone");
 		int projectilesize = (animatable.state == Trebuchet.State.IDLE_RELOADED || animatable.shootingticks > 0) && animatable.hasAmmo() ? 1 : 0;
 		projectile.ifPresent(bone -> bone.setScaleX(projectilesize));
 		projectile.ifPresent(bone -> bone.setScaleY(projectilesize));
 		projectile.ifPresent(bone -> bone.setScaleZ(projectilesize));
 
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, partialTicks);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

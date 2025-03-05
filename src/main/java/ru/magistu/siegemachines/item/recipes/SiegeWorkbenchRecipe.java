@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -84,13 +85,13 @@ public class SiegeWorkbenchRecipe implements IShapedRecipe<CraftingContainer>
     public boolean isSpecial() {
         return true;
     }
-    
+
     /**
      * Get the result of this recipe, usually for display purposes (e.g. recipe book). If your recipe has more than one
      * possible result (e.g. it's dynamic and depends on its inputs), then return an empty stack.
      */
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return this.result;
     }
 
@@ -208,8 +209,8 @@ public class SiegeWorkbenchRecipe implements IShapedRecipe<CraftingContainer>
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer container) {
-        return this.getResultItem().copy();
+    public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+        return this.getResultItem(registryAccess).copy();
     }
 
     public int getWidth() {

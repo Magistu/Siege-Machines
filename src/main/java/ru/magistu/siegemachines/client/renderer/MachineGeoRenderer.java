@@ -2,13 +2,13 @@ package ru.magistu.siegemachines.client.renderer;
 
 import ru.magistu.siegemachines.entity.machine.Machine;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-public abstract class MachineGeoRenderer<T extends Machine & IAnimatable> extends GeoEntityRenderer<T>
+public abstract class MachineGeoRenderer<T extends Machine & GeoAnimatable> extends GeoEntityRenderer<T>
 {
-    protected MachineGeoRenderer(EntityRendererProvider.Context rendermanager, AnimatedGeoModel<T> model)
+    protected MachineGeoRenderer(EntityRendererProvider.Context rendermanager, GeoModel<T> model)
     {
         super(rendermanager, model);
     }

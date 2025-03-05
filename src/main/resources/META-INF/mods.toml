@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[41,)" #mandatory
+loaderVersion="[47,)" #mandatory
 license="All rights reserved"
 [[mods]] #mandatory
 modId="siegemachines" #mandatory
@@ -7,13 +7,19 @@ version="${version}" #mandatory
 # A display name for the mod
 displayName="Medieval Siege Machines" #mandatory
 # logoFile="siegemachines.png" #optional // TODO Logo
-credits="Lexiolty, itzme1on, Sahgar"
+credits="Lexiolty, itzme1on, Sahgar, Goodbird (ported to 1.20.1)"
 authors="Magistu" #optional
 description='''Adds medieval siege machines'''
-# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.siegemachines]]
-    modId="geckolib3"
-    mandatory=true
-    versionRange="[3.00,]"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+versionRange = "[1.20.1,1.21)"
+mandatory = true
+side = "BOTH"
+ordering = "NONE"
+
+[[dependencies.siegemachines]]
+modId = "forge"
+versionRange = "[47,)"
+mandatory = true
+side = "BOTH"
+ordering = "NONE"

@@ -25,21 +25,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class Mortar extends ShootingMachine implements IAnimatable, IReloading
+
+public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
 {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
-    static AnimationBuilder MOVING_ANIM = new AnimationBuilder().addAnimation("Moving", ILoopType.EDefaultLoopTypes.LOOP);
+    static RawAnimation MOVING_ANIM = RawAnimation.begin().thenLoop("Moving");
 
     public int shootingticks = 0;
 
@@ -52,7 +52,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         super(entitytype, level, MachineType.MORTAR);
     }
 
-    private <E extends IAnimatable> PlayState wheels_predicate(AnimationEvent<E> event)
+    private  PlayState wheels_predicate(AnimationState<Mortar> event)
     {
         event.getController().setAnimation(MOVING_ANIM);
 
@@ -60,19 +60,23 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
     }
 
     @Override
-    public void registerControllers(AnimationData data)
+    public void registerControllers(AnimatableManager.ControllerRegistrar data)
     {
-        AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller", 1, (t) -> {
+        AnimationController<?> wheels_controller = new AnimationController<>(this, "wheels_controller", 1, this::wheels_predicate).setOverrideEasingType((dbl)->(t) -> {
             double d = this.getWheelsSpeed();
             this.wheelsspeed = d > 0 ? Math.min(d, 1.0) : Math.max(d, -1.0);
             return wheelspitch += 0.013 * this.wheelsspeed;
-        }, this::wheels_predicate);
-        data.addAnimationController(wheels_controller);
+        });
+        data.add(wheels_controller);
     }
 
     @Override
-    public AnimationFactory getFactory()
-    {
+    public double getTick(Object entity) {
+        return tickCount;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.factory;
     }
 
@@ -110,7 +114,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
         {
             return InteractionResult.SUCCESS;
         }
-        if (!this.level.isClientSide() && !this.isVehicle())
+        if (!this.level().isClientSide() && !this.isVehicle())
         {
             player.startRiding(this);
             return InteractionResult.SUCCESS;
@@ -120,8 +124,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
     }
 
     @Override
-    public void travel(Vec3 pos)
-    {
+    protected void tickRidden(Player p_278262_, Vec3 pos) {
         if (this.isAlive())
         {
             if (this.isVehicle())
@@ -163,7 +166,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             {
                 this.useRealise();
             }
-            else if (!this.level.isClientSide())
+            else if (!this.level().isClientSide())
             {
                 Entity passenger = this.getControllingPassenger();
                 if (passenger instanceof Player)
@@ -174,7 +177,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             this.shootingticks = 0;
         }
 
-        if (!level.isClientSide() && this.isOnGround())
+        if (!level().isClientSide() && this.onGround())
         {
             this.setDeltaMovement(this.getWheelsDeltaMovement());
         }
@@ -190,13 +193,13 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
         }
 
-        if (this.level.isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+        if (this.level().isClientSide() && this.hasControllingPassenger() && this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
         {
             Entity passenger = this.getControllingPassenger();
             if (Minecraft.getInstance().player == passenger)
             {
                 Vec3 pos = this.position();
-                this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CANNON_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level.random.nextFloat() * 0.3f, false);
+                this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CANNON_WHEELS.get(), this.getSoundSource(), 1.5f, 0.85f + this.level().random.nextFloat() * 0.3f, false);
                 this.wheelssoundticks = 20;
             }
         }
@@ -209,9 +212,9 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
     {
         if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
         {
-            if (!this.level.isClientSide())
+            if (!this.level().isClientSide())
             {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
             this.shootingticks = this.type.userealisetime;
@@ -221,7 +224,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
     @Override
     public void shoot()
     {
-        if (!level.isClientSide())
+        if (!level().isClientSide())
         {
             super.shoot();
             this.setDeltaMovement(this.getDeltaMovement().subtract(this.getShotView().scale(0.25)));
@@ -233,13 +236,13 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
             Vec3 pos = this.position();
-            this.level.playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), this.getSoundSource(), 0.3f, 1.0f, false);
+            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), this.getSoundSource(), 0.3f, 1.0f, false);
         }
     }
 
     public double getWheelsSpeed()
     {
-        if (this.isOnGround())
+        if (this.onGround())
         {
             return this.getViewVector(5.0f).multiply(1, 0, 1).dot(this.getDeltaMovement());
         }
@@ -249,7 +252,7 @@ public class Mortar extends ShootingMachine implements IAnimatable, IReloading
 
     public Vec3 getWheelsDeltaMovement()
     {
-        if (this.isOnGround())
+        if (this.onGround())
         {
             Vec3 view = this.getViewVector(1.0f);
             Vec3 movement = this.getDeltaMovement();

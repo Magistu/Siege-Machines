@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 import ru.magistu.siegemachines.client.renderer.model.MachineModel;
 import ru.magistu.siegemachines.entity.machine.BatteringRam;
 import ru.magistu.siegemachines.entity.machine.SiegeLadder;
@@ -20,10 +21,7 @@ public class SiegeLadderGeoRenderer extends MachineGeoRenderer<SiegeLadder>
 	}
 
 	@Override
-	public RenderType getRenderType(SiegeLadder animatable, float partialTicks, PoseStack stack,
-									MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-									ResourceLocation textureLocation)
-	{
+	public RenderType getRenderType(SiegeLadder animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
 		return RenderType.entityTranslucent(getTextureLocation(animatable));
 	}
 	

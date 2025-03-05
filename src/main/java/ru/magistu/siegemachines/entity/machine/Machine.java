@@ -1,6 +1,10 @@
 package ru.magistu.siegemachines.entity.machine;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraftforge.registries.ForgeRegistries;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
@@ -20,7 +24,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -59,6 +62,8 @@ public abstract class Machine extends Mob implements MenuProvider
 	public int delayticks;
 	protected int renderupdateticks = 0;
 	public int deploymentticks = 0;
+
+	protected float hurtDir;
 
 	protected Machine(EntityType<? extends Mob> entitytype, Level level, MachineType type)
     {
@@ -102,21 +107,26 @@ public abstract class Machine extends Mob implements MenuProvider
 	}
 
 	@Override
+	public float getHurtDir() {
+		return hurtDir;
+	}
+
+	@Override
 	public boolean isInvulnerableTo(DamageSource damagesource) {
-		return damagesource == DamageSource.CACTUS ||
-				damagesource == DamageSource.WITHER ||
-				damagesource == DamageSource.MAGIC ||
-				damagesource == DamageSource.DROWN ||
-				damagesource == DamageSource.STARVE ||
+		return damagesource == damageSources().cactus() ||
+				damagesource.is(DamageTypeTags.WITHER_IMMUNE_TO) ||
+				damagesource.is(DamageTypeTags.WITCH_RESISTANT_TO) ||
+				damagesource.is(DamageTypeTags.IS_DROWNING) ||
+				damagesource == damageSources().starve() ||
 				super.isInvulnerableTo(damagesource);
 	}
 
 	public float adjustDamage(DamageSource damagesource, float f) {
-		if (damagesource.isFire()) {
+		if (damagesource.is(DamageTypeTags.IS_FIRE)) {
 			f *= 1.5f;
 		}
 
-		if (damagesource.isExplosion()) {
+		if (damagesource.is(DamageTypeTags.IS_EXPLOSION)) {
 			f *= 1.25f;
 		}
 
@@ -146,13 +156,13 @@ public abstract class Machine extends Mob implements MenuProvider
 		if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, damagesource, f)) return false;
 		if (this.isInvulnerableTo(damagesource))
 			return false;
-		if (this.level.isClientSide)
+		if (this.level().isClientSide)
 			return false;
 		if (this.isDeadOrDying())
 			return false;
-		if (damagesource.isFire() && this.hasEffect(MobEffects.FIRE_RESISTANCE))
+		if (damagesource.is(DamageTypeTags.IS_FIRE) && this.hasEffect(MobEffects.FIRE_RESISTANCE))
 			return false;
-		if (damagesource.getEntity() instanceof Player && !damagesource.isProjectile() && !damagesource.isExplosion() && !damagesource.isMagic() && this.getPassengers().isEmpty())
+		if (damagesource.getEntity() instanceof Player && !damagesource.is(DamageTypeTags.IS_PROJECTILE) && !damagesource.is(DamageTypeTags.IS_EXPLOSION) && !damagesource.is(DamageTypeTags.WITCH_RESISTANT_TO) && this.getPassengers().isEmpty())
 		{
 			this.spawnAtLocation(this.getMachineItemWithData());
 			this.remove();
@@ -161,8 +171,8 @@ public abstract class Machine extends Mob implements MenuProvider
 		f = adjustDamage(damagesource, f);
 
 		this.noActionTime = 0;
-
-		this.animationSpeed = 1.5F;
+		walkAnimation.setSpeed(1.5F);
+		//this.animationSpeed = 1.5F;
 		boolean flag1 = true;
 		if ((float) this.invulnerableTime > 10.0F)
 		{
@@ -216,18 +226,18 @@ public abstract class Machine extends Mob implements MenuProvider
 		}
 
 		if (flag1) {
-			if (damagesource instanceof EntityDamageSource && ((EntityDamageSource) damagesource).isThorns()) {
-				this.level.broadcastEntityEvent(this, (byte) 33);
+			if (damagesource.is(DamageTypes.THORNS)) {
+				this.level().broadcastEntityEvent(this, (byte) 33);
 			}
 
 			else {
 				byte b0;
 
-				if (damagesource.isFire()) {
+				if (damagesource.is(DamageTypeTags.IS_FIRE)) {
 					b0 = 37;
 				}
 
-				else if (damagesource == DamageSource.SWEET_BERRY_BUSH) {
+				else if (damagesource == damageSources().sweetBerryBush()) {
 					b0 = 44;
 				}
 
@@ -235,7 +245,7 @@ public abstract class Machine extends Mob implements MenuProvider
 					b0 = 2;
 				}
 
-				this.level.broadcastEntityEvent(this, b0);
+				this.level().broadcastEntityEvent(this, b0);
 			}
 
 			this.markHurt();
@@ -303,9 +313,9 @@ public abstract class Machine extends Mob implements MenuProvider
 
     @Nullable
 	@Override
-	public Entity getControllingPassenger()
+	public LivingEntity getControllingPassenger()
     {
-		return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+		return this.getPassengers().isEmpty() ? null : (LivingEntity) this.getPassengers().get(0);
 	}
 
     @Override
@@ -348,7 +358,7 @@ public abstract class Machine extends Mob implements MenuProvider
         if (!this.dead)
         {
             this.dead = true;
-            this.level.broadcastEntityEvent(this, (byte)3);
+            this.level().broadcastEntityEvent(this, (byte)3);
         }
         super.remove(RemovalReason.DISCARDED);
     }
@@ -362,7 +372,8 @@ public abstract class Machine extends Mob implements MenuProvider
 				boolean flag2 = b == 36;
 				boolean flag3 = b == 37;
 				boolean flag = b == 44;
-				this.animationSpeed = 1.5F;
+				walkAnimation.setSpeed(1.5F);
+				//this.animationSpeed = 1.5F; TODO CHECK
 				this.invulnerableTime = 20;
 				this.hurtDuration = 10;
 				this.hurtTime = this.hurtDuration;
@@ -372,19 +383,19 @@ public abstract class Machine extends Mob implements MenuProvider
 				}
 				DamageSource damagesource;
 				if (flag3) {
-					damagesource = DamageSource.ON_FIRE;
+					damagesource = damageSources().onFire();
 				} else if (flag2) {
-					damagesource = DamageSource.DROWN;
+					damagesource = damageSources().drown();
 				} else if (flag) {
-					damagesource = DamageSource.SWEET_BERRY_BUSH;
+					damagesource = damageSources().sweetBerryBush();
 				} else {
-					damagesource = DamageSource.GENERIC;
+					damagesource = damageSources().generic();
 				}
 				SoundEvent soundevent1 = this.getHurtSound(damagesource);
 				if (soundevent1 != null) {
 					this.playSound(soundevent1, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 				}
-				this.hurt(DamageSource.GENERIC, 0.0F);
+				this.hurt(damageSources().generic(), 0.0F);
 			}
 			case 3 -> {
 				SoundEvent soundevent = this.getDeathSound();
@@ -403,7 +414,7 @@ public abstract class Machine extends Mob implements MenuProvider
 					double d1 = Mth.lerp(d0, this.xo, this.getX()) + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth() * 2.0D;
 					double d2 = Mth.lerp(d0, this.yo, this.getY()) + this.random.nextDouble() * (double) this.getBbHeight();
 					double d3 = Mth.lerp(d0, this.zo, this.getZ()) + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth() * 2.0D;
-					this.level.addParticle(ParticleTypes.PORTAL, d1, d2, d3, f, f1, f2);
+					this.level().addParticle(ParticleTypes.PORTAL, d1, d2, d3, f, f1, f2);
 				}
 			}
 			case 54 -> HoneyBlock.showJumpParticles(this);
@@ -513,7 +524,7 @@ public abstract class Machine extends Mob implements MenuProvider
 
 	public void updateMachineRender()
 	{
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 		{
 			PacketHandler.sendPacketToAllInArea(new PacketMachine(
 					this.getId(),
@@ -621,14 +632,13 @@ public abstract class Machine extends Mob implements MenuProvider
 	}
 
 	@Override
-    public void positionRider(@NotNull Entity entity) {
-		MoveFunction setPos = Entity::setPos;
-        if (this.hasPassenger(entity)) {
-            double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
-            Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
-			setPos.accept(entity, pos.x, pos.y, pos.z);
-        }
-    }
+	protected void positionRider(Entity entity, MoveFunction p_19958_) {
+		if (this.hasPassenger(entity)) {
+			double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
+			Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
+			p_19958_.accept(entity, pos.x, pos.y, pos.z);
+		}
+	}
 
 
 	public static class MachineInventory implements Container, Nameable 
