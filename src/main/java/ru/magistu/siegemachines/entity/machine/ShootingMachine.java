@@ -25,7 +25,9 @@ import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public abstract class ShootingMachine extends Machine implements IReloading, Shootable
 {
@@ -36,7 +38,7 @@ public abstract class ShootingMachine extends Machine implements IReloading, Sho
         super(entitytype, level, type);
     }
 
-    public abstract void startShooting(Player player);
+    public abstract void startShooting(LivingEntity entity);
 
     public void shoot()
     {
@@ -68,14 +70,14 @@ public abstract class ShootingMachine extends Machine implements IReloading, Sho
     }
 
     @Override
-    public void use(Player player)
+    public void use(LivingEntity entity)
     {
         if (!this.level().isClientSide())
         {
             PacketHandler.sendPacketToAllInArea(new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
 
-        this.startShooting(player);
+        this.startShooting(entity);
     }
 
     @Override
@@ -101,7 +103,7 @@ public abstract class ShootingMachine extends Machine implements IReloading, Sho
 				{
 					stack.shrink(1);
 				}
-				this.inventory.putItem(stack.getItem());
+				this.inventory.putItem(stack);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -176,10 +178,29 @@ public abstract class ShootingMachine extends Machine implements IReloading, Sho
 		return this.inventory.items.stream().filter(this::isValidAmmo).findFirst().orElse(ItemStack.EMPTY);
 	}
 
-	public boolean hasAmmo()
-	{
+    @Override
+    public List<Item> getValidAmmo() {
+        return Arrays.stream(this.type.ammo).map(builder -> builder.item).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean hasAmmo()
+    {
         return this.inventory.items.stream().anyMatch(this::isValidAmmo);
-	}
+    }
+
+    @Override
+    public boolean reload(ItemStack stack) {
+        if (this.isValidAmmo(stack))
+            return this.inventory.putItem(stack);
+        return false;
+    }
+
+    @Override
+    public float getProjectileInitSpeed()
+    {
+        return this.type.specs.projectilespeed.get();
+    }
 
     public ProjectileBuilder getProjectileBuilder()
     {

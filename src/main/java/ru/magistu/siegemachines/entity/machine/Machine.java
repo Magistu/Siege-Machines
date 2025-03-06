@@ -604,7 +604,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable
 		return (float) 0.5 * Math.max((float) 6.0 - dist, 0.0f) / (float) 6.0;
 	}
 
-	public abstract void use(Player player);
+	public abstract void use(LivingEntity entity);
 
 	public abstract void useRelease();
 
@@ -704,18 +704,19 @@ public abstract class Machine extends Mob implements MenuProvider, Useable
         	return this.items.stream().anyMatch(itemStack -> itemStack.getItem().equals(item));
     	}
 
-		public void putItem(Item item) {
+		public boolean putItem(ItemStack stack) {
         	for (int i = 0; i < this.items.size(); ++i) {
 				ItemStack itemstack = this.items.get(i);
 				if (itemstack.isEmpty()) {
-					this.items.set(i, new ItemStack(item));
-					break;
+					this.items.set(i, stack);
+					return true;
 				}
-				if (itemstack.getItem().equals(item) && itemstack.getCount() < itemstack.getMaxStackSize()) {
+				if (itemstack.getItem().equals(stack) && itemstack.getCount() < itemstack.getMaxStackSize()) {
 					itemstack.setCount(itemstack.getCount() + 1);
-					break;
+					return true;
 				}
 			}
+			return false;
     	}
 
 		public void shrinkItem(Item item) {

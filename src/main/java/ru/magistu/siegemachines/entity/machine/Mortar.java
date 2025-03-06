@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.entity.machine;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
 import ru.magistu.siegemachines.entity.IReloading;
@@ -33,6 +34,8 @@ import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
 
 
 public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
@@ -106,7 +109,7 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
                 {
                     stack.shrink(1);
                 }
-                this.inventory.putItem(Items.GUNPOWDER);
+                this.inventory.putItem(stack);
             }
             return InteractionResult.SUCCESS;
         }
@@ -208,13 +211,13 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
     }
 
     @Override
-    public void startShooting(Player player)
+    public void startShooting(LivingEntity entity)
     {
         if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
         {
             if (!this.level().isClientSide())
             {
-                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(entity)), 0.8f);
             }
             this.useticks = this.type.usetime;
             this.shootingticks = this.type.usereleasetime;
@@ -280,5 +283,25 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
     public Item getMachineItem()
     {
         return ModItems.MORTAR.get();
+    }
+
+    @Override
+    public float getProjectileInitSpeed() {
+        return 0;
+    }
+
+    @Override
+    public List<Item> getValidAmmo() {
+        return List.of();
+    }
+
+    @Override
+    public boolean reload(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public void use(@Nullable LivingEntity entity) {
+
     }
 }

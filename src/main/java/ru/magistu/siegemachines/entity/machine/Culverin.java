@@ -103,7 +103,7 @@ public class Culverin extends ShootingMachine implements GeoAnimatable, IReloadi
                 {
                     stack.shrink(1);
                 }
-                this.inventory.putItem(Items.GUNPOWDER);
+                this.inventory.putItem(stack);
             }
             return InteractionResult.SUCCESS;
         }
@@ -185,13 +185,13 @@ public class Culverin extends ShootingMachine implements GeoAnimatable, IReloadi
     }
 
     @Override
-    public void startShooting(Player player)
+    public void startShooting(LivingEntity entity)
     {
         if (this.delayticks <= 0 && this.useticks <= 0)
         {
             if (!this.level().isClientSide())
             {
-                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(entity)), 0.8f);
             }
             this.useticks = this.type.usetime;
         }

@@ -1,6 +1,5 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -203,17 +202,6 @@ public class SiegeLadder extends Machine implements GeoAnimatable
     }
 
     @Override
-    public void use(Player player)
-    {
-        if (this.getControllingPassenger() == player)
-        {
-            LadderSeat seat = this.getFreeSeat(player);
-            if (seat != null)
-                player.startRiding(seat);
-        }
-    }
-
-    @Override
     public void useRelease()
     {
         
@@ -245,7 +233,7 @@ public class SiegeLadder extends Machine implements GeoAnimatable
         return this.position().add(CartesianGeometry.applyRotations((left ? CLIMB_PIVOT_1 : CLIMB_PIVOT_2).add(CLIMB_VECTOR.scale(highness)), 0.0, yaw));
     }
     
-    protected @Nullable LadderSeat getFreeSeat(Player player)
+    protected @Nullable LadderSeat getFreeSeat(Entity entity)
     {
         AtomicReference<LadderSeat> left = new AtomicReference<>(null);
         AtomicReference<LadderSeat> right = new AtomicReference<>(null);
@@ -270,10 +258,10 @@ public class SiegeLadder extends Machine implements GeoAnimatable
         
         if (l1 < l2)
             return left.get();
-        else if (l1 == l2 && player != null)
+        else if (l1 == l2 && entity != null)
         {
             Vec3 view = this.getViewVector(0.0f);
-            return player.position().subtract(this.position()).dot(new Vec3(view.z, 0.0, -view.x).normalize()) > 0.0 ? right.get() : left.get();
+            return entity.position().subtract(this.position()).dot(new Vec3(view.z, 0.0, -view.x).normalize()) > 0.0 ? right.get() : left.get();
         }
         
         return right.get();
@@ -291,4 +279,20 @@ public class SiegeLadder extends Machine implements GeoAnimatable
 
     }
 
+    @Override
+    public UsageType getUsage()
+    {
+        return UsageType.CLIMB;
+    }
+
+    @Override
+    public void use(@Nullable LivingEntity entity)
+    {
+        if (this.getControllingPassenger() == entity)
+        {
+            LadderSeat seat = this.getFreeSeat(entity);
+            if (seat != null)
+                entity.startRiding(seat);
+        }
+    }
 }

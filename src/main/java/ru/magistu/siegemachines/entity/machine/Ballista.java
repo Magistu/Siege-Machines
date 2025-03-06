@@ -96,7 +96,7 @@ public class Ballista extends ShootingMachine implements GeoAnimatable
         return InteractionResult.PASS;
     }
 
-    public void startShooting(Player player)
+    public void startShooting(LivingEntity entity)
     {
         if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
         {

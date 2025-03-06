@@ -200,9 +200,9 @@ public class BatteringRam extends Machine implements GeoAnimatable
     }
 
     @Override
-    public void use(Player player)
+    public void use(LivingEntity entity)
     {
-        if (this.deploymentticks > 0)
+        if (this.deploymentticks > 0 && entity instanceof Player player)
         {
             player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
             return;
@@ -220,6 +220,11 @@ public class BatteringRam extends Machine implements GeoAnimatable
             Vec3 pos = this.position();
             this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), this.getSoundSource(), 0.5f, 0.9f, false);
         }
+    }
+
+    @Override
+    public UsageType getUsage() {
+        return UsageType.RAM;
     }
 
     public void ramHit(BlockPos blockpos)

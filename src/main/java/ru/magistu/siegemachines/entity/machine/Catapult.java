@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.world.entity.Entity;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.SoundTypes;
 import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
@@ -116,7 +117,7 @@ public class Catapult extends ShootingMachine implements GeoAnimatable
         return InteractionResult.PASS;
     }
 
-    public void startShooting(Player player)
+    public void startShooting(LivingEntity entity)
     {
         if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
         {
