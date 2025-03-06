@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.entity.machine;
 
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.api.enitity.Shootable;
 import ru.magistu.siegemachines.entity.IReloading;
 import ru.magistu.siegemachines.entity.projectile.Missile;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
@@ -26,7 +27,7 @@ import ru.magistu.siegemachines.util.CartesianGeometry;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract class ShootingMachine extends Machine implements IReloading
+public abstract class ShootingMachine extends Machine implements IReloading, Shootable
 {
     public int shootingticks = 0;
 
@@ -107,7 +108,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
 		return InteractionResult.PASS;
 	}
 
-    protected Vec3 getShotPos()
+    public Vec3 getShotPos()
     {
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
@@ -115,7 +116,7 @@ public abstract class ShootingMachine extends Machine implements IReloading
         return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
-    protected Vec3 getShotView()
+    public Vec3 getShotView()
     {
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = this.getGlobalTurretYaw() * Math.PI / 180.0;

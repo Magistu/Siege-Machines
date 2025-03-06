@@ -6,6 +6,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraftforge.registries.ForgeRegistries;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.api.enitity.Useable;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
 import ru.magistu.siegemachines.config.SpecsConfig;
@@ -44,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import javax.annotation.Nullable;
 
-public abstract class Machine extends Mob implements MenuProvider
+public abstract class Machine extends Mob implements MenuProvider, Useable
 {
 
 	public KeyMapping usekey;
