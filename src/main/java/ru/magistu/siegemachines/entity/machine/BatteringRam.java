@@ -10,7 +10,7 @@ import ru.magistu.siegemachines.entity.Breakdown;
 import ru.magistu.siegemachines.item.ModItems;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.PacketMachineUse;
-import ru.magistu.siegemachines.network.PacketMachineUseRealise;
+import ru.magistu.siegemachines.network.PacketMachineUseRelease;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -165,7 +165,7 @@ public class BatteringRam extends Machine implements GeoAnimatable
 
         if (this.hittingticks != 0 && --this.hittingticks <= 0)
         {
-            this.useRealise();
+            this.useRelease();
             this.hittingticks = 0;
         }
 
@@ -215,7 +215,7 @@ public class BatteringRam extends Machine implements GeoAnimatable
         {
             this.state = State.HITTING;
             this.useticks = this.type.usetime;
-            this.hittingticks = this.type.userealisetime;
+            this.hittingticks = this.type.usereleasetime;
 
             Vec3 pos = this.position();
             this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.RAM_HITTING.get(), this.getSoundSource(), 0.5f, 0.9f, false);
@@ -233,14 +233,14 @@ public class BatteringRam extends Machine implements GeoAnimatable
     }
 
     @Override
-    public void useRealise()
+    public void useRelease()
     {
         if (this.deploymentticks > 0)
             return;
         
         if (!this.level().isClientSide())
         {
-            PacketHandler.sendPacketToAllInArea(new PacketMachineUseRealise(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            PacketHandler.sendPacketToAllInArea(new PacketMachineUseRelease(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
 
             BlockPos blockpos = new BlockPos((int) this.getHitPos().x, (int) this.getHitPos().y, (int) this.getHitPos().z);
             this.ramHit(blockpos);

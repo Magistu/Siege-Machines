@@ -9,6 +9,10 @@ public final class SpecsConfig
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
+    public static final ForgeConfigSpec.ConfigValue<Float> FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0f);
+    public static final ForgeConfigSpec.ConfigValue<Float> EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0f);
+    public static final ForgeConfigSpec.ConfigValue<Float> ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5f);
+
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
     public static final SiegeMachineSpecs TREBUCHET;

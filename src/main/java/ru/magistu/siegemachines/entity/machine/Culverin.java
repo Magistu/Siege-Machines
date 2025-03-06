@@ -151,7 +151,7 @@ public class Culverin extends ShootingMachine implements GeoAnimatable, IReloadi
         {
             if (this.inventory.containsItem(Items.GUNPOWDER))
             {
-                this.useRealise();
+                this.useRelease();
             }
             this.useticks = 0;
         }
@@ -212,7 +212,7 @@ public class Culverin extends ShootingMachine implements GeoAnimatable, IReloadi
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
             Vec3 pos = this.position();
-            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.MORTAR_SHOOTING.get(), this.getSoundSource(), 1.5f/*this.getVolumeFromDist(1.5f, 64.0f, this.distanceTo(player))*/, 0.85f + this.level().random.nextFloat() * 0.3f, false);
+            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CULVERIN_SHOOTING.get(), this.getSoundSource(), 1.0f/*this.getVolumeFromDist(1.5f, 64.0f, this.distanceTo(player))*/, 0.85f + this.level().random.nextFloat() * 0.3f, false);
         }
 
         this.delayticks = this.type.specs.delaytime.get();

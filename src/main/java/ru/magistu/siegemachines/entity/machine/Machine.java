@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.gui.machine.MachineContainer;
+import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.PacketMachine;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -123,11 +124,11 @@ public abstract class Machine extends Mob implements MenuProvider
 
 	public float adjustDamage(DamageSource damagesource, float f) {
 		if (damagesource.is(DamageTypeTags.IS_FIRE)) {
-			f *= 1.5f;
+			f *= SpecsConfig.FIRE_DAMAGE_MULTIPLIER.get();
 		}
 
 		if (damagesource.is(DamageTypeTags.IS_EXPLOSION)) {
-			f *= 1.25f;
+			f *= SpecsConfig.EXPLOSION_DAMAGE_MULTIPLIER.get();
 		}
 
 		if (damagesource.isCreativePlayer()) {
@@ -135,7 +136,7 @@ public abstract class Machine extends Mob implements MenuProvider
 		}
 
 		if (damagesource.getEntity() instanceof AbstractArrow) {
-			f *= 0.5f;
+			f *= SpecsConfig.ARROW_DAMAGE_MULTIPLIER.get();
 		}
 
 		return f;
@@ -604,7 +605,7 @@ public abstract class Machine extends Mob implements MenuProvider
 
 	public abstract void use(Player player);
 
-	public abstract void useRealise();
+	public abstract void useRelease();
 
 	@Override
 	public MachineContainer createMenu(int id, @NotNull Inventory inv, @NotNull Player player) {

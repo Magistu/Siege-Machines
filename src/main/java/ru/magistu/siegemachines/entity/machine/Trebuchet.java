@@ -169,7 +169,7 @@ public class Trebuchet extends ShootingMachine implements GeoAnimatable
         {
             this.state = State.SHOOTING;
             this.useticks = this.type.usetime;
-            this.shootingticks = this.type.userealisetime;
+            this.shootingticks = this.type.usereleasetime;
 
             Vec3 pos = this.position();
             this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.TREBUCHET_SHOOTING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
@@ -221,7 +221,7 @@ public class Trebuchet extends ShootingMachine implements GeoAnimatable
 
         if (this.shootingticks != 0 && --this.shootingticks <= 0)
         {
-            this.useRealise();
+            this.useRelease();
             this.shootingticks = 0;
         }
 

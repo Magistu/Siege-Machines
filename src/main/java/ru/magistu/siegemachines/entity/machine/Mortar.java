@@ -164,7 +164,7 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
         {
             if (this.inventory.containsItem(Items.GUNPOWDER))
             {
-                this.useRealise();
+                this.useRelease();
             }
             else if (!this.level().isClientSide())
             {
@@ -217,7 +217,7 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
                 this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundTypes.FUSE.get(), this.getSoundSource(), this.getVolumeFromDist(this.distanceTo(player)), 0.8f);
             }
             this.useticks = this.type.usetime;
-            this.shootingticks = this.type.userealisetime;
+            this.shootingticks = this.type.usereleasetime;
         }
     }
 

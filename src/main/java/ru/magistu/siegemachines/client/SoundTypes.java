@@ -27,6 +27,8 @@ public class SoundTypes
 			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "ballista_reloading")));
 	public static RegistryObject<SoundEvent> MORTAR_SHOOTING = SOUNDS.register("mortar_shooting",
 			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "mortar_shooting")));
+	public static RegistryObject<SoundEvent> CULVERIN_SHOOTING = SOUNDS.register("culverin_shooting",
+			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "culverin_shooting")));
 	public static RegistryObject<SoundEvent> FUSE = SOUNDS.register("fuse",
 			() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SiegeMachines.ID, "fuse")));
     public static RegistryObject<SoundEvent> CANNON_WHEELS = SOUNDS.register("cannon_wheels",

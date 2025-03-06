@@ -22,7 +22,7 @@ public class PacketHandler
         INSTANCE.registerMessage(getNextId(), PacketMachine.class, PacketMachine::write, PacketMachine::read, PacketMachine.Handler::handle);
         INSTANCE.registerMessage(getNextId(), PacketMachineControl.class, PacketMachineControl::write, PacketMachineControl::read, PacketMachineControl.Handler::handle);
         INSTANCE.registerMessage(getNextId(), PacketMachineUse.class, PacketMachineUse::write, PacketMachineUse::read, PacketMachineUse.Handler::handle);
-        INSTANCE.registerMessage(getNextId(), PacketMachineUseRealise.class, PacketMachineUseRealise::write, PacketMachineUseRealise::read, PacketMachineUseRealise.Handler::handle);
+        INSTANCE.registerMessage(getNextId(), PacketMachineUseRelease.class, PacketMachineUseRelease::write, PacketMachineUseRelease::read, PacketMachineUseRelease.Handler::handle);
         INSTANCE.registerMessage(getNextId(), PacketOpenMachineInventory.class, PacketOpenMachineInventory::write, PacketOpenMachineInventory::read, PacketOpenMachineInventory.Handler::handle);
         INSTANCE.registerMessage(getNextId(), PacketMachineInventorySlot.class, PacketMachineInventorySlot::write, PacketMachineInventorySlot::read, PacketMachineInventorySlot.Handler::handle);
 

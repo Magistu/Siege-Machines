@@ -42,7 +42,7 @@ public class MachineType
 
     public static MachineType BATTERING_RAM = new MachineType(
             SpecsConfig.BATTERING_RAM, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, false, 5, 5,
-            new Vec3(12.0, 0.0, -48.0).scale(1 / 16.0), new Vec3(0.0, 26.0, 36.0).scale(1 / 16.0), new Vec3(0.0, 0.0, 32.0).scale(1 / 16.0),
+            new Vec3(12.0, 0.0, -48.0).scale(1 / 16.0), new Vec3(0.0, 0.0, 36.0).scale(1 / 16.0), new Vec3(0.0, 0.0, 32.0).scale(1 / 16.0),
             ProjectileBuilder.NO_AMMO, false,
             new ItemStack[] {new ItemStack(Items.OAK_PLANKS, 6), new ItemStack(ModItems.BEAM.get(), 8), new ItemStack(Items.STICK, 12), new ItemStack(Items.IRON_NUGGET, 8)});
 
@@ -61,7 +61,7 @@ public class MachineType
     public final float turretspeed;
     public final float rotationspeed;
     public final boolean yawfirst;
-    public final int userealisetime;
+    public final int usereleasetime;
     public final int usetime;
 
     public final Vec3 passengerpos;
@@ -101,7 +101,7 @@ public class MachineType
         this.rotationspeed = rotationspeed;
         this.turretspeed = turretspeed;
         this.yawfirst = yawfirst;
-        this.userealisetime = shootingtime;
+        this.usereleasetime = shootingtime;
         this.usetime = usetime;
         this.passengerpos = passengerpos;
         this.turretpivot = turretpivot;

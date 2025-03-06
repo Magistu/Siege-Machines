@@ -14,49 +14,49 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 @ChannelHandler.Sharable
-public class PacketMachineUseRealise
+public class PacketMachineUseRelease
 {
 	private final int entityid;
 
-	public PacketMachineUseRealise(int entityid)
+	public PacketMachineUseRelease(int entityid)
 	{
 		this.entityid = entityid;
 	}
 
-	public static PacketMachineUseRealise read(FriendlyByteBuf buf)
+	public static PacketMachineUseRelease read(FriendlyByteBuf buf)
     {
-        return new PacketMachineUseRealise(buf.readInt());
+        return new PacketMachineUseRelease(buf.readInt());
     }
 
-	public static void write(PacketMachineUseRealise message, FriendlyByteBuf buf)
+	public static void write(PacketMachineUseRelease message, FriendlyByteBuf buf)
     {
 		buf.writeInt(message.entityid);
 	}
 
 	public static class Handler
     {
-        public static void handle(PacketMachineUseRealise packet, Supplier<NetworkEvent.Context> ctx)
+        public static void handle(PacketMachineUseRelease packet, Supplier<NetworkEvent.Context> ctx)
         {
             NetworkEvent.Context context = ctx.get();
             if (context.getDirection().getReceptionSide() == LogicalSide.SERVER)
             {
-                context.enqueueWork(() -> PacketMachineUseRealise.handleEachSide(packet, context.getSender()));
+                context.enqueueWork(() -> PacketMachineUseRelease.handleEachSide(packet, context.getSender()));
 			}
 			else if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT)
 			{
-                context.enqueueWork(() -> PacketMachineUseRealise.handleClientSide(packet));
+                context.enqueueWork(() -> PacketMachineUseRelease.handleClientSide(packet));
 			}
             context.setPacketHandled(true);
         }
     }
 
 	@OnlyIn(Dist.CLIENT)
-	public static void handleClientSide(PacketMachineUseRealise packet)
+	public static void handleClientSide(PacketMachineUseRelease packet)
 	{
 		handleEachSide(packet, Minecraft.getInstance().player);
 	}
 
-	public static void handleEachSide(PacketMachineUseRealise packet, Player player)
+	public static void handleEachSide(PacketMachineUseRelease packet, Player player)
 	{
 		if(packet == null || player == null || player.level() == null)
 		{
@@ -70,6 +70,6 @@ public class PacketMachineUseRealise
         }
 		Machine machine = (Machine) entity;
 
-        machine.useRealise();
+        machine.useRelease();
 	}
 }

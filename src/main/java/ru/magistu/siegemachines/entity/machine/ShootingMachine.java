@@ -78,11 +78,11 @@ public abstract class ShootingMachine extends Machine implements IReloading
     }
 
     @Override
-    public void useRealise()
+    public void useRelease()
     {
         if (!this.level().isClientSide())
         {
-            PacketHandler.sendPacketToAllInArea(new PacketMachineUseRealise(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            PacketHandler.sendPacketToAllInArea(new PacketMachineUseRelease(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
         this.shoot();
     }
