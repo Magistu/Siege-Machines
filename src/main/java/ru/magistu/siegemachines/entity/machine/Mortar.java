@@ -299,9 +299,4 @@ public class Mortar extends ShootingMachine implements GeoAnimatable, IReloading
     public boolean reload(ItemStack stack) {
         return false;
     }
-
-    @Override
-    public void use(@Nullable LivingEntity entity) {
-
-    }
 }
