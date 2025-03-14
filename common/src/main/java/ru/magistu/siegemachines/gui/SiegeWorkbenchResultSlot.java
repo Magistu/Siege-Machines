@@ -15,6 +15,7 @@ import ru.magistu.siegemachines.item.recipes.ModRecipeSerializers;
 import ru.magistu.siegemachines.item.recipes.SiegeWorkbenchRecipe;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SiegeWorkbenchResultSlot extends Slot {
     private final CraftingContainer craftSlots;
@@ -68,31 +69,35 @@ public class SiegeWorkbenchResultSlot extends Slot {
     @Override
     public void onTake(Player player, ItemStack stack) {
         this.checkTakeAchievements(stack);
+        CraftingInput.Positioned positioned = this.craftSlots.asPositionedCraftInput();
+        CraftingInput craftinginput = positioned.input();
+        int i = positioned.left();
+        int j = positioned.top();
         RecipeManager manager = player.level().getRecipeManager();
-        CraftingInput craftinginput = this.craftSlots.asPositionedCraftInput().input();
         NonNullList<ItemStack> nonnulllist = manager.getRemainingItemsFor(ModRecipeSerializers.SIEGE_WORKBENCH_RECIPE, craftinginput, player.level());
         Optional<RecipeHolder<SiegeWorkbenchRecipe>> recipe = manager.getRecipeFor(ModRecipeSerializers.SIEGE_WORKBENCH_RECIPE, craftinginput, player.level());
         if(recipe.isEmpty()) return;
 
-        for (int i = 0; i < nonnulllist.size(); ++i) {
-            ItemStack itemstack = this.craftSlots.getItem(i);
-            ItemStack itemstack1 = nonnulllist.get(i);
-            Ingredient recipeElement = recipe.get().value().getIngredients().get(i);
+        for (int k = 0; k < craftinginput.height(); k++) {
+            for (int l = 0; l < craftinginput.width(); l++) {
+                int i1 = l + i + (k + j) * this.craftSlots.getWidth();
+                ItemStack itemstack = this.craftSlots.getItem(i1);
+                ItemStack itemstack1 = nonnulllist.get(l + k * craftinginput.width());
+                Ingredient recipeElement = recipe.get().value().getIngredients().get(l + k * craftinginput.width());
+                if (!itemstack.isEmpty() && recipeElement.getItems().length != 0) {
+                    this.craftSlots.removeItem(i1, recipeElement.getItems()[0].getCount());
+                    itemstack = this.craftSlots.getItem(i);
+                }
 
-            System.out.println(itemstack.getDisplayName().getString() + " " + itemstack1.getCount());
-            if (!itemstack.isEmpty() && recipeElement.getItems().length!=0) {
-                this.craftSlots.removeItem(i, recipeElement.getItems()[0].getCount());
-                itemstack = this.craftSlots.getItem(i);
-            }
-
-            if (!itemstack1.isEmpty()) {
-                if (itemstack.isEmpty()) {
-                    this.craftSlots.setItem(i, itemstack1);
-                } else if (ItemStack.isSameItem(itemstack, itemstack1) && ItemStack.isSameItemSameComponents(itemstack, itemstack1)) {
-                    itemstack1.grow(itemstack.getCount());
-                    this.craftSlots.setItem(i, itemstack1);
-                } else if (!this.player.getInventory().add(itemstack1)) {
-                    this.player.drop(itemstack1, false);
+                if (!itemstack1.isEmpty()) {
+                    if (itemstack.isEmpty()) {
+                        this.craftSlots.setItem(i1, itemstack1);
+                    } else if (ItemStack.isSameItemSameComponents(itemstack, itemstack1)) {
+                        itemstack1.grow(itemstack.getCount());
+                        this.craftSlots.setItem(i1, itemstack1);
+                    } else if (!this.player.getInventory().add(itemstack1)) {
+                        this.player.drop(itemstack1, false);
+                    }
                 }
             }
         }
