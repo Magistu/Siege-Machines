@@ -60,15 +60,8 @@ public abstract class Missile extends ThrowableItemProjectile {
             float damage = (float) (this.type.specs.mass.get() * this.getDeltaMovement().length());
 
             DamageSource damagesource = damageSources().thrown(this, this.getOwner());
-            if (this.type.armorpiercing >= 1.0f) {
-                //damagesource = damagesource.bypassArmor();
-            } else if (this.type.armorpiercing > 0.0f && entity instanceof LivingEntity livingentity) {
-                if (livingentity instanceof Player player) {
-                    if (player.isBlocking() && (getItem().getItem() == ModItems.GIANT_ARROW.get() || getItem().getItem() == Items.ARROW) && (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof ShieldItem || player.isBlocking() && player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof ShieldItem)) {
-                        return;
-                    }
-                }
-                damage -= (1.0f - this.type.armorpiercing) * (damage - CombatRules.getDamageAfterAbsorb(livingentity, damage, damagesource, livingentity.getArmorValue(), (float) livingentity.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue()));
+            if (entity instanceof LivingEntity livingentity) {
+                damage += this.type.armorpiercing * (damage - CombatRules.getDamageAfterAbsorb(livingentity, damage, damagesource, livingentity.getArmorValue(), (float) livingentity.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue()));
             }
 
             if (!this.level().isClientSide() && this.type.explosive) {
