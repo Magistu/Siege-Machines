@@ -2,30 +2,33 @@ package ru.magistu.siegemachines.plugins.rei;
 
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
-import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
-import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import me.shedaniel.rei.forge.REIPluginCommon;
+import me.shedaniel.rei.forge.REIPluginClient;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import ru.magistu.siegemachines.block.ModBlocks;
-import static me.shedaniel.rei.plugin.common.BuiltinPlugin.CRAFTING;
+import ru.magistu.siegemachines.item.recipes.SiegeWorkbenchRecipe;
+import ru.magistu.siegemachines.mixin.RecipeManagerAccessForge;
 
+import java.util.Collection;
 
-@REIPluginCommon
+@REIPluginClient
 public class ReiClientPlugin implements REIClientPlugin {
 
   @Override
   public void registerCategories(CategoryRegistry registry) {
-    registry.addWorkstations(CRAFTING, EntryStacks.of(ModBlocks.SIEGE_WORKBENCH.get()));
+    registry.add(new SiegeWorkbenchCategory());
+    registry.addWorkstations(SiegeWorkbenchCategory.ID, EntryStacks.of(ModBlocks.SIEGE_WORKBENCH.get()));
   }
 
   @Override
-  public void registerTransferHandlers(TransferHandlerRegistry registry) {
-  //  registry.register(new CraftingStationTransferHandler(CraftingStationMenu.class,CRAFTING));
+  public void registerDisplays(DisplayRegistry registry) {
+    registry.registerRecipeFiller(SiegeWorkbenchRecipe.class, SiegeWorkbenchRecipe.Type.INSTANCE, SiegeWorkbenchRecipeDisplay::new);
+    Collection<RecipeHolder<SiegeWorkbenchRecipe>> holders = ((RecipeManagerAccessForge)Minecraft.getInstance().level.getRecipeManager()).invokeByType(SiegeWorkbenchRecipe.Type.INSTANCE);
+    for(RecipeHolder<SiegeWorkbenchRecipe> recipe : holders){
+      DisplayRegistry.getInstance().add(recipe.value());
+    }
   }
-
-  @Override
-  public void registerScreens(ScreenRegistry registry) {
-  //  registry.registerContainerClickArea(new Rectangle(88, 32, 28, 23), CraftingStationScreen.class, CRAFTING);
-  }
-
 }

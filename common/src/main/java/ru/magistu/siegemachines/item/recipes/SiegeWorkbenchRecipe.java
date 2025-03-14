@@ -14,7 +14,7 @@ import ru.magistu.siegemachines.block.ModBlocks;
 
 
 public class SiegeWorkbenchRecipe extends ShapedRecipe {
-    static ResourceLocation TYPE_ID = SiegeMachines.id("siege_workbench");
+    public static ResourceLocation TYPE_ID = SiegeMachines.id("siege_workbench");
 
     static int MAX_WIDTH = 3;
     static int MAX_HEIGHT = 3;

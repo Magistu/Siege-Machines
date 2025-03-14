@@ -4,7 +4,8 @@
   "package": "ru.magistu.siegemachines.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EntityAccessForge"
+    "EntityAccessForge",
+    "RecipeManagerAccessForge"
   ],
   "client": [
   ],
