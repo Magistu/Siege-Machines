@@ -240,7 +240,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
 
     @Override
     public float getBlockExplosionResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
-        System.out.println("resistance: " + resistance);
         if (resistance < 4.3f) {
             return 3.0f;
         }
