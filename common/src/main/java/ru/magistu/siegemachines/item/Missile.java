@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -14,10 +15,14 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +33,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.ModTags;
+import ru.magistu.siegemachines.entity.machine.Machine;
+
+import javax.annotation.Nullable;
 
 public abstract class Missile extends ThrowableItemProjectile {
     public MissileType type = MissileType.STONE;
@@ -60,7 +68,7 @@ public abstract class Missile extends ThrowableItemProjectile {
                         return;
                     }
                 }
-                damage -= (1.0f - this.type.armorpiercing) * (damage - CombatRules.getDamageAfterAbsorb(livingentity, damage, damagesource, 0, 0));
+                damage -= (1.0f - this.type.armorpiercing) * (damage - CombatRules.getDamageAfterAbsorb(livingentity, damage, damagesource, livingentity.getArmorValue(), (float) livingentity.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue()));
             }
 
             if (!this.level().isClientSide() && this.type.explosive) {
@@ -154,10 +162,40 @@ public abstract class Missile extends ThrowableItemProjectile {
     }
 
     public MissileExplosion explode(double x, double y, double z, float size, boolean fired, Explosion.BlockInteraction mode) {
-        MissileExplosion explosion = new MissileExplosion(this.level(), this.getOwner(), x, y, z, size, fired, mode);
+        System.out.println(this.getOwner());
+        Entity source = this.getOwner();
+        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), new EntityBasedExplosionDamageCalculator(source), x, y, z, size, fired, mode, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
         //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
         explosion.explode();
         explosion.finalizeExplosion(true);
         return explosion;
+    }
+
+    @javax.annotation.Nullable
+    private static LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
+        switch (source) {
+            case null -> {
+                return null;
+            }
+            case PrimedTnt primedtnt -> {
+                return primedtnt.getOwner();
+            }
+            case Machine machine -> {
+                return machine.getControllingPassenger();
+            }
+            case LivingEntity living -> {
+                return living;
+            }
+            case Projectile projectile -> {
+                Entity entity = projectile.getOwner();
+                if (entity instanceof LivingEntity) {
+                    return (LivingEntity) entity;
+                }
+            }
+            default -> {
+            }
+        }
+
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +40,11 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.ModTags;
@@ -231,6 +236,15 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     private void playUseReleaseSound() {
         Vec3 pos = this.position();
         this.level().playLocalSound(pos.x, pos.y, pos.z, this.type.usereleasesound.get(), this.getSoundSource(), this.type.usereleasevolume, 1.0f, false);
+    }
+
+    @Override
+    public float getBlockExplosionResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
+        System.out.println("resistance: " + resistance);
+        if (resistance < 4.3f) {
+            return 3.0f;
+        }
+        return resistance * 0.7f;
     }
 
     @Override

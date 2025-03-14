@@ -141,10 +141,10 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
 
     public void ramHit(BlockPos blockpos) {
         if (!this.level().isClientSide()) {
-            Explosion breakdown = new Explosion(this.level(), this,
+            Explosion explosion = new Explosion(this.level(), this,
                     blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, Explosion.BlockInteraction.DESTROY);
-            breakdown.explode();
-            breakdown.finalizeExplosion(true);
+            explosion.explode();
+            explosion.finalizeExplosion(true);
         }
     }
 
