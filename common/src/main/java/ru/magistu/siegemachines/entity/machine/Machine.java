@@ -43,6 +43,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.ModTags;
+import ru.magistu.siegemachines.api.enitity.Useable;
+import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import javax.annotation.Nullable;
@@ -53,7 +55,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-public abstract class Machine extends Mob implements MenuProvider {
+public abstract class Machine extends Mob implements MenuProvider, Useable {
 
     public MachineInventory inventory;
     public final MachineType type;
@@ -168,15 +170,15 @@ public abstract class Machine extends Mob implements MenuProvider {
 
     public float adjustDamage(DamageSource damagesource, float f) {
         if (damagesource.is(DamageTypeTags.IS_FIRE)) {
-            f *= 3.0f;
+            f *= SpecsConfig.FIRE_DAMAGE_MULTIPLIER.get();
         }
 
         if (damagesource.is(DamageTypeTags.IS_EXPLOSION)) {
-            f *= 2.0f;
+            f *= SpecsConfig.EXPLOSION_DAMAGE_MULTIPLIER.get();
         }
 
         if (damagesource.is(DamageTypes.ARROW)) {
-            f *= 0.5f;
+            f *= SpecsConfig.ARROW_DAMAGE_MULTIPLIER.get();
         }
 
         return f;
@@ -489,7 +491,7 @@ public abstract class Machine extends Mob implements MenuProvider {
         }
     }
 
-    public abstract void use(Player player);
+    public abstract void use(LivingEntity entity);
 
     public abstract void useRelease();
 

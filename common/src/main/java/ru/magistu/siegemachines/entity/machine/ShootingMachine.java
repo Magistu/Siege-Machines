@@ -18,22 +18,25 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.api.enitity.Shootable;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-public abstract class ShootingMachine extends Machine {
+public abstract class ShootingMachine extends Machine implements Shootable {
     public int shootingticks = 0;
 
     protected ShootingMachine(EntityType<? extends Mob> entitytype, Level level, MachineType type) {
         super(entitytype, level, type);
     }
 
-    public abstract void startShooting(Player player);
+    public abstract void startShooting(LivingEntity entity);
 
     public void shoot() {
         if (this.type.ammo.length == 0) {
@@ -61,11 +64,11 @@ public abstract class ShootingMachine extends Machine {
     }
 
     @Override
-    public void use(Player player) {
+    public void use(LivingEntity entity) {
         if (!this.level().isClientSide()) {
             PacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
-        this.startShooting(player);
+        this.startShooting(entity);
     }
 
     @Override
@@ -106,14 +109,14 @@ public abstract class ShootingMachine extends Machine {
         super.tick();
     }
 
-    protected Vec3 getShotPos() {
+    public Vec3 getShotPos() {
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = (this.getViewYRot(1.0f) + this.getTurretYaw()) * Math.PI / 180.0;
 
         return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
-    protected Vec3 getShotView() {
+    public Vec3 getShotView() {
         double pitch = this.getTurretPitch() * Math.PI / 180.0;
         double yaw = this.getGlobalTurretYaw() * Math.PI / 180.0;
 
@@ -148,8 +151,27 @@ public abstract class ShootingMachine extends Machine {
         return this.inventory.getItems().stream().filter(this::isValidAmmo).findFirst().orElse(ItemStack.EMPTY);
     }
 
+    @Override
+    public List<Item> getValidAmmo() {
+        return Arrays.stream(this.type.ammo).map(builder -> builder.item).collect(Collectors.toList());
+    }
+
+    @Override
     public boolean hasAmmo() {
         return this.inventory.getItems().stream().anyMatch(this::isValidAmmo);
+    }
+
+    @Override
+    public boolean reload(ItemStack stack) {
+        if (this.isValidAmmo(stack))
+            return !this.inventory.addItem(stack).isEmpty();
+        return false;
+    }
+
+    @Override
+    public float getProjectileInitSpeed()
+    {
+        return this.type.specs.projectilespeed.get().floatValue();
     }
 
     public ProjectileBuilder<? extends Projectile> getProjectileBuilder() {

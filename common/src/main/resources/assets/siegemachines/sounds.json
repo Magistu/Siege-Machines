@@ -134,6 +134,15 @@
       }
     ]
   },
+  "culverin_shooting": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "siegemachines:culverin_shooting",
+        "stream": true
+      }
+    ]
+  },
   "fuse": {
     "category": "record",
     "sounds": [

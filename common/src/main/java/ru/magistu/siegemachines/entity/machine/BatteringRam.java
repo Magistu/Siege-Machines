@@ -122,8 +122,8 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
     }
 
     @Override
-    public void use(Player player) {
-        if (this.deploymentticks > 0) {
+    public void use(LivingEntity entity) {
+        if (this.deploymentticks > 0 && entity instanceof Player player) {
             player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
             return;
         }
@@ -178,5 +178,9 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
         double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
 
         return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
+    }
+
+    public UsageType getUsage() {
+        return UsageType.RAM;
     }
 }

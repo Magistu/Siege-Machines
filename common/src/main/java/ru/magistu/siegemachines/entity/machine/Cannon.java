@@ -132,7 +132,7 @@ public class Cannon extends ShootingMachine implements GeoEntity {
     }
 
     @Override
-    public void startShooting(Player player) {
+    public void startShooting(LivingEntity entity) {
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.shootingticks <= 0) {
             this.usesoundplayer.run();
             setUseTicks(this.type.usetime);

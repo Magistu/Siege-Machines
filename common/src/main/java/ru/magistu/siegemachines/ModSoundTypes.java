@@ -22,6 +22,8 @@ public class ModSoundTypes {
             () -> SoundEvent.createVariableRangeEvent(SiegeMachines.id("ballista_reloading")));
     public static RegistrySupplier<SoundEvent> MORTAR_SHOOTING = SOUNDS.register("mortar_shooting",
             () -> SoundEvent.createVariableRangeEvent(SiegeMachines.id("mortar_shooting")));
+    public static RegistrySupplier<SoundEvent> CULVERIN_SHOOTING = SOUNDS.register("culverin_shooting",
+            () -> SoundEvent.createVariableRangeEvent(SiegeMachines.id("culverin_shooting")));
     public static RegistrySupplier<SoundEvent> FUSE = SOUNDS.register("fuse",
             () -> SoundEvent.createVariableRangeEvent(SiegeMachines.id("fuse")));
     public static RegistrySupplier<SoundEvent> CANNON_WHEELS = SOUNDS.register("cannon_wheels",

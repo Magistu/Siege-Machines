@@ -27,7 +27,7 @@ public class MachineType {
             new Vec3(15.0, 0.0, -35.0).scale(1 / 16.0), new Vec3(0.0, 18.0, 18.0).scale(1 / 16.0), new Vec3(0.0, 8.0, 12.0).scale(1 / 16.0),
             ProjectileBuilder.CANNON_AMMO, true,
             () -> new ItemStack[]{new ItemStack(Items.OAK_PLANKS, 3), new ItemStack(ModItems.BEAM.get(), 2), new ItemStack(Items.STICK, 10), new ItemStack(Items.IRON_NUGGET, 32)}, ModItems.CULVERIN,
-            -1, -1, null, -1, ModSoundTypes.FUSE, 0.3f, ModSoundTypes.MORTAR_SHOOTING);
+            -1, -1, null, -1, ModSoundTypes.FUSE, 0.3f, ModSoundTypes.CULVERIN_SHOOTING);
 
     public static MachineType TREBUCHET = new MachineType(
             SpecsConfig.TREBUCHET, 1, 0.0f, -45.0f, 75.0f, 0.0f, 0.0f, 0.0f, 5.0f, 0.1f, true, 38, 137,

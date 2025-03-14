@@ -6,6 +6,10 @@ public final class SpecsConfig {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
+    public static final ModConfigSpec.ConfigValue<Float> FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0f);
+    public static final ModConfigSpec.ConfigValue<Float> EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0f);
+    public static final ModConfigSpec.ConfigValue<Float> ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5f);
+
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
     public static final SiegeMachineSpecs TREBUCHET;

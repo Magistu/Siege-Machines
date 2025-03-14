@@ -13,9 +13,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import ru.magistu.siegemachines.item.recipes.ModRecipeSerializers;
 import ru.magistu.siegemachines.item.recipes.SiegeWorkbenchRecipe;
-
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SiegeWorkbenchResultSlot extends Slot {
     private final CraftingContainer craftSlots;

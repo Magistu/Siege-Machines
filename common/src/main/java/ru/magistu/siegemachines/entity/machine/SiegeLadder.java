@@ -150,11 +150,11 @@ public class SiegeLadder extends Machine implements GeoEntity {
     }
 
     @Override
-    public void use(Player player) {
-        if (this.getControllingPassenger() == player) {
-            LadderSeat seat = this.getFreeSeat(player);
+    public void use(LivingEntity entity) {
+        if (this.getControllingPassenger() == entity) {
+            LadderSeat seat = this.getFreeSeat(entity);
             if (seat != null)
-                player.startRiding(seat);
+                entity.startRiding(seat);
         }
     }
 
@@ -178,7 +178,7 @@ public class SiegeLadder extends Machine implements GeoEntity {
         return this.position().add(CartesianGeometry.applyRotations((left ? CLIMB_PIVOT_1 : CLIMB_PIVOT_2).add(CLIMB_VECTOR.scale(highness)), 0.0, yaw));
     }
 
-    protected @Nullable LadderSeat getFreeSeat(Player player) {
+    protected @Nullable LadderSeat getFreeSeat(LivingEntity entity) {
         AtomicReference<LadderSeat> left = new AtomicReference<>(null);
         AtomicReference<LadderSeat> right = new AtomicReference<>(null);
 
@@ -202,9 +202,9 @@ public class SiegeLadder extends Machine implements GeoEntity {
 
         if (l1 < l2)
             return left.get();
-        else if (l1 == l2 && player != null) {
+        else if (l1 == l2 && entity != null) {
             Vec3 view = this.getViewVector(0.0f);
-            return player.position().subtract(this.position()).dot(new Vec3(view.z, 0.0, -view.x).normalize()) > 0.0 ? right.get() : left.get();
+            return entity.position().subtract(this.position()).dot(new Vec3(view.z, 0.0, -view.x).normalize()) > 0.0 ? right.get() : left.get();
         }
 
         return right.get();
@@ -225,5 +225,9 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void onAddedToLevel() {
         Services.PLATFORM.onAddedToLevel(this);
         this.seats.forEach(seat -> this.level().addFreshEntity(seat));
+    }
+
+    public UsageType getUsage() {
+        return UsageType.CLIMB;
     }
 }
