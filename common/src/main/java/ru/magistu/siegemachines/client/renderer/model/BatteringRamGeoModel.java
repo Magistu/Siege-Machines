@@ -6,8 +6,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
-import java.util.Optional;
-
 public class BatteringRamGeoModel extends DefaultedEntityGeoModel<BatteringRam> {
     public BatteringRamGeoModel(ResourceLocation assetSubpath) {
         super(assetSubpath);
@@ -17,11 +15,9 @@ public class BatteringRamGeoModel extends DefaultedEntityGeoModel<BatteringRam> 
     public void setCustomAnimations(BatteringRam animatable, long instanceId, AnimationState<BatteringRam> animationState) {
         float partialTick = animationState.getPartialTick();
 
-        for (int i = 0; i < 6;i++) {
-            Optional<GeoBone> bone1 = getBone("Wheel"+(i+1));
-            bone1.ifPresent(bone -> {
-                bone.setRotX((float) (-animatable.getLerpedWheelPitch(partialTick)));
-            });
+        for (int i = 1; i <= 6; i++) {
+            GeoBone wheel = getBone("Wheel" + i).orElseThrow();
+            wheel.setRotX((float) (-animatable.getLerpedWheelPitch(partialTick)));
         }
     }
 }

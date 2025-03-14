@@ -15,9 +15,11 @@ public class TrebuchetModel extends DefaultedEntityGeoModel<Trebuchet> {
 
     @Override
     public void setCustomAnimations(Trebuchet animatable, long instanceId, AnimationState<Trebuchet> animationState) {
-        float partialTicks = animationState.getPartialTick();
         Optional<GeoBone> projectile = getBone("Cobblestone");
-        boolean show = (animatable.state == Trebuchet.State.IDLE_RELOADED || animatable.shootingticks > 0) && animatable.hasAmmo();
-        projectile.ifPresent(bone -> bone.setHidden(!show));
+
+        int useticks = animatable.getUseTicks();
+        boolean shouldrender = ((useticks <= 0 && animatable.shootingticks <= 0) || (useticks > 0 && animatable.shootingticks > 0)) && animatable.getDelayTicks() <= 0;
+        boolean showProjectile = shouldrender && animatable.hasAmmo();
+        projectile.ifPresent(bone -> bone.setHidden(!showProjectile));
     }
 }

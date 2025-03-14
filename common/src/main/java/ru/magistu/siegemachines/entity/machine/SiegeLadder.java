@@ -8,19 +8,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.item.ModItems;
 import ru.magistu.siegemachines.platform.Services;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
@@ -30,29 +28,26 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class SiegeLadder extends Machine implements GeoEntity
-{
+public class SiegeLadder extends Machine implements GeoEntity {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    
+
     private static final Vec3 CLIMB_VECTOR = new Vec3(0.0, 130.0, 130.0).scale(1.0 / 16.0);
     private static final Vec3 CLIMB_PIVOT_1 = new Vec3(-8.0, 0.0, -37.0).scale(1.0 / 16.0);
     private static final Vec3 CLIMB_PIVOT_2 = new Vec3(8.0, 0.0, -37.0).scale(1.0 / 16.0);
 
     private static final int NUMBER_OF_SEATS = 16;
-    
+
     private final List<LadderSeat> leftseats;
     private final List<LadderSeat> rightseats;
     public final List<LadderSeat> seats;
 
-    private final int wheelssoundticks = 10;
     private double lastwheelpitch;
     private double wheelspitch = 0.0;
 
 
-    public SiegeLadder(EntityType<? extends Mob> entitytype, Level level)
-    {
+    public SiegeLadder(EntityType<? extends Mob> entitytype, Level level) {
         super(entitytype, level, MachineType.SIEGE_LADDER);
-        
+
         this.leftseats = Stream.generate(() -> new LadderSeat(this)).limit(NUMBER_OF_SEATS / 2).collect(Collectors.toList());
         this.rightseats = Stream.generate(() -> new LadderSeat(this)).limit(NUMBER_OF_SEATS / 2).collect(Collectors.toList());
         this.seats = Stream.of(this.leftseats, this.rightseats)
@@ -61,30 +56,26 @@ public class SiegeLadder extends Machine implements GeoEntity
     }
 
     @Override
-	public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-	}
+    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
+    }
 
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache()
-    {
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.factory;
     }
 
     @Override
-    protected InteractionResult mobInteract(Player player, InteractionHand hand)
-    {
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (player.level().isClientSide() || player.isPassenger())
             return InteractionResult.PASS;
 
-        if (!this.isVehicle())
-        {
+        if (!this.isVehicle()) {
             player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
 
         LadderSeat seat = this.getFreeSeat(player);
-        if (seat != null)
-        {
+        if (seat != null) {
             player.startRiding(seat);
             return InteractionResult.SUCCESS;
         }
@@ -93,42 +84,27 @@ public class SiegeLadder extends Machine implements GeoEntity
     }
 
     @Override
-	public void travel(Vec3 pos)
-    {
-		if (this.isAlive())
-        {
-            if (this.isVehicle())
-            {
-			    LivingEntity livingentity = this.getControllingPassenger();
+    public void travel(Vec3 pos) {
+        if (this.isAlive()) {
+            if (this.isVehicle()) {
+                LivingEntity livingentity = this.getControllingPassenger();
 
-                this.setYawDest(livingentity.getYRot());
-
-                this.updateYaw();
-
-				float f1 = livingentity.zza;
-				if (f1 <= 0.0f)
-					f1 *= 0.25f;
-				this.setSpeed(0.04f);
+                float f1 = livingentity.zza;
+                if (f1 <= 0.0f)
+                    f1 *= 0.25f;
+                this.setSpeed(0.04f);
 
                 pos = new Vec3(0.0f, pos.y, f1);
-			}
-            
+            }
+
             super.travel(pos);
-		}
-	}
+        }
+    }
 
     @Override
-    public void tick()
-    {
-
+    public void tick() {
         lastwheelpitch = wheelspitch;
         wheelspitch += this.getWheelsSpeed();
-
-        if (this.renderupdateticks-- <= 0)
-        {
-            this.updateMachineRender();
-            this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
-        }
 
 //        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
 //        {
@@ -142,30 +118,26 @@ public class SiegeLadder extends Machine implements GeoEntity
     }
 
     public double getLerpedWheelPitch(float partialTick) {
-        return Mth.lerp(partialTick,lastwheelpitch,wheelspitch);
+        return Mth.lerp(partialTick, lastwheelpitch, wheelspitch);
     }
 
 
-    public void seatsTick()
-    {
+    public void seatsTick() {
         this.leftseats.forEach(seat -> this.updateSeatPosition(seat, true));
         this.rightseats.forEach(seat -> this.updateSeatPosition(seat, false));
     }
 
-    public void updateSeatPosition(LadderSeat seat, boolean left)
-    {
+    public void updateSeatPosition(LadderSeat seat, boolean left) {
         double yaw = this.getYRot() * Math.PI / 180.0;
 
         float highness = seat.climb();
-        
+
         Vec3 pos = this.getSeatPosititon(highness, yaw, left);
         Optional<Vec3> freepos = this.level().findFreePosition(seat, Shapes.create(AABB.ofSize(pos, 0.1, 0.1, 0.1)), pos, 0.0, 0.0, 0.0);
-        if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5)
-        {
+        if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5) {
             seat.setHighness(highness);
             pos = freepos.get();
-        }
-        else
+        } else
             pos = this.getSeatPosititon(seat, yaw, left);
         seat.moveTo(pos);
     }
@@ -177,13 +149,9 @@ public class SiegeLadder extends Machine implements GeoEntity
         super.remove(reason);
     }
 
-
-
     @Override
-    public void use(Player player)
-    {
-        if (this.getControllingPassenger() == player)
-        {
+    public void use(Player player) {
+        if (this.getControllingPassenger() == player) {
             LadderSeat seat = this.getFreeSeat(player);
             if (seat != null)
                 player.startRiding(seat);
@@ -191,80 +159,64 @@ public class SiegeLadder extends Machine implements GeoEntity
     }
 
     @Override
-    public void useRealise()
-    {
-        
+    public void useRelease() {
     }
 
-    public double getWheelsSpeed()
-    {
-        if (this.onGround())
-        {
+    public double getWheelsSpeed() {
+        if (this.onGround()) {
             return this.getViewVector(5.0f).multiply(1, 0, 1).dot(this.getDeltaMovement());
         }
 
         return 0.0;
     }
 
-    @Override
-    public Item getMachineItem()
-    {
-        return ModItems.SIEGE_LADDER.get();
-    }
-
-    protected Vec3 getSeatPosititon(LadderSeat seat, double yaw, boolean left)
-    {
+    protected Vec3 getSeatPosititon(LadderSeat seat, double yaw, boolean left) {
         return getSeatPosititon(seat.getHighness(), yaw, left);
     }
-    
-    protected Vec3 getSeatPosititon(float highness, double yaw, boolean left)
-    {
+
+    protected Vec3 getSeatPosititon(float highness, double yaw, boolean left) {
         return this.position().add(CartesianGeometry.applyRotations((left ? CLIMB_PIVOT_1 : CLIMB_PIVOT_2).add(CLIMB_VECTOR.scale(highness)), 0.0, yaw));
     }
-    
-    protected @Nullable LadderSeat getFreeSeat(Player player)
-    {
+
+    protected @Nullable LadderSeat getFreeSeat(Player player) {
         AtomicReference<LadderSeat> left = new AtomicReference<>(null);
         AtomicReference<LadderSeat> right = new AtomicReference<>(null);
-        
+
         long l1 = this.leftseats.stream().filter(seat -> {
             if (seat.isVehicle())
                 return true;
-            else
-            {
+            else {
                 left.set(seat);
                 return false;
-            }}).count();
+            }
+        }).count();
 
         long l2 = this.rightseats.stream().filter(seat -> {
             if (seat.isVehicle())
                 return true;
-            else
-            {
+            else {
                 right.set(seat);
                 return false;
-            }}).count();
-        
+            }
+        }).count();
+
         if (l1 < l2)
             return left.get();
-        else if (l1 == l2 && player != null)
-        {
+        else if (l1 == l2 && player != null) {
             Vec3 view = this.getViewVector(0.0f);
             return player.position().subtract(this.position()).dot(new Vec3(view.z, 0.0, -view.x).normalize()) > 0.0 ? right.get() : left.get();
         }
-        
+
         return right.get();
-    }
-    
-    @Override
-    public void push(Entity entity)
-    {
-        
     }
 
     @Override
-    public void push(double x, double y, double z)
-    {
+    public void push(Entity entity) {
+
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
 
     }
 

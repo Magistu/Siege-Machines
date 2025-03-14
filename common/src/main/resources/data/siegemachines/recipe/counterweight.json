@@ -7,15 +7,24 @@
   ],
   "key": {
     "b": {
-      "item": "siegemachines:beam",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:beam"
+      },
       "count": 3
     },
     "s": {
-      "item": "minecraft:cobblestone",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "minecraft:cobblestone"
+      },
       "count": 4
     },
     "i": {
-      "tag": "c:ingots/iron",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "c:ingots/iron"
+      },
       "count": 2
     }
   },

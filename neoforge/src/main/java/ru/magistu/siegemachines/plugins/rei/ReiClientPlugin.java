@@ -7,8 +7,8 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginCommon;
 import ru.magistu.siegemachines.block.ModBlocks;
-
 import static me.shedaniel.rei.plugin.common.BuiltinPlugin.CRAFTING;
+
 
 @REIPluginCommon
 public class ReiClientPlugin implements REIClientPlugin {

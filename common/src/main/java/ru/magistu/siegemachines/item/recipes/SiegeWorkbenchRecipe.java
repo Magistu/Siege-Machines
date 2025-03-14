@@ -5,11 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import ru.magistu.siegemachines.SiegeMachines;
-import org.jetbrains.annotations.NotNull;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import org.jetbrains.annotations.NotNull;
+import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.block.ModBlocks;
 
 
@@ -28,13 +28,13 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
     }
 
     public SiegeWorkbenchRecipe(ShapedRecipe recipe) {
-        this(SiegeMachines.ID,recipe.category(), recipe.pattern, recipe.getResultItem(null));
+        this(SiegeMachines.ID, recipe.category(), recipe.pattern, recipe.getResultItem(null));
     }
 
 
     @NotNull
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.SIEGE_WORKBENCH_SERIALIZER.get()  ;
+        return ModRecipeSerializers.SIEGE_WORKBENCH_SERIALIZER.get();
     }
 
     @Override
@@ -42,12 +42,23 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
         return super.assemble(input, registries);
     }
 
-    /* @Override
+    @Override
     @NotNull
     public RecipeType<?> getType() 
     {
         return Type.INSTANCE;
-    }*/
+    }
+
+    public static class Type implements RecipeType<SiegeWorkbenchRecipe>
+    {
+        public static final Type INSTANCE = new Type();
+
+        @Override
+        public String toString()
+        {
+            return SiegeWorkbenchRecipe.TYPE_ID.toString();
+        }
+    }
 
     @Override
     @NotNull
@@ -64,19 +75,19 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
 
         public static final MapCodec<SiegeWorkbenchRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(ShapedRecipe.Serializer.CODEC.forGetter(upgradeRecipe -> upgradeRecipe))
-                        .apply(instance,SiegeWorkbenchRecipe::new));
+                        .apply(instance, SiegeWorkbenchRecipe::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SiegeWorkbenchRecipe> STREAM_CODEC = StreamCodec.of(
                 ShapedRecipe.Serializer.STREAM_CODEC::encode, pBuffer -> new SiegeWorkbenchRecipe(ShapedRecipe.Serializer.STREAM_CODEC.decode(pBuffer)));
 
 
         @Override
         public MapCodec<ShapedRecipe> codec() {
-            return (MapCodec<ShapedRecipe>)(Object) CODEC;
+            return (MapCodec<ShapedRecipe>) (Object) CODEC;
         }
 
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, ShapedRecipe> streamCodec() {
-            return  (StreamCodec<RegistryFriendlyByteBuf, ShapedRecipe>) (Object) STREAM_CODEC;
+            return (StreamCodec<RegistryFriendlyByteBuf, ShapedRecipe>) (Object) STREAM_CODEC;
         }
 
     }

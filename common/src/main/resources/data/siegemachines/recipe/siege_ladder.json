@@ -7,19 +7,31 @@
   ],
   "key": {
     "B": {
-      "item": "siegemachines:turret_base",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:turret_base"
+      },
       "count": 8
     },
     "b": {
-      "item": "siegemachines:beam",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:beam"
+      },
       "count": 20
     },
     "l": {
-      "item": "minecraft:ladder",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "minecraft:ladder"
+      },
       "count": 4
     },
     "w": {
-      "item": "siegemachines:wheel",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:wheel"
+      },
       "count": 6
     }
   },

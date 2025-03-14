@@ -7,31 +7,52 @@
   ],
   "key": {
     "B": {
-      "item": "siegemachines:turret_base",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:turret_base"
+      },
       "count": 10
     },
     "b": {
-      "item": "siegemachines:beam",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:beam"
+      },
       "count": 18
     },
     "p": {
-      "tag": "minecraft:planks",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "minecraft:planks"
+      },
       "count": 12
     },
     "i": {
-      "tag": "c:ingots/iron",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "c:ingots/iron"
+      },
       "count": 14
     },
     "s": {
-      "item": "minecraft:string",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "minecraft:string"
+      },
       "count": 5
     },
     "l": {
-      "item": "minecraft:leather",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "minecraft:leather"
+      },
       "count": 6
     },
     "r": {
-      "tag": "c:rods/wooden",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "c:rods/wooden"
+      },
       "count": 6
     }
   },

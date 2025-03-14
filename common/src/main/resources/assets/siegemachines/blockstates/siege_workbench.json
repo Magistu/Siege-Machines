@@ -1,5 +1,7 @@
 {
-	"variants": {
-		"": { "model": "siegemachines:block/siege_workbench" }
-	}
+  "variants": {
+    "": {
+      "model": "siegemachines:block/siege_workbench"
+    }
+  }
 }

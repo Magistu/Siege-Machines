@@ -5,7 +5,10 @@
   ],
   "key": {
     "p": {
-      "tag": "minecraft:planks",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "minecraft:planks"
+      },
       "count": 2
     }
   },

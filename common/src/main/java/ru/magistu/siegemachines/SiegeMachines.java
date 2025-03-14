@@ -35,7 +35,7 @@ public class SiegeMachines {
     }
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(ID,path);
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
 }

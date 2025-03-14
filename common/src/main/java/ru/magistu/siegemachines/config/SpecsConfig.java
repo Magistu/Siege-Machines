@@ -2,8 +2,7 @@ package ru.magistu.siegemachines.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-public final class SpecsConfig
-{
+public final class SpecsConfig {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
@@ -19,10 +18,9 @@ public final class SpecsConfig
     public static final MissileSpecs STONE;
     public static final MissileSpecs GIANT_STONE;
 
-    static
-    {
+    static {
         BUILDER.push("siege_machines");
-        
+
         MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f);
         CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f);
         TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f);
@@ -40,7 +38,7 @@ public final class SpecsConfig
         GIANT_STONE = new MissileSpecs(BUILDER, "giant_stone", 70.0f, 5.0f, false);
 
         BUILDER.pop();
-        
+
         SPEC = BUILDER.build();
     }
 }

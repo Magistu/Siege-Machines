@@ -10,7 +10,7 @@ public class ModTags {
         public static final TagKey<DamageType> MACHINE_IMMUNE_TO = mod("machine_immune_to");
 
         static TagKey<DamageType> mod(String path) {
-            return TagKey.create(Registries.DAMAGE_TYPE,SiegeMachines.id(path));
+            return TagKey.create(Registries.DAMAGE_TYPE, SiegeMachines.id(path));
         }
     }
 
@@ -20,7 +20,7 @@ public class ModTags {
         public static final TagKey<Block> SMOOTH_IMPACT = mod("smooth_impact");
 
         static TagKey<Block> mod(String path) {
-            return TagKey.create(Registries.BLOCK,SiegeMachines.id(path));
+            return TagKey.create(Registries.BLOCK, SiegeMachines.id(path));
         }
     }
 

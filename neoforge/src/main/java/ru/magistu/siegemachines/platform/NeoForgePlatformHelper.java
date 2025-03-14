@@ -16,35 +16,32 @@ import net.neoforged.fml.loading.FMLLoader;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
 
+    public static PayloadRegistrar registrar;
+
     @Override
     public String getPlatformName() {
-
         return "NeoForge";
     }
 
     @Override
     public boolean isModLoaded(String modId) {
-
         return ModList.get().isLoaded(modId);
     }
 
     @Override
     public boolean isDevelopmentEnvironment() {
-
         return !FMLLoader.isProduction();
     }
 
-    public static PayloadRegistrar registrar;
     @Override
-    public <MSG extends S2CModPacket<?>> void registerClientPlayPacket(CustomPacketPayload.Type<MSG> type, StreamCodec<RegistryFriendlyByteBuf,MSG> streamCodec) {
+    public <T extends S2CModPacket<?>> void registerClientPlayPacket(CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf,T> streamCodec) {
         registrar.playToClient(type, streamCodec, (p, t) -> p.handleClient());
     }
 
     @Override
-    public <MSG extends C2SModPacket<?>> void registerServerPlayPacket(CustomPacketPayload.Type<MSG> type, StreamCodec<RegistryFriendlyByteBuf, MSG> streamCodec) {
+    public <T extends C2SModPacket<?>> void registerServerPlayPacket(CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
         registrar.playToServer(type, streamCodec, (p, t) -> p.handleServer((ServerPlayer) t.player()));
     }
-
 
     @Override
     public void sendToClient(S2CModPacket<?> msg, ServerPlayer player) {

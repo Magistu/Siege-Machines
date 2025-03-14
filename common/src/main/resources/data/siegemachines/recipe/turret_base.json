@@ -6,11 +6,17 @@
   ],
   "key": {
     "b": {
-      "item": "siegemachines:beam",
+      "type": "siegemachines:count",
+      "base": {
+          "item": "siegemachines:beam"
+      },
       "count": 2
     },
     "p": {
-      "tag": "minecraft:planks",
+      "type": "siegemachines:count",
+      "base": {
+          "tag": "minecraft:planks"
+      },
       "count": 2
     }
   },

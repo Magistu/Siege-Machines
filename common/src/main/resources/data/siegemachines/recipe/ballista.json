@@ -37,12 +37,15 @@
     "s": {
       "type": "siegemachines:count",
       "base": {
-      "item": "minecraft:string",
-        "count": 3
-      }
+        "item": "minecraft:string"
+      },
+      "count": 3
     },
     "l": {
-      "item": "minecraft:leather",
+      "type": "siegemachines:count",
+      "base": {
+        "item": "minecraft:leather"
+      },
       "count": 1
     },
     "r": {

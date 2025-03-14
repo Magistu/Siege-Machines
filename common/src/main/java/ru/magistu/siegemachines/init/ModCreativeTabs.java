@@ -13,11 +13,11 @@ import ru.magistu.siegemachines.item.ModItems;
 public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> DEFERRED_REGISTER = DeferredRegister.create(SiegeMachines.ID, Registries.CREATIVE_MODE_TAB);
 
-    public static final RegistrySupplier<CreativeModeTab> GROUP_SM = DEFERRED_REGISTER.register(SiegeMachines.id("machines"),() ->CreativeModeTab.builder(null,-1)
+    public static final RegistrySupplier<CreativeModeTab> GROUP_SM = DEFERRED_REGISTER.register(SiegeMachines.id("machines"), () -> CreativeModeTab.builder(null, -1)
             .title(Component.translatable(SiegeMachines.ID + ".medieval_siege_machines")).
             icon(() -> new ItemStack(ModItems.MORTAR.get()))
             .displayItems((parameters, output) -> BuiltInRegistries.ITEM.stream()
-                    .filter(item -> BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(SiegeMachines.ID))
+                    .filter(item -> BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(SiegeMachines.ID) && item != ModItems.GIANT_STONE.get() && item != ModItems.STONE.get())
                     .forEach(output::accept)
             )
             .build());

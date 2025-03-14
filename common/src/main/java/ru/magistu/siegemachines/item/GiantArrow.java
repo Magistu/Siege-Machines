@@ -9,21 +9,18 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 public class GiantArrow extends AbstractArrow {
-    public GiantArrow(EntityType<GiantArrow> type, Level level)
-    {
+    public GiantArrow(EntityType<GiantArrow> type, Level level) {
         super(type, level);
     }
 
-	public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, ItemStack item)
-    {
-		super(entitytype, entity, level,item,null);
+    public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, ItemStack item) {
+        super(entitytype, entity, level, item, null);
         this.setPos(pos.x, pos.y, pos.z);
         this.setBaseDamage(5.0F);
-	}
+    }
 
     @Override
-    protected @NotNull ItemStack getDefaultPickupItem()
-    {
+    protected @NotNull ItemStack getDefaultPickupItem() {
         return new ItemStack(ModItems.GIANT_ARROW.get());
     }
 

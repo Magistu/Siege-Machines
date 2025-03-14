@@ -3,21 +3,23 @@ package ru.magistu.siegemachines.block;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.item.ModItems;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ModBlocks
-{
+public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(SiegeMachines.ID, Registries.BLOCK);
-    
+
     public static final RegistrySupplier<SiegeWorkbenchBlock> SIEGE_WORKBENCH = registerBlock("siege_workbench", () -> new SiegeWorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).noOcclusion()));
 
     private static <T extends Block> RegistrySupplier<Item> registerBlockItem(String name, RegistrySupplier<T> block, String tooltipKey) {

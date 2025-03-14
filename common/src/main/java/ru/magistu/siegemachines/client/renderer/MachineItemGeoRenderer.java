@@ -6,8 +6,7 @@ import ru.magistu.siegemachines.item.MachineItem;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class MachineItemGeoRenderer<T extends Machine> extends GeoItemRenderer<MachineItem<T>> {
-	public MachineItemGeoRenderer(MachineItemModel<MachineItem<T>> model)
-	{
-		super(model);
-	}
+    public MachineItemGeoRenderer(MachineItemModel<MachineItem<T>> model) {
+        super(model);
+    }
 }

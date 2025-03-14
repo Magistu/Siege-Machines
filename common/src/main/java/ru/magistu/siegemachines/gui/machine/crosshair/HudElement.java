@@ -3,15 +3,12 @@ package ru.magistu.siegemachines.gui.machine.crosshair;
 import net.minecraft.client.Minecraft;
 
 
-public abstract class HudElement
-{
+public abstract class HudElement {
     protected int width;
     protected int height;
 
-    public int getAlignedX(AlignmentHelper.Alignment align, int offset)
-    {
-        switch (align)
-        {
+    public int getAlignedX(AlignmentHelper.Alignment align, int offset) {
+        switch (align) {
             case TOP_LEFT:
             case CENTER_LEFT:
             case BOTTOM_LEFT:
@@ -28,10 +25,8 @@ public abstract class HudElement
         return 0;
     }
 
-    public int getAlignedY(AlignmentHelper.Alignment align, int offset)
-    {
-        switch (align)
-        {
+    public int getAlignedY(AlignmentHelper.Alignment align, int offset) {
+        switch (align) {
             case TOP_LEFT:
             case TOP_CENTER:
             case TOP_RIGHT:
@@ -49,19 +44,16 @@ public abstract class HudElement
         return 0;
     }
 
-    public HudElement(int elementWidth, int elementHeight)
-    {
+    public HudElement(int elementWidth, int elementHeight) {
         this.width = elementWidth;
         this.height = elementHeight;
     }
 
-    public int getWidth()
-    {
+    public int getWidth() {
         return this.width;
     }
 
-    public int getHeight()
-    {
+    public int getHeight() {
         return this.height;
     }
 

@@ -1,11 +1,9 @@
 package ru.magistu.siegemachines.item;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
-import ru.magistu.siegemachines.SiegeMachines;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -14,13 +12,18 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -31,6 +34,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
 import ru.magistu.siegemachines.entity.machine.Machine;
@@ -52,15 +56,13 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     private final Supplier<EntityType<T>> entitytype;
     private final Supplier<MachineType> machinetype;
 
-    public MachineItem(Properties prop, Supplier<EntityType<T>> entitytype, Supplier<MachineType> machinetype)
-    {
+    public MachineItem(Properties prop, Supplier<EntityType<T>> entitytype, Supplier<MachineType> machinetype) {
         super(prop.stacksTo(1));
         this.entitytype = entitytype;
         this.machinetype = machinetype;
     }
 
-    public MachineItemGeoRenderer<T> getRenderer()
-    {
+    public MachineItemGeoRenderer<T> getRenderer() {
         return null;
     }
 
@@ -69,13 +71,10 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
         tooltip.add(Component.translatable(SiegeMachines.ID + ".usage", KeyBindings.getUseKey(this.machinetype.get()).getTranslatedKeyMessage()).withStyle(ChatFormatting.BLUE));
 
         ProjectileBuilder<?>[] ammo = this.machinetype.get().ammo;
-        if (ammo.length > 0)
-        {
+        if (ammo.length > 0) {
             tooltip.add(Component.translatable(SiegeMachines.ID + ".ammo").withStyle(ChatFormatting.BLUE));
-            for (ProjectileBuilder<?> builder : ammo)
-            {
-                if (this.machinetype.get().usesgunpowder)
-                {
+            for (ProjectileBuilder<?> builder : ammo) {
+                if (this.machinetype.get().usesgunpowder) {
                     tooltip.add(Component.translatable(SiegeMachines.ID + ".uses_gunpowder").withStyle(ChatFormatting.BLUE));
                 }
                 tooltip.add(Component.literal("    ").append(Component.translatable(builder.item.getDescriptionId())).withStyle(ChatFormatting.BLUE));
@@ -84,24 +83,22 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context)
-    {
+    public @NotNull InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
         if (!(world instanceof ServerLevel))
             return InteractionResult.SUCCESS;
-        
+
         ItemStack itemstack = context.getItemInHand();
         BlockPos blockpos = context.getClickedPos();
         Direction direction = context.getClickedFace();
         BlockState blockstate = world.getBlockState(blockpos);
-        if (blockstate.is(Blocks.SPAWNER))
-        {
+        CustomData data = itemstack.get(DataComponents.ENTITY_DATA);
+        if (blockstate.is(Blocks.SPAWNER)) {
             BlockEntity tileentity = world.getBlockEntity(blockpos);
-            if (tileentity instanceof SpawnerBlockEntity)
-            {
-                BaseSpawner abstractspawner = ((SpawnerBlockEntity)tileentity).getSpawner();
-                EntityType<T> entitytype1 = this.getType(itemstack.get(DataComponents.ENTITY_DATA));
-                abstractspawner.setEntityId(entitytype1,world,world.random,blockpos);
+            if (tileentity instanceof SpawnerBlockEntity) {
+                BaseSpawner abstractspawner = ((SpawnerBlockEntity) tileentity).getSpawner();
+                EntityType<T> entitytype1 = this.getType(data);
+                abstractspawner.setEntityId(entitytype1, world, world.random, blockpos);
                 tileentity.setChanged();
                 world.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
                 itemstack.shrink(1);
@@ -115,20 +112,21 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
         else
             blockpos2 = blockpos.relative(direction);
 
-        EntityType<T> entitytype = this.getType(itemstack.get(DataComponents.ENTITY_DATA));
-        Machine entity = this.spawn(entitytype, (ServerLevel) world, itemstack, context.getPlayer(), blockpos2, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos2) && direction == Direction.UP, context.getRotation());
-        
-        if (entity != null)
-        {
-            entity.deploymentticks = 200;
+        EntityType<T> entitytype = this.getType(data);
+        Machine machine = this.spawn(entitytype, (ServerLevel) world, itemstack, context.getPlayer(), blockpos2, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos2) && direction == Direction.UP, context.getRotation());
+
+        if (machine != null) {
+            if (data != null) {
+                machine.readAdditionalSaveData(data.copyTag());
+            }
+            machine.deploymentticks = 200;
             itemstack.shrink(1);
         }
 
         return InteractionResult.CONSUME;
     }
 
-    protected static double getYOffset(LevelReader reader, BlockPos pos, boolean bl, AABB aabb)
-    {
+    protected static double getYOffset(LevelReader reader, BlockPos pos, boolean bl, AABB aabb) {
         AABB axisalignedbb = new AABB(pos);
         if (bl)
             axisalignedbb = axisalignedbb.expandTowards(0.0D, -1.0D, 0.0D);
@@ -138,18 +136,15 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Nullable
-    public Machine spawn(EntityType<T> entitytype, ServerLevel level, ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw)
-    {
+    public Machine spawn(EntityType<T> entitytype, ServerLevel level, ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         return this.spawn(entitytype, level, stack.get(DataComponents.CUSTOM_DATA), stack.getHoverName(), player, pos, type, bl, bl2, yaw);
     }
 
     @Nullable
-    public Machine spawn(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw)
-    {
+    public Machine spawn(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         Machine machine = this.create(entitytype, level, nbt, component, player, pos, type, bl, bl2, yaw);
-        if (machine != null)
-        {
-       //     if (net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn(machine, (LevelAccessor)level, pos.getX(), pos.getY(), pos.getZ(), null, type)) return null;
+        if (machine != null) {
+            //     if (net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn(machine, (LevelAccessor)level, pos.getX(), pos.getY(), pos.getZ(), null, type)) return null;
             level.addFreshEntityWithPassengers(machine);
         }
 
@@ -157,28 +152,25 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Nullable
-    public Machine create(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw)
-    {
+    public Machine create(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         Machine machine = entitytype.create(level);
         if (machine == null)
             return null;
 
         double d0;
-        if (bl)
-        {
-            machine.setPos((double)pos.getX() + 0.5D, pos.getY() + 1, (double)pos.getZ() + 0.5D);
+        if (bl) {
+            machine.setPos((double) pos.getX() + 0.5D, pos.getY() + 1, (double) pos.getZ() + 0.5D);
             d0 = getYOffset(level, pos, bl2, machine.getBoundingBox());
-        }
-        else
+        } else
             d0 = 0.0D;
 
-        if (nbt!=null)
-        EntityType.updateCustomEntityTag(level, player, machine, nbt);
+        if (nbt != null)
+            EntityType.updateCustomEntityTag(level, player, machine, nbt);
 
         if (component != null)
             machine.setCustomName(component);
 
-        machine.moveTo((double)pos.getX() + 0.5D, (double)pos.getY() + d0, (double)pos.getZ() + 0.5D, Mth.wrapDegrees(yaw), 0.0F);
+        machine.moveTo((double) pos.getX() + 0.5D, (double) pos.getY() + d0, (double) pos.getZ() + 0.5D, Mth.wrapDegrees(yaw), 0.0F);
         machine.yHeadRot = machine.getYRot();
         machine.yBodyRot = machine.getYRot();
         machine.finalizeSpawn(level, level.getCurrentDifficultyAt(machine.blockPosition()), type, null);
@@ -188,44 +180,42 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
-    {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         BlockHitResult raytraceresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-        
+
         if (raytraceresult.getType() != HitResult.Type.BLOCK)
             return InteractionResultHolder.pass(itemstack);
-        
+
         if (!(level instanceof ServerLevel))
             return InteractionResultHolder.success(itemstack);
-        
+
         BlockPos blockpos = raytraceresult.getBlockPos();
-      //  if (!(level.getBlockState(blockpos).getBlock() instanceof IFluidBlock))
-      //      return InteractionResultHolder.pass(itemstack);
-        
-        if (level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos, raytraceresult.getDirection(), itemstack))
-        {
-            EntityType<T> entitytype = this.getType(itemstack.get(DataComponents.ENTITY_DATA));
+        //  if (!(level.getBlockState(blockpos).getBlock() instanceof IFluidBlock))
+        //      return InteractionResultHolder.pass(itemstack);
+
+        if (level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos, raytraceresult.getDirection(), itemstack)) {
+            CustomData data = itemstack.get(DataComponents.ENTITY_DATA);
+            EntityType<T> entitytype = this.getType(data);
             Machine machine = this.spawn(entitytype, (ServerLevel) level, itemstack, player, blockpos, MobSpawnType.SPAWN_EGG, false, false, player.getYRot());
-            if (machine != null)
-            {
+            if (machine != null) {
+                if (data != null) {
+                    machine.readAdditionalSaveData(data.copyTag());
+                }
                 machine.deploymentticks = 200;
                 if (!player.isCreative())
                     itemstack.shrink(1);
                 player.awardStat(Stats.ITEM_USED.get(this));
                 return InteractionResultHolder.consume(itemstack);
-            }
-            else
+            } else
                 return InteractionResultHolder.pass(itemstack);
 
-        }
-        else
+        } else
             return InteractionResultHolder.fail(itemstack);
     }
 
     @SuppressWarnings("unchecked")
-    public EntityType<T> getType(@Nullable CustomData nbt)
-    {
+    public EntityType<T> getType(@Nullable CustomData nbt) {
         EntityType<T> defaulttype = this.entitytype.get();
 
         if (nbt != null) {
@@ -239,7 +229,6 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-
     }
 
     @Override

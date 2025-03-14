@@ -1,16 +1,16 @@
 package ru.magistu.siegemachines.network;
 
 import io.netty.channel.ChannelHandler;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import ru.magistu.siegemachines.entity.machine.Machine;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import ru.magistu.siegemachines.entity.machine.Machine;
 
 @ChannelHandler.Sharable
-public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendlyByteBuf>{
+public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendlyByteBuf> {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketOpenMachineInventory> STREAM_CODEC =
             ModPacket.streamCodec(PacketOpenMachineInventory::read);
@@ -18,10 +18,10 @@ public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendly
 
     public static final CustomPacketPayload.Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
 
-	public PacketOpenMachineInventory() {}
+    public PacketOpenMachineInventory() {
+    }
 
-	public static PacketOpenMachineInventory read(FriendlyByteBuf buf)
-    {
+    public static PacketOpenMachineInventory read(FriendlyByteBuf buf) {
         return new PacketOpenMachineInventory();
     }
 
