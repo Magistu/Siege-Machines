@@ -128,8 +128,9 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
             return;
         }
 
-        if (!this.level().isClientSide())
+        if (!this.level().isClientSide()) {
             PacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+        }
 
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.hittingticks <= 0) {
             this.usesoundplayer.run();
