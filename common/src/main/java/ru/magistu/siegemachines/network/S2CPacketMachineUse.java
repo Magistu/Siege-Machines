@@ -8,6 +8,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import ru.magistu.siegemachines.entity.machine.Machine;
 
 @ChannelHandler.Sharable
@@ -31,6 +33,7 @@ public class S2CPacketMachineUse implements S2CModPacket<RegistryFriendlyByteBuf
 
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handleClient() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {

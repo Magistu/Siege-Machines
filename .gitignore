@@ -20,5 +20,12 @@ build
 
 # other
 eclipse
-run
+fabric/runs
+fabric/run
+fabric/run2
+fabric/server
+neoforge/runs
+neoforge/run
+neoforge/run2
+neoforge/server
 runs
