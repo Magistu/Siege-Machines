@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.block.ModBlocks;
 
+import java.util.Optional;
+
 
 public class SiegeWorkbenchRecipe extends ShapedRecipe {
     public static ResourceLocation TYPE_ID = SiegeMachines.id("siege_workbench");
@@ -25,9 +27,12 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
     }
 
     public SiegeWorkbenchRecipe(ShapedRecipe recipe) {
-        this(SiegeMachines.ID, recipe.category(), recipe.pattern, recipe.getResultItem(null));
+        this(SiegeMachines.ID, recipe.category(), getPatternFromRecipe(recipe), recipe.getResultItem(null));
     }
 
+    private static ShapedRecipePattern getPatternFromRecipe(ShapedRecipe recipe) {
+        return new ShapedRecipePattern(recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), Optional.empty());
+    }
 
     @NotNull
     public RecipeSerializer<?> getSerializer() {
@@ -71,10 +76,11 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
     public static class CustomSerializer extends Serializer {
 
         public static final MapCodec<SiegeWorkbenchRecipe> CODEC = RecordCodecBuilder.mapCodec(
-                instance -> instance.group(ShapedRecipe.Serializer.CODEC.forGetter(upgradeRecipe -> upgradeRecipe))
-                        .apply(instance, SiegeWorkbenchRecipe::new));
+                instance -> instance.group(Serializer.CODEC.forGetter(recipe -> recipe))
+                        .apply(instance, recipe -> new SiegeWorkbenchRecipe(recipe)));
+
         public static final StreamCodec<RegistryFriendlyByteBuf, SiegeWorkbenchRecipe> STREAM_CODEC = StreamCodec.of(
-                ShapedRecipe.Serializer.STREAM_CODEC::encode, pBuffer -> new SiegeWorkbenchRecipe(ShapedRecipe.Serializer.STREAM_CODEC.decode(pBuffer)));
+                Serializer.STREAM_CODEC::encode, buffer -> new SiegeWorkbenchRecipe(Serializer.STREAM_CODEC.decode(buffer)));
 
 
         @Override

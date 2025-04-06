@@ -5,6 +5,7 @@
   ],
   "key": {
     "i": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "tag": "c:ingots/iron"

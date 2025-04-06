@@ -1,10 +1,9 @@
 package ru.magistu.siegemachines.gui.machine.crosshair;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AlignmentHelper {
-    public static final List<String> validAlignmentValues = Arrays.asList(new String[]{"top_left", "top_center", "top_right", "center_left", "center", "center_right", "bottom_left", "bottom_center", "bottom_right"});
+    public static final List<String> validAlignmentValues = List.of("top_left", "top_center", "top_right", "center_left", "center", "center_right", "bottom_left", "bottom_center", "bottom_right");
 
     public enum Alignment {
         TOP_LEFT,
@@ -16,7 +15,6 @@ public class AlignmentHelper {
         BOTTOM_LEFT,
         BOTTOM_CENTER,
         BOTTOM_RIGHT;
-
 
         public static Alignment fromString(String align) {
             int idx = AlignmentHelper.validAlignmentValues.indexOf(align);

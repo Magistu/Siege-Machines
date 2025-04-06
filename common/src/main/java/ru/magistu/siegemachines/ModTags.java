@@ -15,8 +15,6 @@ public class ModTags {
     }
 
     public static class Blocks {
-
-
         public static final TagKey<Block> SMOOTH_IMPACT = mod("smooth_impact");
 
         static TagKey<Block> mod(String path) {

@@ -1,60 +1,88 @@
 plugins {
-    id 'multiloader-loader'
-    id 'net.neoforged.moddev'
+    id 'com.github.johnrengelman.shadow'
 }
 
-neoForge {
-    version = neoforge_version
-    // Automatically enable neoforge AccessTransformers if the file exists
-    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
-    }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
-    runs {
-        configureEach {
-            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
-        }
-        client {
-            client()
-        }
-        client2 {
-            client()
-            programArguments.addAll '--username', 'Dev1'
-            gameDirectory = project.file('run2')
-        }
-        data {
-            data()
-            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-            // workingDirectory project.file('run-data')
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
 
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all',
-                    '--output', rootProject.project(":common").file('src/generated/resources/').getAbsolutePath(),
-                    '--existing', rootProject.project(":common").file('src/main/resources/').getAbsolutePath()
-        }
-        server {
-            server()
-        }
+architectury {
+    platformSetupLoomIde()
+    neoForge()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
     }
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+repositories {
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
     }
 }
 
 dependencies {
-    if (project.use_rei.toBoolean()) {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
-        implementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
-        implementation "dev.architectury:architectury-neoforge:$architectury_version"
-    }
-    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    modImplementation "software.bernie.geckolib:geckolib-neoforge-${rootProject.minecraft_version}:${rootProject.geckolib_version}"
+    modImplementation "me.shedaniel:RoughlyEnoughItems-neoforge:$rootProject.rei_version"
+    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_version"
+    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}"
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+processResources {
+    var replaceProperties = [
+            minecraft_version : rootProject.minecraft_version,
+            minecraft_version_range: rootProject.minecraft_version_range,
+            minecraft_version_condition: rootProject.minecraft_version_condition,
+            neoforge_version : rootProject.neoforge_version,
+            neoforge_version_range: rootProject.neoforge_version_range,
+            neoforge_loader_version_range : rootProject.neoforge_loader_version_range,
+            architectury_version : rootProject.architectury_version,
+            cloth_config_version: rootProject.cloth_config_version,
+            mod_id : rootProject.mod_id,
+            mod_name: rootProject.mod_name,
+            mod_license: rootProject.mod_license,
+            mod_version: rootProject.mod_version,
+            mod_authors : rootProject.mod_authors,
+            mod_description : rootProject.mod_description,
+            mod_credits : rootProject.mod_credits,
+            mod_issues_url : rootProject.mod_issues_url,
+            mod_sources_url: rootProject.mod_sources_url,
+            mod_home_url: rootProject.mod_home_url,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier.set 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    atAccessWideners.add loom.accessWidenerPath.get().asFile.name
+}

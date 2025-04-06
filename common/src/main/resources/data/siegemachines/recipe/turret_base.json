@@ -6,6 +6,7 @@
   ],
   "key": {
     "b": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "siegemachines:beam"
@@ -13,6 +14,7 @@
       "count": 2
     },
     "p": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "tag": "minecraft:planks"

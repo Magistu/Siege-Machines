@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,6 +13,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
+import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.network.ModPacketHandler;
+import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.platform.Services;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -95,6 +99,7 @@ public class SiegeLadder extends Machine implements GeoEntity {
                 this.setSpeed(0.04f);
 
                 pos = new Vec3(0.0f, pos.y, f1);
+
             }
 
             super.travel(pos);
@@ -105,15 +110,7 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void tick() {
         lastwheelpitch = wheelspitch;
         wheelspitch += this.getWheelsSpeed();
-
-//        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
-//        {
-//            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundTypes.RAM_WHEELS.get(), SoundCategory.NEUTRAL, 0.6f, 1.0f, true);
-//            this.wheelssoundticks = 20;
-//        }
-
-        this.seatsTick();
-
+        seatsTick();
         super.tick();
     }
 
@@ -130,12 +127,13 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void updateSeatPosition(LadderSeat seat, boolean left) {
         double yaw = this.getYRot() * Math.PI / 180.0;
 
-        float highness = seat.climb();
-
+        float highness = seat.getHighness();
+        if (seat.isVehicle()) {
+            System.out.println(Stream.of(highness, level().isClientSide).map(String::valueOf).collect(Collectors.joining(", ")));
+        }
         Vec3 pos = this.getSeatPosititon(highness, yaw, left);
         Optional<Vec3> freepos = this.level().findFreePosition(seat, Shapes.create(AABB.ofSize(pos, 0.1, 0.1, 0.1)), pos, 0.0, 0.0, 0.0);
         if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5) {
-            seat.setHighness(highness);
             pos = freepos.get();
         } else
             pos = this.getSeatPosititon(seat, yaw, left);
@@ -151,6 +149,9 @@ public class SiegeLadder extends Machine implements GeoEntity {
 
     @Override
     public void use(LivingEntity entity) {
+        if (!this.level().isClientSide()) {
+            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+        }
         if (this.getControllingPassenger() == entity) {
             LadderSeat seat = this.getFreeSeat(entity);
             if (seat != null)

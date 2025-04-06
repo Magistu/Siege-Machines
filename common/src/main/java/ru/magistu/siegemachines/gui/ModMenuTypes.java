@@ -6,7 +6,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.menu.SiegeWorkbenchMenu;
 
 public class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(SiegeMachines.ID, Registries.MENU);

@@ -7,6 +7,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+import java.util.Optional;
+
 public class Seat extends Entity {
     protected int lerpSteps;
     protected double lerpX;
@@ -19,21 +22,22 @@ public class Seat extends Entity {
         super(entitytype, level);
     }
 
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-    }
-
     public boolean shouldRender(double x, double y, double z) {
         return false;
     }
 
     public boolean shouldRenderAtSqrDistance(double distance) {
         return false;
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+
     }
 
     @Override
@@ -53,6 +57,11 @@ public class Seat extends Entity {
             --this.lerpSteps;
             this.setPos(d0, d2, d4);
             this.setRot(this.getYRot(), this.getXRot());
+        }
+
+        if (!this.isRemoved() && this.isControlledByLocalInstance()) {
+            this.lerpSteps = 0;
+            this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
         }
 
         super.tick();

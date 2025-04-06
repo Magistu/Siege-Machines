@@ -30,7 +30,7 @@ public class ModEntityTypes {
     public static final RegistrySupplier<EntityType<BatteringRam>> BATTERING_RAM = addRegistry("battering_ram", BatteringRam::new, 4.0f, 3.0f, 10);
     public static final RegistrySupplier<EntityType<SiegeLadder>> SIEGE_LADDER = addRegistry("siege_ladder", SiegeLadder::new, 3.0f, 3.0f, 10);
 
-    public static final RegistrySupplier<EntityType<Seat>> SEAT = addRegistry("seat", Seat::new, 0.0f, 0.0f);
+    public static final RegistrySupplier<EntityType<LadderSeat>> LADDER_SEAT = addRegistry("ladder_seat", LadderSeat::new, 0.0f, 0.0f);
 
     public static <T extends Entity> RegistrySupplier<EntityType<T>> addRegistry(String name, EntityType.EntityFactory<T> constructor, float sizex, float sizey) {
         return addRegistry(name, constructor, sizex, sizey, 1);

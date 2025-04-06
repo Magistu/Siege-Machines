@@ -12,7 +12,7 @@ public interface ModPacket<T extends FriendlyByteBuf> extends CustomPacketPayloa
     }
 
     static <T extends FriendlyByteBuf, P extends ModPacket<T>> Type<P> type(Class<P> pClass) {
-        return new Type<>(PacketHandler.packet(pClass));
+        return new Type<>(ModPacketHandler.packet(pClass));
     }
 
     void write(T buf);

@@ -9,7 +9,6 @@ import net.minecraft.world.entity.Entity;
 import ru.magistu.siegemachines.entity.machine.Machine;
 
 public class ReloadingCrosshair extends Crosshair {
-    //public static ResourceLocation TYPE = new ResourceLocation(SiegeMachinesForge.ID, "siege_machine");
     public int x;
     public int y;
 

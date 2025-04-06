@@ -7,6 +7,7 @@
   ],
   "key": {
     "i": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "tag": "c:ingots/iron"
@@ -14,6 +15,7 @@
       "count": 1
     },
     "s": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "tag": "c:rods/wooden"
@@ -21,6 +23,7 @@
       "count": 2
     },
     "f": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "minecraft:feather"

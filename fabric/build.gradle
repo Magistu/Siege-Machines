@@ -1,43 +1,93 @@
 plugins {
-    id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'com.github.johnrengelman.shadow'
 }
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    if (project.use_rei) {
-        modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
-        modImplementation "me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version"
-        modImplementation "dev.architectury:architectury-fabric:$architectury_version"
-    }
+architectury {
+    platformSetupLoomIde()
+    fabric()
 }
 
 loom {
-    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
     }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
     }
-    runs {
-        client {
-            client()
-            setConfigName('Fabric Client')
-            ideConfigGenerated(true)
-            runDir('runs/client')
+}
+
+dependencies {
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version}"
+    implementation "com.eliotlash.mclib:mclib:20"
+    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rootProject.rei_version"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version"
+    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_version"
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$rootProject.neoforge_config_api_version"
+    modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}") {
+        exclude group: "net.fabricmc.fabric-api" }
+
+    loom {
+        runs {
+            datagen {
+                inherit client
+                name "Data Generation"
+                vmArg "-Dfabric-api.datagen"
+                vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+                vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+
+                runDir "build/datagen"
+            }
         }
-        server {
-            server()
-            setConfigName('Fabric Server')
-            ideConfigGenerated(true)
-            runDir('runs/server')
-        }
     }
+}
+
+processResources {
+    var replaceProperties = [
+            minecraft_version : rootProject.minecraft_version,
+            minecraft_version_range: rootProject.minecraft_version_range,
+            minecraft_version_condition: rootProject.minecraft_version_condition,
+            fabric_loader_version: rootProject.fabric_loader_version,
+            architectury_version : rootProject.architectury_version,
+            cloth_config_version: rootProject.cloth_config_version,
+            mod_id : rootProject.mod_id,
+            mod_name: rootProject.mod_name,
+            mod_license: rootProject.mod_license,
+            mod_version: rootProject.mod_version,
+            mod_authors : rootProject.mod_authors,
+            mod_description : rootProject.mod_description,
+            mod_credits : rootProject.mod_credits,
+            mod_issues_url : rootProject.mod_issues_url,
+            mod_sources_url: rootProject.mod_sources_url,
+            mod_home_url: rootProject.mod_home_url,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier.set 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
 }

@@ -16,7 +16,7 @@ public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendly
             ModPacket.streamCodec(PacketOpenMachineInventory::read);
 
 
-    public static final CustomPacketPayload.Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
+    public static final Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
 
     public PacketOpenMachineInventory() {
     }

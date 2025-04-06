@@ -8,8 +8,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import ru.magistu.siegemachines.entity.machine.Machine;
 
 @ChannelHandler.Sharable
@@ -19,7 +19,7 @@ public class S2CPacketMachineUse implements S2CModPacket<RegistryFriendlyByteBuf
             ModPacket.streamCodec(S2CPacketMachineUse::read);
 
 
-    public static final CustomPacketPayload.Type<S2CPacketMachineUse> TYPE = ModPacket.type(S2CPacketMachineUse.class);
+    public static final Type<S2CPacketMachineUse> TYPE = ModPacket.type(S2CPacketMachineUse.class);
 
     private final int entityid;
 
@@ -33,7 +33,7 @@ public class S2CPacketMachineUse implements S2CModPacket<RegistryFriendlyByteBuf
 
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void handleClient() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {

@@ -9,10 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.menu.SiegeWorkbenchMenu;
 
 public class SiegeWorkbenchScreen extends AbstractContainerScreen<SiegeWorkbenchMenu> {
-    private static final ResourceLocation DISPLAY_CASE_GUI = ResourceLocation.fromNamespaceAndPath(SiegeMachines.ID, "textures/gui/siege_workbench.png");
+    private static final ResourceLocation DISPLAY_CASE_GUI = SiegeMachines.id("textures/gui/siege_workbench.png");
 
     public SiegeWorkbenchScreen(SiegeWorkbenchMenu screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

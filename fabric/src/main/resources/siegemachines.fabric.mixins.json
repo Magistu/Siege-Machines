@@ -1,12 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.example.examplemod.mixin",
-  "refmap": "${mod_id}.refmap.json",
+  "package": "ru.magistu.siegemachines.fabric.mixin",
+  "refmap": "[1.21.1]-Siege-Machines-fabric-refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+  ],
   "client": [
-    "ru.magistu.siegemachines.mixin.MixinTitleScreen"
   ],
   "server": [],
   "injectors": {

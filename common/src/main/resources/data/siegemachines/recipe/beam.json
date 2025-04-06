@@ -5,6 +5,7 @@
   ],
   "key": {
     "p": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "tag": "minecraft:planks"

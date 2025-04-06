@@ -7,6 +7,7 @@
   ],
   "key": {
     "B": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "siegemachines:turret_base"
@@ -14,6 +15,7 @@
       "count": 8
     },
     "b": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "siegemachines:beam"
@@ -21,6 +23,7 @@
       "count": 20
     },
     "l": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "minecraft:ladder"
@@ -28,6 +31,7 @@
       "count": 4
     },
     "w": {
+      "fabric:type": "siegemachines:count",
       "type": "siegemachines:count",
       "base": {
           "item": "siegemachines:wheel"

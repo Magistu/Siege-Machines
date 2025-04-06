@@ -71,6 +71,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     protected float turretyawdest = getTurretYaw();
     protected float yawdest = this.getYRot();
 
+    protected static final int USE_RELEASE = 66;
     public static final EntityDataSerializer<List<ItemStack>> ITEM_STACKS_SERIALIZER = new EntityDataSerializer<>() {
         public @NotNull StreamCodec<? super RegistryFriendlyByteBuf, List<ItemStack>> codec() {
             return ItemStack.OPTIONAL_LIST_STREAM_CODEC;
@@ -136,7 +137,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
                 .add(Attributes.FOLLOW_RANGE, 0.0D);
     }
 
-    protected static final int USE_RELEASE = 66;
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {

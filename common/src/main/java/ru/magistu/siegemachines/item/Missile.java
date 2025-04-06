@@ -5,11 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -20,8 +18,6 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -80,6 +76,8 @@ public abstract class Missile extends ThrowableItemProjectile {
             BlockHitResult blockRTR = (BlockHitResult) result;
             BlockPos blockpos = blockRTR.getBlockPos();
             BlockState blockstate = this.level().getBlockState(blockpos);
+            System.out.println(blockstate);
+            System.out.println(blockstate.is(ModTags.Blocks.SMOOTH_IMPACT));
             boolean smoothimpact = blockstate.is(ModTags.Blocks.SMOOTH_IMPACT) && blockRTR.getDirection() == Direction.UP;
 
             if (blockRTR.getDirection() == Direction.UP) {
@@ -163,7 +161,7 @@ public abstract class Missile extends ThrowableItemProjectile {
         return explosion;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     private static LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
         switch (source) {
             case null -> {

@@ -2,9 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "ru.magistu.siegemachines.mixin",
-  "refmap": "${mod_id}.refmap.json",
+  "refmap": "[1.21.1]-Siege-Machines-common-refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MixinGui"
   ],
   "client": [
   ],
