@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:sand",
+      "required": true
+    },
+    {
+      "id": "#minecraft:dirt",
+      "required": true
+    },
+    "minecraft:dirt",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:grass_block"
+  ]
+}
