@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public class Seat extends Entity {
+public abstract class Seat extends Entity {
     protected int lerpSteps;
     protected double lerpX;
     protected double lerpY;
@@ -37,11 +37,6 @@ public class Seat extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
     }
 

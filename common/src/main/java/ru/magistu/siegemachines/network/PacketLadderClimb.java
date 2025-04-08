@@ -1,29 +1,38 @@
 package ru.magistu.siegemachines.network;
 
 import dev.architectury.networking.NetworkManager;
-import io.netty.channel.ChannelHandler;
 import dev.architectury.utils.Env;
+import io.netty.channel.ChannelHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import ru.magistu.siegemachines.entity.machine.Machine;
+import ru.magistu.siegemachines.entity.machine.LadderSeat;
 
 import java.text.MessageFormat;
 
 @ChannelHandler.Sharable
-public class PacketOpenMachineInventory implements ModPacket {
+public class PacketLadderClimb implements ModPacket {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketOpenMachineInventory> STREAM_CODEC =
-            StreamCodec.ofMember((buf, p) -> {}, buf -> new PacketOpenMachineInventory());
+    boolean upwards;
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketLadderClimb> STREAM_CODEC =
+            StreamCodec.composite(ByteBufCodecs.BOOL, p -> p.upwards, PacketLadderClimb::new);
 
 
-    public static final Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
+    public static final Type<PacketLadderClimb> TYPE = ModPacket.type(PacketLadderClimb.class);
 
-    public PacketOpenMachineInventory() {
+
+    public PacketLadderClimb(boolean upwards) {
+        this.upwards = upwards;
     }
 
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 
     @Override
     public void apply(NetworkManager.PacketContext ctx) {
@@ -34,15 +43,10 @@ public class PacketOpenMachineInventory implements ModPacket {
         }
     }
 
-    public void handleServer(Player player) {
+    private void handleServer(Player player) {
         Entity entity = player.getVehicle();
-        if (entity instanceof Machine machine) {
-            machine.openInventoryGui();
+        if (entity instanceof LadderSeat seat) {
+            seat.climb(upwards);
         }
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
     }
 }

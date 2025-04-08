@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.network.ModPacketHandler;
-import ru.magistu.siegemachines.network.S2CPacketMachineUse;
+import ru.magistu.siegemachines.network.PacketMachineUse;
 import ru.magistu.siegemachines.platform.Services;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -128,9 +128,6 @@ public class SiegeLadder extends Machine implements GeoEntity {
         double yaw = this.getYRot() * Math.PI / 180.0;
 
         float highness = seat.getHighness();
-        if (seat.isVehicle()) {
-            System.out.println(Stream.of(highness, level().isClientSide).map(String::valueOf).collect(Collectors.joining(", ")));
-        }
         Vec3 pos = this.getSeatPosititon(highness, yaw, left);
         Optional<Vec3> freepos = this.level().findFreePosition(seat, Shapes.create(AABB.ofSize(pos, 0.1, 0.1, 0.1)), pos, 0.0, 0.0, 0.0);
         if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5) {
@@ -150,7 +147,7 @@ public class SiegeLadder extends Machine implements GeoEntity {
     @Override
     public void use(LivingEntity entity) {
         if (!this.level().isClientSide()) {
-            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
         if (this.getControllingPassenger() == entity) {
             LadderSeat seat = this.getFreeSeat(entity);

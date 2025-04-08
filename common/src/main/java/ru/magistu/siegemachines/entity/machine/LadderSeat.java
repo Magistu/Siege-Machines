@@ -27,9 +27,16 @@ public class LadderSeat extends Seat {
         this.parent = parent;
     }
 
+    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
+        if (DATA_HIGHNESS.equals(accessor)) {
+            this.refreshDimensions();
+        }
+
+        super.onSyncedDataUpdated(accessor);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
         builder.define(DATA_HIGHNESS, 0.0f);
     }
 
@@ -64,12 +71,13 @@ public class LadderSeat extends Seat {
 
     @Override
     protected void removePassenger(Entity entity) {
-        this.setHighness(0.0f);
+        if (!level().isClientSide){
+            this.setHighness(0.0f);
+        }
         super.removePassenger(entity);
     }
 
     public void climb(boolean upwards) {
-//        System.out.println(Stream.of(this.getHighness(), upwards, level().isClientSide).map(String::valueOf).collect(Collectors.joining(", ")));
         if (upwards) {
            if (this.getHighness() <= 1.0f - this.climbspeed) {
                this.setHighness(this.getHighness() + this.climbspeed);

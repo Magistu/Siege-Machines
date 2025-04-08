@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.network.ModPacketHandler;
-import ru.magistu.siegemachines.network.S2CPacketMachineUse;
+import ru.magistu.siegemachines.network.PacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -129,7 +129,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
         }
 
         if (!this.level().isClientSide()) {
-            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
 
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.hittingticks <= 0) {

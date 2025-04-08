@@ -13,7 +13,7 @@ public class SiegeMachinesFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         NeoForgeConfigRegistry.INSTANCE.register(SiegeMachines.ID, ModConfig.Type.SERVER, SpecsConfig.SPEC, "siege-machines-specs.toml");
-        
+
         // This method is invoked by the Fabric mod loader when it is ready
         // to load your mod. You can access Fabric and Common code in this
         // project.

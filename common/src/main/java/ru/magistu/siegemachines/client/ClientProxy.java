@@ -25,8 +25,8 @@ import ru.magistu.siegemachines.gui.ModMenuTypes;
 import ru.magistu.siegemachines.gui.SiegeWorkbenchScreen;
 import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
 import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import ru.magistu.siegemachines.network.C2SPacketLadderClimb;
-import ru.magistu.siegemachines.network.C2SPacketMachineUse;
+import ru.magistu.siegemachines.network.PacketLadderClimb;
+import ru.magistu.siegemachines.network.PacketMachineUse;
 import ru.magistu.siegemachines.network.ModPacketHandler;
 import ru.magistu.siegemachines.network.PacketOpenMachineInventory;
 import java.util.HashMap;
@@ -79,14 +79,14 @@ public class ClientProxy {
         if (KeyBindings.MACHINE_USE.isDown()) {
             LocalPlayer player = client.player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine machine && !(machine instanceof SiegeLadder)) {
-                ModPacketHandler.sendToServer(new C2SPacketMachineUse());
+                ModPacketHandler.sendToServer(new PacketMachineUse(player.getVehicle().getId()));
             }
         }
 
         if (keyCode == GLFW.GLFW_KEY_SPACE) {
             LocalPlayer player = client.player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof SiegeLadder) {
-                ModPacketHandler.sendToServer(new C2SPacketMachineUse());
+                ModPacketHandler.sendToServer(new PacketMachineUse(player.getVehicle().getId()));
             }
         }
 
@@ -100,14 +100,14 @@ public class ClientProxy {
         if (keyCode == GLFW.GLFW_KEY_W) {
             LocalPlayer player = client.player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof LadderSeat ladderSeat) {
-                ModPacketHandler.sendToServer(new C2SPacketLadderClimb(true));
+                ModPacketHandler.sendToServer(new PacketLadderClimb(true));
             }
         }
 
         if (keyCode == GLFW.GLFW_KEY_S) {
             LocalPlayer player = client.player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof LadderSeat ladderSeat) {
-                ModPacketHandler.sendToServer(new C2SPacketLadderClimb(false));
+                ModPacketHandler.sendToServer(new PacketLadderClimb(false));
             }
         }
 
