@@ -6,9 +6,9 @@ public final class SpecsConfig {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
-    public static final ModConfigSpec.ConfigValue<Float> FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0f);
-    public static final ModConfigSpec.ConfigValue<Float> EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0f);
-    public static final ModConfigSpec.ConfigValue<Float> ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5f);
+    public static final ModConfigSpec.ConfigValue<Float> FIRE_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.ConfigValue<Float> EXPLOSION_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.ConfigValue<Float> ARROW_DAMAGE_MULTIPLIER;
 
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
@@ -24,6 +24,10 @@ public final class SpecsConfig {
 
     static {
         BUILDER.push("siege_machines");
+
+        FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0f);
+        EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0f);
+        ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5f);
 
         MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f);
         CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f);
