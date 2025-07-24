@@ -20,7 +20,6 @@ public class ModPacketHandler {
             NetworkManager.registerS2CPayloadType(PacketMachineUse.TYPE, PacketMachineUse.STREAM_CODEC);
         }
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketMachineUse.TYPE, PacketMachineUse.STREAM_CODEC, PacketMachineUse::apply);
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketLadderClimb.TYPE, PacketLadderClimb.STREAM_CODEC, PacketLadderClimb::apply);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, PacketOpenMachineInventory.TYPE, PacketOpenMachineInventory.STREAM_CODEC, PacketOpenMachineInventory::apply);
     }
 

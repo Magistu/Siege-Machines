@@ -18,14 +18,12 @@ import net.minecraft.world.entity.EntityType;
 import org.apache.commons.lang3.NotImplementedException;
 import org.lwjgl.glfw.GLFW;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
-import ru.magistu.siegemachines.entity.machine.LadderSeat;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.SiegeLadder;
 import ru.magistu.siegemachines.gui.ModMenuTypes;
 import ru.magistu.siegemachines.gui.SiegeWorkbenchScreen;
 import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
 import ru.magistu.siegemachines.gui.machine.crosshair.ReloadingCrosshair;
-import ru.magistu.siegemachines.network.PacketLadderClimb;
 import ru.magistu.siegemachines.network.PacketMachineUse;
 import ru.magistu.siegemachines.network.ModPacketHandler;
 import ru.magistu.siegemachines.network.PacketOpenMachineInventory;
@@ -94,20 +92,6 @@ public class ClientProxy {
             LocalPlayer player = client.player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine) {
                 ModPacketHandler.sendToServer(new PacketOpenMachineInventory());
-            }
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_W) {
-            LocalPlayer player = client.player;
-            if (player != null && player.isPassenger() && player.getVehicle() instanceof LadderSeat ladderSeat) {
-                ModPacketHandler.sendToServer(new PacketLadderClimb(true));
-            }
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_S) {
-            LocalPlayer player = client.player;
-            if (player != null && player.isPassenger() && player.getVehicle() instanceof LadderSeat ladderSeat) {
-                ModPacketHandler.sendToServer(new PacketLadderClimb(false));
             }
         }
 

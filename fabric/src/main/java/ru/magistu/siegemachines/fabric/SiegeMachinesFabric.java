@@ -6,6 +6,7 @@ import net.neoforged.fml.config.ModConfig;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.fabric.entity.ModEntityDataSerializers;
+import ru.magistu.siegemachines.fabric.event.CommonEvents;
 import ru.magistu.siegemachines.fabric.init.IngredientTypes;
 
 public class SiegeMachinesFabric implements ModInitializer {
@@ -23,6 +24,7 @@ public class SiegeMachinesFabric implements ModInitializer {
         IngredientTypes.register();
 //        CommonEvents.register();
         ModEntityDataSerializers.register();
+        CommonEvents.register();
         SiegeMachines.init();
     }
 }

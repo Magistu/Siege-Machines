@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
@@ -77,13 +78,14 @@ public class LadderSeat extends Seat {
         super.removePassenger(entity);
     }
 
-    public void climb(boolean upwards) {
-        if (upwards) {
-           if (this.getHighness() <= 1.0f - this.climbspeed) {
-               this.setHighness(this.getHighness() + this.climbspeed);
-           }
-        } else if (this.getHighness() >= this.climbspeed) {
-            this.setHighness(this.getHighness() - this.climbspeed);
+    public float climb() {
+        if (this.getFirstPassenger() instanceof LivingEntity livingentity) {
+            if (livingentity.zza < -this.climbspeed && this.getHighness() >= this.climbspeed)
+                this.setHighness(this.getHighness() - this.climbspeed);
+            if (livingentity.zza > this.climbspeed && this.getHighness() <= 1.0f - this.climbspeed)
+                this.setHighness(this.getHighness() + this.climbspeed);
         }
+
+        return this.getHighness();
     }
 }

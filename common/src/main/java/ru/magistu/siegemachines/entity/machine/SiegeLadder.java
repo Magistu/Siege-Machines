@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -127,10 +128,12 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void updateSeatPosition(LadderSeat seat, boolean left) {
         double yaw = this.getYRot() * Math.PI / 180.0;
 
-        float highness = seat.getHighness();
+        float highness = seat.climb();
+
         Vec3 pos = this.getSeatPosititon(highness, yaw, left);
         Optional<Vec3> freepos = this.level().findFreePosition(seat, Shapes.create(AABB.ofSize(pos, 0.1, 0.1, 0.1)), pos, 0.0, 0.0, 0.0);
         if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5) {
+            seat.setHighness(highness);
             pos = freepos.get();
         } else
             pos = this.getSeatPosititon(seat, yaw, left);
@@ -139,9 +142,13 @@ public class SiegeLadder extends Machine implements GeoEntity {
 
     @Override
     public void remove(RemovalReason reason) {
+        this.removeSeats();
+        super.remove(reason);
+    }
+
+    public void removeSeats() {
         for (LadderSeat seat : this.seats)
             seat.discard();
-        super.remove(reason);
     }
 
     @Override
@@ -154,6 +161,18 @@ public class SiegeLadder extends Machine implements GeoEntity {
             if (seat != null)
                 entity.startRiding(seat);
         }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        this.removeSeats();
+        super.addAdditionalSaveData(compoundTag);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        this.onAddedToLevel();
+        super.readAdditionalSaveData(compoundTag);
     }
 
     @Override
