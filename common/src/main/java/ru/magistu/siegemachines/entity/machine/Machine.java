@@ -204,9 +204,20 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
             }
         }
 
-        if (isStationary() && !level().isClientSide() && this.onGround()) {
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.0, 1.0, 0.0));
+        if (isStationary() && !level().isClientSide()) {
+            Vec3 delta = this.getDeltaMovement();
+            double y = Math.min(delta.y, 0.0D);
+            Vec3 adjusted = new Vec3(0.0D, y, 0.0D);
+
+            if (!delta.equals(adjusted)) {
+                this.setDeltaMovement(adjusted);
+            }
+
+            if (adjusted.lengthSqr() == 0.0D) {
+                this.hasImpulse = false;
+            }
         }
+
 
         int delayticks = getDelayTicks();
         if (delayticks > 0 && this.hasControllingPassenger()) {
