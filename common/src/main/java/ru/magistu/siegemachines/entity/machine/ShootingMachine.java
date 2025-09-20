@@ -20,7 +20,7 @@ import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.enitity.Shootable;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
-import ru.magistu.siegemachines.network.PacketHandler;
+import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 
@@ -65,7 +65,7 @@ public abstract class ShootingMachine extends Machine implements Shootable {
     @Override
     public void use(LivingEntity entity) {
         if (!this.level().isClientSide()) {
-            PacketHandler.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
         this.startShooting(entity);
     }

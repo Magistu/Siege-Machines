@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.item;
+package ru.magistu.siegemachines.entity.projectile;
 
 import ru.magistu.siegemachines.config.MissileSpecs;
 import ru.magistu.siegemachines.config.SpecsConfig;

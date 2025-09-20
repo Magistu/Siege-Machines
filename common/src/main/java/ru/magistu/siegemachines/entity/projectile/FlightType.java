@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.item;
+package ru.magistu.siegemachines.entity.projectile;
 
 public enum FlightType {
     NONE,

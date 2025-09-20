@@ -10,9 +10,9 @@ import ru.magistu.siegemachines.platform.Services;
 import java.util.List;
 import java.util.Locale;
 
-public class PacketHandler {
+public class ModNetwork {
 
-    public static void registerPackets() {
+    public static void register() {
         Services.PLATFORM.registerClientPlayPacket(S2CPacketMachineUse.TYPE, S2CPacketMachineUse.STREAM_CODEC);
         Services.PLATFORM.registerServerPlayPacket(C2SPacketMachineUse.TYPE, C2SPacketMachineUse.STREAM_CODEC);
         Services.PLATFORM.registerServerPlayPacket(PacketOpenMachineInventory.TYPE, PacketOpenMachineInventory.STREAM_CODEC);

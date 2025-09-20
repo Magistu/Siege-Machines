@@ -35,13 +35,13 @@ public class ProjectileBuilder<T extends Projectile> {
     public final Item item;
     public final Item projectilitem;
     public final EntityType<T> entitytype;
-    public final IProjectileFactory<T> factory;
+    public final ProjectileFactory<T> factory;
 
-    public ProjectileBuilder(Item item, EntityType<T> entitytype, IProjectileFactory<T> factory) {
+    public ProjectileBuilder(Item item, EntityType<T> entitytype, ProjectileFactory<T> factory) {
         this(item, item, entitytype, factory);
     }
 
-    public ProjectileBuilder(Item item, Item projectilitem, EntityType<T> entitytype, IProjectileFactory<T> factory) {
+    public ProjectileBuilder(Item item, Item projectilitem, EntityType<T> entitytype, ProjectileFactory<T> factory) {
         this.item = item;
         this.projectilitem = projectilitem;
         this.entitytype = entitytype;

@@ -653,7 +653,9 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         @Override
         public void setItem(int i, @NotNull ItemStack stack) {
             this.getItems().set(i, stack);
-            stack.limitSize(this.getMaxStackSize(stack));
+            if (!this.isEmpty() && stack.getCount() > this.getMaxStackSize()) {
+                stack.setCount(this.getMaxStackSize());
+            }
             this.setChanged();
         }
 

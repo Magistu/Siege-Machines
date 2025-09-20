@@ -28,7 +28,7 @@ import ru.magistu.siegemachines.gui.machine.crosshair.Crosshair;
 import ru.magistu.siegemachines.item.MachineItem;
 import ru.magistu.siegemachines.item.ModItems;
 import ru.magistu.siegemachines.network.C2SPacketMachineUse;
-import ru.magistu.siegemachines.network.PacketHandler;
+import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.PacketOpenMachineInventory;
 
 public class ClientProxyForge {
@@ -99,21 +99,21 @@ public class ClientProxyForge {
         if (KeyBindings.MACHINE_USE.isDown()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine machine && !(machine instanceof SiegeLadder)) {
-                PacketHandler.sendToServer(new C2SPacketMachineUse());
+                ModNetwork.sendToServer(new C2SPacketMachineUse());
             }
         }
 
         if (KeyBindings.LADDER_CLIMB.isDown()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof SiegeLadder) {
-                PacketHandler.sendToServer(new C2SPacketMachineUse());
+                ModNetwork.sendToServer(new C2SPacketMachineUse());
             }
         }
 
         if (KeyBindings.MACHINE_INVENTORY.isDown()) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && player.isPassenger() && player.getVehicle() instanceof Machine) {
-                PacketHandler.sendToServer(new PacketOpenMachineInventory());
+                ModNetwork.sendToServer(new PacketOpenMachineInventory());
             }
         }
     }

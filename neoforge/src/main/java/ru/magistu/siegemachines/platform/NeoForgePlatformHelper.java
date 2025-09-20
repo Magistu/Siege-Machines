@@ -10,11 +10,11 @@ import ru.magistu.siegemachines.PacketHandlerNeoForge;
 import ru.magistu.siegemachines.mixin.EntityAccessForge;
 import ru.magistu.siegemachines.network.C2SModPacket;
 import ru.magistu.siegemachines.network.S2CModPacket;
-import ru.magistu.siegemachines.platform.services.IPlatformHelper;
+import ru.magistu.siegemachines.platform.services.PlatformHelper;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
-public class NeoForgePlatformHelper implements IPlatformHelper {
+public class NeoForgePlatformHelper implements PlatformHelper {
 
     public static PayloadRegistrar registrar;
 

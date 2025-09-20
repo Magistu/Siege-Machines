@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import ru.magistu.siegemachines.network.C2SModPacket;
 import ru.magistu.siegemachines.network.S2CModPacket;
 
-public interface IPlatformHelper {
+public interface PlatformHelper {
 
     /**
      * Gets the name of the current platform

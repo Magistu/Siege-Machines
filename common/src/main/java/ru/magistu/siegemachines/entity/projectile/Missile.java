@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.item;
+package ru.magistu.siegemachines.entity.projectile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -170,28 +170,20 @@ public abstract class Missile extends ThrowableItemProjectile {
         return explosion;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     private static LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
-        switch (source) {
-            case null -> {
-                return null;
-            }
-            case PrimedTnt primedtnt -> {
-                return primedtnt.getOwner();
-            }
-            case Machine machine -> {
-                return machine.getControllingPassenger();
-            }
-            case LivingEntity living -> {
-                return living;
-            }
-            case Projectile projectile -> {
-                Entity entity = projectile.getOwner();
-                if (entity instanceof LivingEntity) {
-                    return (LivingEntity) entity;
-                }
-            }
-            default -> {
+        if (source == null) {
+            return null;
+        } else if (source instanceof PrimedTnt primedtnt) {
+            return primedtnt.getOwner();
+        } else if (source instanceof Machine machine) {
+            return machine.getControllingPassenger();
+        } else if (source instanceof LivingEntity livingentity) {
+            return livingentity;
+        } else if (source instanceof Projectile projectile) {
+            Entity entity = projectile.getOwner();
+            if (entity instanceof LivingEntity livingentity) {
+                return livingentity;
             }
         }
 

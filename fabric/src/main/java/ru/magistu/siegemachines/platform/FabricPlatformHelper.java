@@ -7,10 +7,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import ru.magistu.siegemachines.network.C2SModPacket;
 import ru.magistu.siegemachines.network.S2CModPacket;
-import ru.magistu.siegemachines.platform.services.IPlatformHelper;
+import ru.magistu.siegemachines.platform.services.PlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class FabricPlatformHelper implements IPlatformHelper {
+public class FabricPlatformHelper implements PlatformHelper {
 
     @Override
     public String getPlatformName() {

@@ -6,9 +6,8 @@ import software.bernie.geckolib.animation.*;
 
 public interface MachineGeoEntity extends GeoEntity {
 
-    @SuppressWarnings("unchecked")
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
-        ((CustomAnimationController<Trebuchet>) event.getController()).setAnimationState(AnimationController.State.RUNNING);
+        ((CustomAnimationController<?>) event.getController()).setAnimationState(AnimationController.State.RUNNING);
         if (getUseTicks() > 0) {
             event.getController().setAnimation(getUsingRawAnimation());
             return PlayState.CONTINUE;

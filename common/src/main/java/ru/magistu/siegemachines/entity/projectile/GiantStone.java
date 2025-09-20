@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.item;
+package ru.magistu.siegemachines.entity.projectile;
 
 
 import net.minecraft.world.entity.EntityType;
@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
+import ru.magistu.siegemachines.item.ModItems;
 
 public class GiantStone extends Missile {
     public GiantStone(EntityType<GiantStone> entitytype, Level level) {

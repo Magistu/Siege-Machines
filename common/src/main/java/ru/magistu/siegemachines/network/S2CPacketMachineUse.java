@@ -39,13 +39,10 @@ public class S2CPacketMachineUse implements S2CModPacket<RegistryFriendlyByteBuf
         if (player == null) {
             return;
         }
-
         Entity entity = player.level().getEntity(entityid);
-        if (!(entity instanceof Machine machine)) {
-            return;
+        if (entity instanceof Machine machine) {
+            machine.use(player);
         }
-
-        machine.use(player);
     }
 
     @Override

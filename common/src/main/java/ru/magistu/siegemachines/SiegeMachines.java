@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.magistu.siegemachines.block.ModBlocks;
+import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
 import ru.magistu.siegemachines.gui.ModMenuTypes;
 import ru.magistu.siegemachines.init.ModCreativeTabs;
@@ -17,11 +18,10 @@ import ru.magistu.siegemachines.item.recipes.ModRecipeSerializers;
 public class SiegeMachines {
 
     public static final String ID = "siegemachines";
-    public static final String MOD_NAME = "ExampleMod";
+    public static final String MOD_NAME = "SiegeMachines";
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
     public static final int RENDER_UPDATE_RANGE = 128;
-    public static final int RENDER_UPDATE_TIME = 20;
     public static final int RENDER_UPDATE_RANGE_SQR = RENDER_UPDATE_RANGE * RENDER_UPDATE_RANGE;
 
     public static void init() {

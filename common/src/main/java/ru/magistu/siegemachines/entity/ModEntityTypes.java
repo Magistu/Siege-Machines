@@ -9,10 +9,10 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.entity.machine.*;
-import ru.magistu.siegemachines.item.Cannonball;
-import ru.magistu.siegemachines.item.GiantArrow;
-import ru.magistu.siegemachines.item.GiantStone;
-import ru.magistu.siegemachines.item.Stone;
+import ru.magistu.siegemachines.entity.projectile.Cannonball;
+import ru.magistu.siegemachines.entity.projectile.GiantArrow;
+import ru.magistu.siegemachines.entity.projectile.GiantStone;
+import ru.magistu.siegemachines.entity.projectile.Stone;
 
 public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> DEFERRED_REGISTER = DeferredRegister.create(SiegeMachines.ID, Registries.ENTITY_TYPE);
