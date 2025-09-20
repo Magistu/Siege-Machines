@@ -1,6 +1,5 @@
 package ru.magistu.siegemachines.client.gui.machine.crosshair;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import ru.magistu.siegemachines.SiegeMachines;
 import net.minecraft.client.Minecraft;

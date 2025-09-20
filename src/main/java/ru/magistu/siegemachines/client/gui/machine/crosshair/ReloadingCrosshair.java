@@ -46,13 +46,13 @@ public class ReloadingCrosshair extends Crosshair
             int originx = (mc.getWindow().getGuiScaledWidth() - width) / 2;
             int originy = (mc.getWindow().getGuiScaledHeight() - height) / 2;
             int animationsize = 23;
-            if (machine.useticks > 0)
+            if (machine.getUseTicks() > 0)
             {
                 imagey = height;
             }
-            else if (machine.delayticks > 0)
+            else if (machine.getDelayTicks() > 0)
             {
-                int number = (int) (((double) animationsize) * ((double) (machine.type.specs.delaytime.get() - machine.delayticks) / (double) machine.type.specs.delaytime.get()));
+                int number = (int) (((double) animationsize) * ((double) (machine.type.specs.delaytime.get() - machine.getDelayTicks()) / (double) machine.type.specs.delaytime.get()));
                 imagex = width;
                 imagey = height * number;
             }

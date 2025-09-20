@@ -17,7 +17,7 @@ import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.block.ModBlocks;
 import ru.magistu.siegemachines.client.renderer.*;
 import ru.magistu.siegemachines.client.renderer.model.MachineItemModel;
-import ru.magistu.siegemachines.entity.EntityTypes;
+import ru.magistu.siegemachines.entity.ModEntityTypes;
 import ru.magistu.siegemachines.entity.machine.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -47,52 +47,52 @@ public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SiegeMachines.ID);
 
-    public static final RegistryObject<Item> MORTAR = ITEMS.register("mortar", () -> new MachineItem<>(new Item.Properties(), EntityTypes.MORTAR, () -> MachineType.MORTAR) {
+    public static final RegistryObject<Item> MORTAR = ITEMS.register("mortar", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.MORTAR, () -> MachineType.MORTAR) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<Cannon> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("mortar"));
         }
     });
-    public static final RegistryObject<Item> CULVERIN = ITEMS.register("culverin", () -> new MachineItem<>(new Item.Properties(), EntityTypes.CULVERIN, () -> MachineType.CULVERIN) {
+    public static final RegistryObject<Item> CULVERIN = ITEMS.register("culverin", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.CULVERIN, () -> MachineType.CULVERIN) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<Cannon> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("culverin"));
         }
     });
-    public static final RegistryObject<Item> CATAPULT = ITEMS.register("catapult", () -> new MachineItem<>(new Item.Properties(), EntityTypes.CATAPULT, () -> MachineType.CATAPULT) {
+    public static final RegistryObject<Item> CATAPULT = ITEMS.register("catapult", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.CATAPULT, () -> MachineType.CATAPULT) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<Catapult> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("catapult"));
         }
     });
-    public static final RegistryObject<Item> TREBUCHET = ITEMS.register("trebuchet", () -> new MachineItem<>(new Item.Properties(), EntityTypes.TREBUCHET, () -> MachineType.TREBUCHET) {
+    public static final RegistryObject<Item> TREBUCHET = ITEMS.register("trebuchet", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.TREBUCHET, () -> MachineType.TREBUCHET) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<Trebuchet> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("trebuchet"));
         }
     });
-    public static final RegistryObject<Item> BALLISTA = ITEMS.register("ballista", () -> new MachineItem<>(new Item.Properties(), EntityTypes.BALLISTA, () -> MachineType.BALLISTA) {
+    public static final RegistryObject<Item> BALLISTA = ITEMS.register("ballista", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.BALLISTA, () -> MachineType.BALLISTA) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<Catapult> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("ballista"));
         }
     });
-    public static final RegistryObject<Item> BATTERING_RAM = ITEMS.register("battering_ram", () -> new MachineItem<>(new Item.Properties(), EntityTypes.BATTERING_RAM, () -> MachineType.BATTERING_RAM) {
+    public static final RegistryObject<Item> BATTERING_RAM = ITEMS.register("battering_ram", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.BATTERING_RAM, () -> MachineType.BATTERING_RAM) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<BatteringRam> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("battering_ram"));
         }
     });
-    public static final RegistryObject<Item> SIEGE_LADDER = ITEMS.register("siege_ladder", () -> new MachineItem<>(new Item.Properties(), EntityTypes.SIEGE_LADDER, () -> MachineType.SIEGE_LADDER) {
+    public static final RegistryObject<Item> SIEGE_LADDER = ITEMS.register("siege_ladder", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.SIEGE_LADDER, () -> MachineType.SIEGE_LADDER) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Mortar> getRenderer() {
+        public MachineItemGeoRenderer<SiegeLadder> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("siege_ladder"));
         }
     });
@@ -109,6 +109,7 @@ public class ModItems {
     public static final RegistryObject<Item> WHEEL = ITEMS.register("wheel", () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
+        CREATIVE_TABS.register(eventBus);
         ITEMS.register(eventBus);
     }
 }

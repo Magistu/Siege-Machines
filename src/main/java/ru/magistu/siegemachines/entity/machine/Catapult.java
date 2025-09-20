@@ -1,97 +1,21 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import net.minecraft.world.entity.Entity;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.client.SoundTypes;
-import ru.magistu.siegemachines.client.gui.machine.crosshair.Crosshair;
-import ru.magistu.siegemachines.client.gui.machine.crosshair.ReloadingCrosshair;
-import ru.magistu.siegemachines.item.ModItems;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
-public class Catapult extends ShootingMachine implements GeoAnimatable
-{
+public class Catapult extends ShootingMachine implements ShootingGeoEntity {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    static RawAnimation SHOOTING_ANIM = RawAnimation.begin().thenLoop("Shooting");
-    static RawAnimation RELOADING_ANIM = RawAnimation.begin().thenLoop("Reloading");
-    static RawAnimation IDLE_RELOADED_ANIM = RawAnimation.begin().thenLoop("IdleReloaded");
-    static RawAnimation IDLE_NOT_RELOADED_ANIM = RawAnimation.begin().thenLoop("IdleNotReloaded");
 
-    public enum State
-    {
-        SHOOTING,
-        RELOADING,
-        IDLE_RELOADED,
-        IDLE_NOT_RELOADED
-    }
-    public State state = State.RELOADING;
-
-    public Catapult(EntityType<? extends Mob> entitytype, Level level)
-    {
-        super(entitytype, level, MachineType.CATAPULT);
-    }
-
-    private  PlayState predicate(AnimationState<Catapult> event)
-    {
-        switch (state) {
-            case SHOOTING -> {
-                event.getController().setAnimation(SHOOTING_ANIM);
-                return PlayState.CONTINUE;
-            }
-            case IDLE_RELOADED -> {
-                event.getController().setAnimation(IDLE_RELOADED_ANIM);
-                return PlayState.CONTINUE;
-            }
-            case RELOADING -> {
-                event.getController().setAnimation(RELOADING_ANIM);
-                return PlayState.CONTINUE;
-            }
-            case IDLE_NOT_RELOADED -> {
-                event.getController().setAnimation(IDLE_NOT_RELOADED_ANIM);
-                return PlayState.CONTINUE;
-            }
-        }
-
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar data)
-    {
-        AnimationController<?> controller = new AnimationController<>(this, "controller", 1, this::predicate).setOverrideEasingType((dbl)->(t) ->
-        {
-            if (this.state.equals(State.RELOADING))
-            {
-                return (double) (this.type.specs.delaytime.get() - this.delayticks) / this.type.specs.delaytime.get();
-            }
-            return t;
-        });
-        data.add(controller);
-    }
-
-    @Override
-    public double getTick(Object entity) {
-        return tickCount;
+    public Catapult(EntityType<? extends Mob> entitytype, Level level, MachineType type) {
+        super(entitytype, level, type);
     }
 
     @Override
@@ -100,16 +24,12 @@ public class Catapult extends ShootingMachine implements GeoAnimatable
     }
 
     @Override
-    protected InteractionResult mobInteract(Player player, InteractionHand hand)
-    {
-        ItemStack stack = player.getItemInHand(hand);
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
 
-        if (super.mobInteract(player, hand) == InteractionResult.SUCCESS)
-        {
+        if (super.mobInteract(player, hand) == InteractionResult.SUCCESS) {
             return InteractionResult.SUCCESS;
         }
-        if (!this.level().isClientSide() && !this.isVehicle())
-        {
+        if (!this.level().isClientSide() && !this.isVehicle()) {
             player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
@@ -117,100 +37,15 @@ public class Catapult extends ShootingMachine implements GeoAnimatable
         return InteractionResult.PASS;
     }
 
-    public void startShooting(LivingEntity entity)
-    {
-        if (this.delayticks <= 0 && this.useticks <= 0 && this.shootingticks <= 0)
-        {
-            this.state = State.SHOOTING;
-            this.useticks = this.type.usetime;
+    public void startShooting(LivingEntity entity) {
+        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.shootingticks <= 0) {
+            usesoundplayer.run();
+            setUseTicks(type.usetime);
             this.shootingticks = this.type.usereleasetime;
-
-            Vec3 pos = this.position();
-            this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CATAPULT_SHOOTING.get(), this.getSoundSource(), 1.5f, 1.0f, false);
         }
     }
 
-    @Override
-    public void shoot()
-    {
-        if (!level().isClientSide())
-        {
-            super.shoot();
-        }
-    }
-
-    @Override
-    public void travel(Vec3 pos)
-    {
-        if (this.isAlive())
-        {
-            if (this.isVehicle() && this.useticks <= 0 && this.delayticks <= 0)
-            {
-                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
-
-                this.setTurretRotations(livingentity.getXRot(), this.getTurretYaw());
-                this.updateTurretRotations();
-
-                this.setYawDest(livingentity.getYRot());
-                this.updateYaw();
-            }
-            super.travel(pos);
-        }
-    }
-
-    @Override
-    public void tick()
-    {
-        if (this.useticks != 0 && --this.useticks <= 0)
-        {
-            this.state = State.RELOADING;
-            this.useticks = 0;
-            this.delayticks = this.type.specs.delaytime.get();
-        }
-
-        if (this.shootingticks != 0 && --this.shootingticks <= 0)
-        {
-            this.useRelease();
-            this.shootingticks = 0;
-        }
-
-        if (!level().isClientSide() && this.onGround())
-        {
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.0, 1.0, 0.0));
-        }
-
-        if (this.delayticks > 0 && this.isVehicle())
-        {
-            if (this.delayticks % 20 == 0)
-            {
-                Vec3 pos = this.position();
-                this.level().playLocalSound(pos.x, pos.y, pos.z, SoundTypes.CATAPULT_RELOADING.get(), this.getSoundSource(), 1.0f, 1.0f, false);
-            }
-            if (--this.delayticks <= 0)
-            {
-                this.state = State.IDLE_RELOADED;
-            }
-        }
-
-        if (this.renderupdateticks-- <= 0)
-        {
-            this.updateMachineRender();
-            this.renderupdateticks = SiegeMachines.RENDER_UPDATE_TIME;
-        }
-
-        super.tick();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public Crosshair createCrosshair()
-    {
-        return new ReloadingCrosshair();
-    }
-
-    @Override
-    public Item getMachineItem()
-    {
-        return ModItems.CATAPULT.get();
+    public float getReloadProgress() {
+        return ((float) this.type.specs.delaytime.get() - getDelayTicks()) / type.specs.delaytime.get();
     }
 }

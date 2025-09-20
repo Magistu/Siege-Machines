@@ -1,14 +1,14 @@
 package ru.magistu.siegemachines.client;
 
-import ru.magistu.siegemachines.SiegeMachines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import ru.magistu.siegemachines.SiegeMachines;
 
-public class SoundTypes
+public class ModSoundTypes
 {
 	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,
 			SiegeMachines.ID);

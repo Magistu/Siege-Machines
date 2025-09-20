@@ -1,28 +1,24 @@
 package ru.magistu.siegemachines.entity.projectile;
 
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import org.joml.Vector3d;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import ru.magistu.siegemachines.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -31,187 +27,166 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+import ru.magistu.siegemachines.ModTags;
+import ru.magistu.siegemachines.config.SpecsConfig;
+import ru.magistu.siegemachines.entity.machine.Machine;
 
 import javax.annotation.Nullable;
 
-public abstract class Missile extends ThrowableItemProjectile
-{
-	public MissileType type = MissileType.STONE;
-	public Item item = ModItems.STONE.get();
+public abstract class Missile extends ThrowableItemProjectile {
+    public MissileType type = MissileType.STONE;
 
-	public Missile(EntityType<? extends Missile> entitytype, Level level)
-	{
-		super(entitytype, level);
-	}
+    public Missile(EntityType<? extends Missile> entitytype, Level level) {
+        super(entitytype, level);
+    }
 
-	public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, MissileType type, Item item)
-	{
-		super(entitytype, entity, level);
-		this.type = type;
-		this.item = item;
-		this.setPos(pos.x, pos.y, pos.z);
-	}
+    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, MissileType type) {
+        super(entitytype, entity, level);
+        this.type = type;
+        this.setPos(pos.x, pos.y, pos.z);
+    }
 
-	@Override
-	public @NotNull Item getDefaultItem()
-	{
-		return this.item;
-	}
+    @Override
+    public void onHit(HitResult result) {
+        float f = 2.0F;
+        if (result.getType() == HitResult.Type.ENTITY) {
+            EntityHitResult entityRTR = (EntityHitResult) result;
+            Vec3 pos = entityRTR.getLocation();
+            Entity entity = entityRTR.getEntity();
+            float damage = (float) (this.type.specs.mass.get() * this.getDeltaMovement().length());
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
+            DamageSource damagesource = damageSources().thrown(this, this.getOwner());
+            if (entity instanceof LivingEntity livingentity) {
+                damage += this.type.armorpiercing * (damage - CombatRules.getDamageAfterAbsorb(damage, livingentity.getArmorValue(), (float) livingentity.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue()));
+            }
 
-	@Override
-	public void onHit(HitResult result)
-	{
-		float f = 2.0F;
-		if (result.getType() == HitResult.Type.ENTITY)
-		{
-			EntityHitResult entityRTR = (EntityHitResult)result;
-			Vec3 pos = entityRTR.getLocation();
-			Entity entity = entityRTR.getEntity();
-			float damage = this.type.specs.mass.get() * (float) this.getDeltaMovement().length();
+            if (!this.level().isClientSide() && this.type.explosive) {
+                this.explode(pos.x, pos.y, pos.z, 3.0F, Explosion.BlockInteraction.KEEP);
+                this.remove(RemovalReason.KILLED);
+            }
 
-			DamageSource damagesource = damageSources().thrown(this, this.getOwner());
-			if (this.type.armorpiercing >= 1.0f)
-			{
-				//damagesource = damagesource.bypassArmor(); TODO
-			}
-			else if (this.type.armorpiercing > 0.0f && entity instanceof LivingEntity livingentity)
-			{
-				if(livingentity instanceof Player player) {
-					if(player.isBlocking() && (item == ModItems.GIANT_ARROW.get() || item == Items.ARROW) && (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof ShieldItem || player.isBlocking() && player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof ShieldItem)) {
-						return;
-					}
-				}
-				damage -= (1.0f - this.type.armorpiercing) * (damage - CombatRules.getDamageAfterAbsorb(damage, 0, 0));
-			}
+            if (canHurt(entity)) {
+                entity.hurt(damagesource, damage);
+            }
+            Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.type.knockback * 0.6D);
+            if (vector3d.lengthSqr() > 0.0D) {
+                entity.push(vector3d.x, 0.1D, vector3d.z);
+            }
+        }
 
-			if (!this.level().isClientSide() && this.type.explosive)
-			{
-				this.explode(pos.x, pos.y, pos.z, 3.0F, Explosion.BlockInteraction.KEEP);
-				this.remove(RemovalReason.KILLED);
-			}
+        if (result.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockRTR = (BlockHitResult) result;
+            BlockPos blockpos = blockRTR.getBlockPos();
+            BlockState blockstate = this.level().getBlockState(blockpos);
+            boolean smoothimpact = blockstate.is(ModTags.Blocks.SMOOTH_IMPACT) && blockRTR.getDirection() == Direction.UP;
 
-			entity.hurt(damagesource, damage);
-			Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.type.knockback * 0.6D);
-			if (vector3d.lengthSqr() > 0.0D)
-			{
-				entity.push(vector3d.x, 0.1D, vector3d.z);
-			}
-		}
+            if (blockRTR.getDirection() == Direction.UP) {
+                if (this.type.explosive) {
+                    for (int r = 0; r < this.type.specs.explosionpower.get(); ++r) {
+                        for (int a = 0; a < 8; a++) {
+                            float i = (float) (a * Math.PI / 4);
 
-		if (result.getType() == HitResult.Type.BLOCK)
-		{
-			BlockHitResult blockRTR = (BlockHitResult)result;
-			BlockPos blockpos = blockRTR.getBlockPos();
-			BlockState blockstate = this.level().getBlockState(blockpos);
-			boolean smoothimpact = (blockstate == Blocks.SAND.defaultBlockState() ||
-					blockstate == Blocks.RED_SAND.defaultBlockState() ||
-					blockstate == Blocks.DIRT.defaultBlockState() ||
-					blockstate == Blocks.GRASS_BLOCK.defaultBlockState() ||
-					blockstate == Blocks.DIRT_PATH.defaultBlockState() ||
-					blockstate == Blocks.COARSE_DIRT.defaultBlockState() ||
-					blockstate == Blocks.SNOW_BLOCK.defaultBlockState()) &&
-					blockRTR.getDirection() == Direction.UP;
+                            BlockPos pos = blockRTR.getBlockPos();
 
-			if (blockRTR.getDirection() == Direction.UP)
-			{
-				if (this.type.explosive)
-				{
-					for (int r = 0; r < this.type.specs.explosionpower.get(); ++r)
-					{
-						for (float a = 0; a < 2 * Math.PI; a += Math.PI / 4)
-						{
-							BlockPos pos = blockRTR.getBlockPos().offset((int) (r * Math.cos(a)), 0, (int) (-r * Math.sin(a)));
-							if (this.level().getBlockState(pos) == Blocks.GRASS_BLOCK.defaultBlockState())
-							{
-								this.level().setBlockAndUpdate(pos, Blocks.DIRT.defaultBlockState());
-							}
-						}
-					}
-				}
-				if (!this.level().isClientSide())
-				{
-					this.remove(RemovalReason.KILLED);
-					if (smoothimpact && this.type.explosive)
-					{
 
-						this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.KEEP);
-					}
-				}
-				else if (smoothimpact)
-				{
-					this.dustExplosion(new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos), blockpos, this.type.specs.explosionpower.get() / 2, 50);
-				}
-			}
-			if (!this.level().isClientSide() && !smoothimpact && this.type.explosive)
-			{
-				this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), this.type.specs.explosionpower.get() * f, Explosion.BlockInteraction.DESTROY);
-			}
-		}
+                            BlockPos pos2 = BlockPos.containing(pos.getX() + r * Mth.cos(i), pos.getY(), pos.getZ() - r * Mth.sin(i));
+                            if (this.level().getBlockState(pos2) == Blocks.GRASS_BLOCK.defaultBlockState()) {
+                                this.level().setBlockAndUpdate(pos2, Blocks.DIRT.defaultBlockState());
+                            }
+                        }
+                    }
+                }
+                if (!this.level().isClientSide()) {
+                    this.discard();
+                    if (smoothimpact && this.type.explosive) {
 
-		if (result.getType() == HitResult.Type.MISS)
-		{
-			this.level().playSound((Player)this.getOwner(), this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
-			if(!this.level().isClientSide())
-			{
-				this.remove(RemovalReason.KILLED);
-			}
-		}
-		if (!this.level().isClientSide())
-		{
-			this.remove(RemovalReason.KILLED);
-		}
-	}
+                        this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), (float) (this.type.specs.explosionpower.get() * f), Explosion.BlockInteraction.KEEP);
+                    }
+                } else if (smoothimpact) {
+                    this.dustExplosion(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), blockpos, this.type.specs.explosionpower.get() / 2, 50);
+                }
+            }
+            if (!this.level().isClientSide() && !smoothimpact && this.type.explosive) {
+                this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), (float) (this.type.specs.explosionpower.get() * f), Explosion.BlockInteraction.DESTROY);
+            }
+        }
 
-	private void dustExplosion(ParticleOptions particle, BlockPos blockpos, double speed, int amount)
-	{
-		this.dustExplosion(particle, blockpos.getX(), blockpos.getY(), blockpos.getZ(), speed, amount);
-	}
+        if (result.getType() == HitResult.Type.MISS) {
+            this.level().playSound((Player) this.getOwner(), this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
+            if (!this.level().isClientSide()) {
+                this.discard();
+            }
+        }
+        if (!this.level().isClientSide()) {
+            this.discard();
+        }
+    }
 
-	private void dustExplosion(ParticleOptions particle, double x, double y, double z, double speed, int amount)
-	{
-		for (int i = 0; i < amount; ++i)
-		{
-			Vec3 movement = this.getDeltaMovement();
-			double d0 = x - 0.05 + this.level().random.nextDouble() * 0.3;
-			double d1 = y + 1.0;
-			double d2 = z - 0.05 + this.level().random.nextDouble() * 0.3;
-			double d3 = movement.x * this.level().random.nextDouble() * speed;
-			double d4 = -movement.y * this.level().random.nextDouble() * speed * 10.0f;
-			double d5 = movement.z * this.level().random.nextDouble() * speed;
-			this.level().addParticle(particle, d0, d1, d2, d3, d4, d5);
-		}
-	}
+    protected boolean canHurt(Entity victim) {
+        Entity owner = this.getOwner();
+        return owner == null ||
+                SpecsConfig.ALLOW_FRIENDLY_FIRE.get() ||
+                !victim.isAlliedTo(owner) ||
+                (owner.getTeam() != null && owner.getTeam().isAllowFriendlyFire());
+    }
 
-	@Override
-	public void tick()
-	{
-		if (this.type.flighttype == FlightType.SPINNING)
-		{
-			this.setXRot(this.getXRot() + 0.5f);
-		}
+    private void dustExplosion(ParticleOptions particle, BlockPos blockpos, double speed, int amount) {
+        this.dustExplosion(particle, blockpos.getX(), blockpos.getY(), blockpos.getZ(), speed, amount);
+    }
 
-		super.tick();
-	}
+    private void dustExplosion(ParticleOptions particle, double x, double y, double z, double speed, int amount) {
+        for (int i = 0; i < amount; ++i) {
+            Vec3 movement = this.getDeltaMovement();
+            double d0 = x - 0.05 + this.level().random.nextDouble() * 0.3;
+            double d1 = y + 1.0;
+            double d2 = z - 0.05 + this.level().random.nextDouble() * 0.3;
+            double d3 = movement.x * this.level().random.nextDouble() * speed;
+            double d4 = -movement.y * this.level().random.nextDouble() * speed * 10.0f;
+            double d5 = movement.z * this.level().random.nextDouble() * speed;
+            this.level().addParticle(particle, d0, d1, d2, d3, d4, d5);
+        }
+    }
 
-	public MissileExplosion explode(double x, double y, double z, float radius, Explosion.BlockInteraction mode)
-	{
-		return this.explode(null, null, x, y, z, radius, false, mode);
-	}
+    @Override
+    public void tick() {
+        if (this.type.flighttype == FlightType.SPINNING) {
+            this.setXRot(this.getXRot() + 0.5f);
+        }
 
-	public MissileExplosion explode(@Nullable DamageSource source, @Nullable ExplosionDamageCalculator context, double x, double y, double z, float size, boolean fired, Explosion.BlockInteraction mode)
-	{
-		MissileExplosion explosion = new MissileExplosion(this.level(), this.getOwner(), source, context, x, y, z, size, fired, mode);
-		if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
-		explosion.explode();
-		explosion.finalizeExplosion(true);
-		return explosion;
-	}
+        super.tick();
+    }
+
+    public MissileExplosion explode(double x, double y, double z, float radius, Explosion.BlockInteraction mode) {
+        return this.explode(x, y, z, radius, false, mode);
+    }
+
+    public MissileExplosion explode(double x, double y, double z, float size, boolean fired, Explosion.BlockInteraction mode) {
+        Entity source = this.getOwner();
+        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), new EntityBasedExplosionDamageCalculator(source), x, y, z, size, fired, mode);
+        //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
+        explosion.explode();
+        explosion.finalizeExplosion(true);
+        return explosion;
+    }
+
+    @Nullable
+    private static LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
+        if (source == null) {
+            return null;
+        } else if (source instanceof PrimedTnt primedtnt) {
+            return primedtnt.getOwner();
+        } else if (source instanceof Machine machine) {
+            return machine.getControllingPassenger();
+        } else if (source instanceof LivingEntity livingentity) {
+            return livingentity;
+        } else if (source instanceof Projectile projectile) {
+            Entity entity = projectile.getOwner();
+            if (entity instanceof LivingEntity livingentity) {
+                return livingentity;
+            }
+        }
+
+        return null;
+    }
 }

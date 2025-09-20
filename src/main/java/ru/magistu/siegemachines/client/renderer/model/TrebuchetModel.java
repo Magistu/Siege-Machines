@@ -1,0 +1,25 @@
+package ru.magistu.siegemachines.client.renderer.model;
+
+import net.minecraft.resources.ResourceLocation;
+import ru.magistu.siegemachines.entity.machine.Trebuchet;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+
+import java.util.Optional;
+
+public class TrebuchetModel extends DefaultedEntityGeoModel<Trebuchet> {
+    public TrebuchetModel(ResourceLocation assetSubpath) {
+        super(assetSubpath);
+    }
+
+    @Override
+    public void setCustomAnimations(Trebuchet animatable, long instanceId, AnimationState<Trebuchet> animationState) {
+        Optional<GeoBone> projectile = getBone("Cobblestone");
+
+        int useticks = animatable.getUseTicks();
+        boolean shouldrender = ((useticks <= 0 && animatable.shootingticks <= 0) || (useticks > 0 && animatable.shootingticks > 0)) && animatable.getDelayTicks() <= 0;
+        boolean showProjectile = shouldrender && animatable.hasAmmo();
+        projectile.ifPresent(bone -> bone.setHidden(!showProjectile));
+    }
+}

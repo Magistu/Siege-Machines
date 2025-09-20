@@ -4,14 +4,16 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
-public final class SpecsConfig
-{
+public final class SpecsConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Float> FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0f);
-    public static final ForgeConfigSpec.ConfigValue<Float> EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0f);
-    public static final ForgeConfigSpec.ConfigValue<Float> ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5f);
+    public static final ForgeConfigSpec.ConfigValue<Double> FIRE_DAMAGE_MULTIPLIER;
+    public static final ForgeConfigSpec.ConfigValue<Double> EXPLOSION_DAMAGE_MULTIPLIER;
+    public static final ForgeConfigSpec.ConfigValue<Double> ARROW_DAMAGE_MULTIPLIER;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_FRIENDLY_FIRE;
+    public static final ForgeConfigSpec.ConfigValue<Integer> DEPLOYMENT_SICKNESS_COOLDOWN;
+    public static final ForgeConfigSpec.ConfigValue<Integer> PREVENT_PICKUP_COOLDOWN;
 
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
@@ -25,17 +27,23 @@ public final class SpecsConfig
     public static final MissileSpecs STONE;
     public static final MissileSpecs GIANT_STONE;
 
-    static
-    {
+    static {
         BUILDER.push("siege_machines");
-        
-        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f);
-        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f);
-        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f);
-        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f);
-        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f);
-        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f);
-        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f);
+
+        FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0);
+        EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0);
+        ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5);
+        ALLOW_FRIENDLY_FIRE = BUILDER.define("allowFriendlyFire", false);
+        DEPLOYMENT_SICKNESS_COOLDOWN = BUILDER.define("deploymentSicknessCooldown", 300);
+        PREVENT_PICKUP_COOLDOWN = BUILDER.define("preventPickupCooldown", 300);
+
+        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f, 0.5f);
+        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f, 0.6f);
+        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f, 1.0f);
+        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f, 0.8f);
+        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f, 0.4f);
+        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f, 1.0f);
+        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f, 1.0f);
 
         BUILDER.pop();
 
@@ -46,12 +54,11 @@ public final class SpecsConfig
         GIANT_STONE = new MissileSpecs(BUILDER, "giant_stone", 70.0f, 5.0f, false);
 
         BUILDER.pop();
-        
+
         SPEC = BUILDER.build();
     }
-    
-    public static void register()
-    {
+
+    public static void register() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "siege-machines-specs.toml");
     }
 }

@@ -21,30 +21,23 @@ public class SiegeWorkbench extends CraftingTableBlock
 {
     private static final Component CONTAINER_TITLE = Component.translatable("container.crafting");
 
-    public SiegeWorkbench(Properties p_i48422_1_)
-    {
-        super(p_i48422_1_);
+    public SiegeWorkbench(Properties prop) {
+        super(prop);
     }
 
-    public @NotNull InteractionResult use(@NotNull BlockState blockstate, Level level, @NotNull BlockPos blockpos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult result)
-    {
-        if (level.isClientSide)
-        {
+    public @NotNull InteractionResult use(@NotNull BlockState blockstate, Level level, @NotNull BlockPos blockpos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult result) {
+        if (level.isClientSide) {
             return InteractionResult.SUCCESS;
-        }
-        else
-        {
+        } else {
             NetworkHooks.openScreen((ServerPlayer) player, this.getMenuProvider(blockstate, level, blockpos));
             return InteractionResult.CONSUME;
         }
     }
 
     @Override
-    public MenuProvider getMenuProvider(@NotNull BlockState blockstate, @NotNull Level level, @NotNull BlockPos blockpos)
-    {
-        return new SimpleMenuProvider((p_220270_2_, p_220270_3_, p_220270_4_) ->
-                new SiegeWorkbenchContainer(p_220270_2_, p_220270_3_, ContainerLevelAccess.create(level, blockpos)), CONTAINER_TITLE);
+    public MenuProvider getMenuProvider(@NotNull BlockState blockstate, @NotNull Level level, @NotNull BlockPos blockpos) {
+        return new SimpleMenuProvider(
+                (i, inventory, player) -> new SiegeWorkbenchContainer(i, inventory, ContainerLevelAccess.create(level, blockpos)), CONTAINER_TITLE);
     }
-
 
 }

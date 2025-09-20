@@ -1,6 +1,5 @@
 package ru.magistu.siegemachines.client.gui.workbench;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
