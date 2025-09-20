@@ -91,11 +91,15 @@ publisher {
     setArtifact(tasks.jar)
 
     modrinthDepends {
-        required("epic-knights-shields-armor-and-weapons")
+        required("architectury-api")
+        required("cloth-config")
+        required("geckolib")
     }
 
     curseDepends {
-        required("epic-knights-armor-and-weapons")
+        required("architectury-api")
+        required("cloth-config")
+        required("geckolib")
     }
 }
 
