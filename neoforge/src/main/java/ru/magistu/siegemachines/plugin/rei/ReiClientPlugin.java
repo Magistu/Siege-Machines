@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.plugins.rei;
+package ru.magistu.siegemachines.plugin.rei;
 
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;

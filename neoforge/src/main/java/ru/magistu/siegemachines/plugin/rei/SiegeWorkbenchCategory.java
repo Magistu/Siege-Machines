@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.plugins.rei;
+package ru.magistu.siegemachines.plugin.rei;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
