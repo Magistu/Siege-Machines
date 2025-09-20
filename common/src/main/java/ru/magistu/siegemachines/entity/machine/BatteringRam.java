@@ -13,15 +13,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import ru.magistu.siegemachines.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.network.PacketHandler;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
 import ru.magistu.siegemachines.util.CartesianGeometry;
+import ru.magistu.siegemachines.util.HitUtil;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -46,6 +48,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
     public BatteringRam(EntityType<? extends Mob> entitytype, Level level) {
         super(entitytype, level, MachineType.BATTERING_RAM);
     }
+
 
     @Override
     public RawAnimation getUsingRawAnimation() {
@@ -78,7 +81,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
     }
 
     @Override
-    public void travel(Vec3 pos) {
+    public void travel(Vec3 velocity) {
         if (this.isAlive()) {
             if (this.isVehicle()) {
                 LivingEntity livingentity = this.getControllingPassenger();
@@ -89,9 +92,9 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
                 }
                 this.setSpeed(0.04f);
 
-                pos = new Vec3(0.0f, pos.y, f1);
+                velocity = new Vec3(0.0f, velocity.y, f1);
             }
-            super.travel(pos);
+            super.travel(velocity);
         }
     }
 
@@ -162,6 +165,18 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
         }
     }
 
+    private Vec3 getHitPos() {
+        double pitch = this.getTurretPitch() * Math.PI / 180.0;
+        double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
+        Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw));
+        Vec3 delta = CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw);
+        HitResult hit = HitUtil.getHitResult(pos, this, e -> e.getVehicle() != this, delta, this.level(), 0.0f, ClipContext.Block.COLLIDER);
+        if (hit.getType() != HitResult.Type.MISS) {
+            return hit.getLocation();
+        }
+        return pos.add(delta);
+    }
+
     public double getWheelsSpeed() {
         if (this.onGround()) {
             return this.getViewVector(5.0f).multiply(1, 0, 1).dot(this.getDeltaMovement());
@@ -172,13 +187,6 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
 
     @Override
     public void push(double p_70024_1_, double p_70024_3_, double p_70024_5_) {
-    }
-
-    protected Vec3 getHitPos() {
-        double pitch = this.getTurretPitch() * Math.PI / 180.0;
-        double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
-
-        return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
     public UsageType getUsage() {

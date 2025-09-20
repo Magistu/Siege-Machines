@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -48,6 +49,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.ModTags;
+import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.enitity.Useable;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.util.CartesianGeometry;
@@ -70,6 +72,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     protected float turretyawprev = getTurretYaw();
     protected float turretyawdest = getTurretYaw();
     protected float yawdest = this.getYRot();
+    private boolean stationary;
 
     public static final EntityDataSerializer<List<ItemStack>> ITEM_STACKS_SERIALIZER = new EntityDataSerializer<>() {
         public @NotNull StreamCodec<? super RegistryFriendlyByteBuf, List<ItemStack>> codec() {
@@ -85,9 +88,10 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     private static final EntityDataAccessor<Float> DATA_TURRET_YAW = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_USE_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_DELAY_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> PREVENT_PICKUP_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<List<ItemStack>> DATA_INVENTORY_ITEMS = SynchedEntityData.defineId(Machine.class, ITEM_STACKS_SERIALIZER);
 
-    public int deploymentticks = 0;
+    protected int deploymentticks = 0;
 
     protected Runnable reloadsoundplayer;
     protected Runnable usesoundplayer;
@@ -99,8 +103,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         setDelayTicks(type.specs.delaytime.get());
         this.inventory = new MachineInventory(this.type.containerrows);
 
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(type.specs.durability.get());
-        this.setHealth(type.specs.durability.get());
+        this.applyAttributeSpecs();
 
         this.setTurretRotations(-type.turretinitpitch, type.turretinityaw);
         this.turretpitchprev = -type.turretinitpitch;
@@ -127,10 +130,21 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         }
     }
 
+    public void applyAttributeSpecs() {
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(type.specs.durability.get());
+        double knockbackresistance = type.specs.knockbackresistance.get();
+        this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(knockbackresistance);
+        this.stationary = knockbackresistance > 0.949;
+    }
+
+    public void setDeploymentTicks(int value) {
+        deploymentticks = value;
+    }
+
     public static AttributeSupplier.Builder setEntityAttributes(MachineType type) {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, type.specs.durability.getDefault())
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.5F)
+                .add(Attributes.KNOCKBACK_RESISTANCE, type.specs.knockbackresistance.getDefault())
                 .add(Attributes.MOVEMENT_SPEED, 0.0D)
                 .add(Attributes.ATTACK_DAMAGE, 0.0D)
                 .add(Attributes.FOLLOW_RANGE, 0.0D);
@@ -145,6 +159,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         builder.define(DATA_TURRET_YAW, 0f);
         builder.define(DATA_USE_TICKS, 0);
         builder.define(DATA_DELAY_TICKS, 0);
+        builder.define(PREVENT_PICKUP_TICKS, 0);
         builder.define(DATA_INVENTORY_ITEMS, new ArrayList<>());
     }
 
@@ -163,27 +178,36 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
             return false;
         } else if (source.is(DamageTypeTags.IS_FIRE) && this.hasEffect(MobEffects.FIRE_RESISTANCE)) {
             return false;
-        } else if (source.getEntity() instanceof Player && source.is(DamageTypes.PLAYER_ATTACK) && this.getPassengers().isEmpty()) {
-            this.spawnAtLocation(this.getMachineItemWithData());
-            this.dropEquipment();
-            this.remove(RemovalReason.DISCARDED);
+        } else if (source.getEntity() instanceof Player player && source.is(DamageTypes.PLAYER_ATTACK) && canDropAsItem()) {
+            if (getPreventPickupTicks() > 0) {
+                player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.getPreventPickupTicks() / 20.0f).withStyle(ChatFormatting.RED));
+            } else {
+                this.spawnAtLocation(this.getMachineItemWithData());
+                this.dropEquipment();
+                this.remove(RemovalReason.DISCARDED);
+            }
             return false;
         } else {
+            setPreventPickupTicks(SpecsConfig.PREVENT_PICKUP_COOLDOWN.get());
             return super.hurt(source, adjustDamage(source, amount));
         }
     }
 
+    protected boolean canDropAsItem() {
+        return this.getPassengers().isEmpty();
+    }
+
     public float adjustDamage(DamageSource damagesource, float f) {
         if (damagesource.is(DamageTypeTags.IS_FIRE)) {
-            f *= SpecsConfig.FIRE_DAMAGE_MULTIPLIER.get();
+            f *= SpecsConfig.FIRE_DAMAGE_MULTIPLIER.get().floatValue();
         }
 
         if (damagesource.is(DamageTypeTags.IS_EXPLOSION)) {
-            f *= SpecsConfig.EXPLOSION_DAMAGE_MULTIPLIER.get();
+            f *= SpecsConfig.EXPLOSION_DAMAGE_MULTIPLIER.get().floatValue();
         }
 
         if (damagesource.is(DamageTypes.ARROW)) {
-            f *= SpecsConfig.ARROW_DAMAGE_MULTIPLIER.get();
+            f *= SpecsConfig.ARROW_DAMAGE_MULTIPLIER.get().floatValue();
         }
 
         return f;
@@ -205,19 +229,8 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         }
 
         if (isStationary() && !level().isClientSide()) {
-            Vec3 delta = this.getDeltaMovement();
-            double y = Math.min(delta.y, 0.0D);
-            Vec3 adjusted = new Vec3(0.0D, y, 0.0D);
-
-            if (!delta.equals(adjusted)) {
-                this.setDeltaMovement(adjusted);
-            }
-
-            if (adjusted.lengthSqr() == 0.0D) {
-                this.hasImpulse = false;
-            }
+            this.stop();
         }
-
 
         int delayticks = getDelayTicks();
         if (delayticks > 0 && this.hasControllingPassenger()) {
@@ -231,7 +244,24 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
             this.deploymentticks--;
         }
 
+        if (this.getPreventPickupTicks() > 0) {
+            this.setPreventPickupTicks(this.getPreventPickupTicks() - 1);
+        }
+
         super.tick();
+    }
+
+    public void stop() {
+        Vec3 delta = this.getDeltaMovement();
+        double y = Math.min(delta.y, 0.0);
+        Vec3 adjusted = new Vec3(0.0, y, 0.0);
+
+        this.setDeltaMovement(adjusted);
+        this.setSpeed(0.0f);
+
+        if (adjusted.lengthSqr() < 1e-6) {
+            this.hasImpulse = false;
+        }
     }
 
     private void playReloadSound() {
@@ -340,7 +370,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
             nbt.putString("id", id);
         }
         stack.set(DataComponents.ENTITY_DATA, CustomData.of(nbt));
-//		System.out.println(nbt);
         return stack;
     }
 
@@ -399,16 +428,24 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return entityData.get(DATA_USE_TICKS);
     }
 
-    public void setUseTicks(int useTicks) {
-        entityData.set(DATA_USE_TICKS, useTicks);
+    public void setUseTicks(int ticks) {
+        entityData.set(DATA_USE_TICKS, ticks);
     }
 
     public int getDelayTicks() {
         return entityData.get(DATA_DELAY_TICKS);
     }
 
-    public void setDelayTicks(int delayTicks) {
-        entityData.set(DATA_DELAY_TICKS, delayTicks);
+    public void setDelayTicks(int ticks) {
+        entityData.set(DATA_DELAY_TICKS, ticks);
+    }
+
+    public int getPreventPickupTicks() {
+        return entityData.get(PREVENT_PICKUP_TICKS);
+    }
+
+    public void setPreventPickupTicks(int ticks) {
+        entityData.set(PREVENT_PICKUP_TICKS, ticks);
     }
 
     public void setTurretRotations(float pitch, float yaw) {
@@ -555,7 +592,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     }
 
     public boolean isStationary() {
-        return false;
+        return stationary;
     }
 
     public int getDelayTime() {

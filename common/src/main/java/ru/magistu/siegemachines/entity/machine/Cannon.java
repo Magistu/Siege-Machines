@@ -88,7 +88,7 @@ public class Cannon extends ShootingMachine implements GeoEntity {
     }
 
     @Override
-    public void travel(Vec3 pos) {
+    public void travel(Vec3 velocity) {
         if (this.isAlive()) {
             if (getDelayTicks() <= 0 && this.isVehicle()) {
                 LivingEntity livingentity = this.getControllingPassenger();
@@ -100,9 +100,9 @@ public class Cannon extends ShootingMachine implements GeoEntity {
                 }
                 this.setSpeed(0.04f);
 
-                pos = new Vec3(f0, pos.y, f1);
+                velocity = new Vec3(f0, velocity.y, f1);
             }
-            super.travel(pos);
+            super.travel(velocity);
         }
     }
 

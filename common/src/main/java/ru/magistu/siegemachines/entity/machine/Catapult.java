@@ -45,11 +45,6 @@ public class Catapult extends ShootingMachine implements ShootingGeoEntity {
         }
     }
 
-    @Override
-    public boolean isStationary() {
-        return true;
-    }
-
     public float getReloadProgress() {
         return ((float) this.type.specs.delaytime.get() - getDelayTicks()) / type.specs.delaytime.get();
     }

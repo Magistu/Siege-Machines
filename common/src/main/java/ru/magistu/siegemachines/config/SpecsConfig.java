@@ -9,6 +9,9 @@ public final class SpecsConfig {
     public static final ModConfigSpec.ConfigValue<Double> FIRE_DAMAGE_MULTIPLIER;
     public static final ModConfigSpec.ConfigValue<Double> EXPLOSION_DAMAGE_MULTIPLIER;
     public static final ModConfigSpec.ConfigValue<Double> ARROW_DAMAGE_MULTIPLIER;
+    public static final ModConfigSpec.ConfigValue<Boolean> ALLOW_FRIENDLY_FIRE;
+    public static final ModConfigSpec.ConfigValue<Integer> DEPLOYMENT_SICKNESS_COOLDOWN;
+    public static final ModConfigSpec.ConfigValue<Integer> PREVENT_PICKUP_COOLDOWN;
 
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
@@ -28,14 +31,17 @@ public final class SpecsConfig {
         FIRE_DAMAGE_MULTIPLIER = BUILDER.define("fireDamageMultiplier", 3.0);
         EXPLOSION_DAMAGE_MULTIPLIER = BUILDER.define("explosionDamageMultiplier", 2.0);
         ARROW_DAMAGE_MULTIPLIER = BUILDER.define("arrowDamageMultiplier", 0.5);
+        ALLOW_FRIENDLY_FIRE = BUILDER.define("allowFriendlyFire", false);
+        DEPLOYMENT_SICKNESS_COOLDOWN = BUILDER.define("deploymentSicknessCooldown", 300);
+        PREVENT_PICKUP_COOLDOWN = BUILDER.define("preventPickupCooldown", 300);
 
-        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f);
-        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f);
-        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f);
-        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f);
-        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f);
-        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f);
-        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f);
+        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f, 0.5f);
+        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f, 0.6f);
+        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f, 1.0f);
+        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f, 0.8f);
+        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f, 0.4f);
+        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f, 1.0f);
+        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f, 1.0f);
 
         BUILDER.pop();
 

@@ -5,11 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -20,8 +18,6 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -33,6 +29,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.ModTags;
+import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.machine.Machine;
 
 import javax.annotation.Nullable;
@@ -69,7 +66,9 @@ public abstract class Missile extends ThrowableItemProjectile {
                 this.remove(RemovalReason.KILLED);
             }
 
-            entity.hurt(damagesource, damage);
+            if (canHurt(entity)) {
+                entity.hurt(damagesource, damage);
+            }
             Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.type.knockback * 0.6D);
             if (vector3d.lengthSqr() > 0.0D) {
                 entity.push(vector3d.x, 0.1D, vector3d.z);
@@ -122,6 +121,14 @@ public abstract class Missile extends ThrowableItemProjectile {
         if (!this.level().isClientSide()) {
             this.discard();
         }
+    }
+
+    protected boolean canHurt(Entity victim) {
+        Entity owner = this.getOwner();
+        return owner == null ||
+                SpecsConfig.ALLOW_FRIENDLY_FIRE.get() ||
+                !victim.isAlliedTo(owner) ||
+                (owner.getTeam() != null && owner.getTeam().isAllowFriendlyFire());
     }
 
     private void dustExplosion(ParticleOptions particle, BlockPos blockpos, double speed, int amount) {

@@ -17,14 +17,14 @@ import ru.magistu.siegemachines.init.IngredientTypes;
 // The value here should match an entry in the META-INF/mods.toml file
 @SuppressWarnings("unused")
 @Mod(SiegeMachines.ID)
-public class SiegeMachinesForge {
+public class SiegeMachinesNeoForge {
 
-    public SiegeMachinesForge(IEventBus bus, Dist dist, ModContainer modContainer) {
-        bus.addListener(ModDatagen::gather);
-        bus.addListener(this::addEntityAttributes);
-        bus.addListener(PacketHandlerNeoForge::register);
-
+    public SiegeMachinesNeoForge(IEventBus bus, Dist dist, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.SERVER, SpecsConfig.SPEC, "siege-machines-specs.toml");
+
+        bus.addListener(ModDatagen::gather);
+        bus.addListener(SiegeMachinesNeoForge::addEntityAttributes);
+        bus.addListener(PacketHandlerNeoForge::register);
 
         if (dist.isClient()) {
             ClientProxyForge.setup(bus);
@@ -35,7 +35,7 @@ public class SiegeMachinesForge {
         SiegeMachines.init();
     }
 
-    void addEntityAttributes(EntityAttributeCreationEvent event) {
+    private static void addEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.MORTAR.get(), Cannon.setEntityAttributes(MachineType.MORTAR).build());
         event.put(ModEntityTypes.CULVERIN.get(), Cannon.setEntityAttributes(MachineType.CULVERIN).build());
         event.put(ModEntityTypes.TREBUCHET.get(), Trebuchet.setEntityAttributes(MachineType.TREBUCHET).build());
