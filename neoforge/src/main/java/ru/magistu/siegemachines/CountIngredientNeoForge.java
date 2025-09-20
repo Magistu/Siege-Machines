@@ -13,13 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record CountIngredientForge(Ingredient base, int count) implements ICustomIngredient {
+public record CountIngredientNeoForge(Ingredient base, int count) implements ICustomIngredient {
 
-    public static final MapCodec<CountIngredientForge> CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<CountIngredientNeoForge> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    Ingredient.CODEC.fieldOf("base").forGetter(CountIngredientForge::base),
-                    ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(CountIngredientForge::count)
-            ).apply(instance, CountIngredientForge::new));
+                    Ingredient.CODEC.fieldOf("base").forGetter(CountIngredientNeoForge::base),
+                    ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(CountIngredientNeoForge::count)
+            ).apply(instance, CountIngredientNeoForge::new));
 
 
     @Override

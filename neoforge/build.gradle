@@ -1,6 +1,8 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.hypherionmc.modutils.modpublisher' version '2.1.8'
 }
 
 neoForge {
@@ -49,12 +51,52 @@ neoForge {
 }
 
 dependencies {
-    if (project.use_rei.toBoolean()) {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
-        implementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
-        implementation "dev.architectury:architectury-neoforge:$architectury_version"
-    }
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    implementation "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
+    implementation "dev.architectury:architectury-neoforge:$architectury_version"
+
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+}
+
+publisher {
+    def mcVersionsNeo = (rootProject.ext.minecraftGameVersions as List).collect { it.toString() } as String[]
+    def changelogFile = rootProject.file("CHANGELOG.md")
+    def changelogText = changelogFile.exists() ? changelogFile.getText("UTF-8") : ""
+
+    apiKeys {
+        modrinth System.getenv("MODRINTH_TOKEN")
+        curseforge System.getenv("CURSEFORGE_TOKEN")
+    }
+
+    setCurseID((rootProject.findProperty("mod_curseforge_id") ?: "").toString())
+
+    setModrinthID((rootProject.findProperty("mod_modrinth_id") ?: "").toString())
+
+    setVersionType((rootProject.findProperty("release_channel") ?: "release").toString())
+
+    setChangelog(changelogText)
+
+    setProjectVersion(rootProject.version)
+
+    setDisplayName("[${rootProject.minecraft_version}-neoforge]-${rootProject.mod_display_name}-${rootProject.version}")
+
+    setGameVersions(*mcVersionsNeo)
+
+    setLoaders("neoforge")
+
+    setCurseEnvironment("both")
+
+    setArtifact(tasks.jar)
+
+    modrinthDepends {
+        required("epic-knights-shields-armor-and-weapons")
+    }
+
+    curseDepends {
+        required("epic-knights-armor-and-weapons")
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

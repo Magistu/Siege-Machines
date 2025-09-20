@@ -28,7 +28,6 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
         this(SiegeMachines.ID, recipe.category(), recipe.pattern, recipe.getResultItem(null));
     }
 
-
     @NotNull
     public RecipeSerializer<?> getSerializer() {
         return ModRecipeSerializers.SIEGE_WORKBENCH_SERIALIZER.get();

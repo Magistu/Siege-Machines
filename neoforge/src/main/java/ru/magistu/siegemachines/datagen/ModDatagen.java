@@ -16,8 +16,8 @@ public class ModDatagen {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         generator.addProvider(true, new ModLangProvider(output));
-        generator.addProvider(true, new ModDamageTypeTagsProvider(output,lookupProvider,existingFileHelper));
-        generator.addProvider(true, new ModBlockTagsProvider(output,lookupProvider,existingFileHelper));
+        generator.addProvider(true, new ModDamageTypeTagsProvider(output, lookupProvider, existingFileHelper));
+        generator.addProvider(true, new ModBlockTagsProvider(output, lookupProvider, existingFileHelper));
     }
 
 }
