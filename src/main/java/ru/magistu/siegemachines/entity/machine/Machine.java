@@ -5,14 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
@@ -39,10 +35,12 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.ModTags;
@@ -50,6 +48,7 @@ import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.enitity.Useable;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.util.CartesianGeometry;
+import ru.magistu.siegemachines.util.HitUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -560,9 +559,14 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
 
     @Override
     public Vec3 getDismountLocationForPassenger(LivingEntity entity) {
-        double yaw = (this.getGlobalTurretYaw()) * Math.PI / 180.0;
-
-        return this.position().add(CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw));
+        Vec3 origin = this.position();
+        double yaw = this.getGlobalTurretYaw() * Math.PI / 180.0;
+        Vec3 delta = CartesianGeometry.applyRotations(this.type.passengerpos, 0.0, yaw);
+        HitResult hit = HitUtil.getBlockHitResult(origin, delta, this.level(), ClipContext.Block.COLLIDER);
+        if (hit.getType() == HitResult.Type.MISS) {
+            return origin.add(delta);
+        }
+        return hit.getLocation();
     }
 
     @Override
