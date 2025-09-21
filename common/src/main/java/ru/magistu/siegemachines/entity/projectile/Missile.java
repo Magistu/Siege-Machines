@@ -162,6 +162,9 @@ public abstract class Missile extends ThrowableItemProjectile {
     public MissileExplosion explode(double x, double y, double z, boolean fired, Explosion.BlockInteraction mode) {
         Entity source = this.getOwner();
         float size = this.type.specs.explosionpower.get().floatValue();
+        if (this.engine != null) {
+            size *= 2.0f;
+        }
         MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), this.getExplosionDamageCalculator(), x, y, z, size, fired, mode, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
         //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
         explosion.explode();
