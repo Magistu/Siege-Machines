@@ -44,7 +44,7 @@ public final class SpecsConfig {
         TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 3.0f, 1.0f);
         CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f, 0.8f);
         BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f, 0.4f);
-        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f, 1.0f);
+        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 1.3f, 1.0f);
         SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f, 1.0f);
 
         BUILDER.pop();

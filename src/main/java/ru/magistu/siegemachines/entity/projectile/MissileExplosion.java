@@ -108,7 +108,7 @@ public class MissileExplosion extends Explosion {
 
     // This method was not copied from Explosion class
     private boolean canHurt(Entity victim) {
-        return CombatUtil.canHurt(this.source, victim);
+        return victim.getControllingPassenger() != this.source && CombatUtil.canHurt(this.source, victim);
     }
 
     public static float getSeenPercent(Vec3 p_46065_, Entity p_46066_) {

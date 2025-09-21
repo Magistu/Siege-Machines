@@ -597,6 +597,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     }
 
     public double getExplosionDamageMultiplier() {
+        System.out.println(this.type.specs.explosiondamagemultiplier.get());
         return this.type.specs.explosiondamagemultiplier.get();
     }
 

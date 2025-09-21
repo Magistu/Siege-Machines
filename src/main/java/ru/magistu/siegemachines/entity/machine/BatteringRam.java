@@ -152,7 +152,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Reloading
             int y = blockpos.getY();
             int z = blockpos.getZ();
             Entity source = this.lastUsedEntity == null ? this : this.lastUsedEntity;
-            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, source), getExplosionDamageCalculator(), x, y, z, 2, false, Explosion.BlockInteraction.DESTROY);
+            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(this, source), getExplosionDamageCalculator(), x, y, z, 2, false, Explosion.BlockInteraction.DESTROY);
             explosion.explode();
             explosion.finalizeExplosion(true);
         }

@@ -181,7 +181,9 @@ public abstract class Missile extends ThrowableItemProjectile {
         if (this.engine != null) {
             size *= 2.0f;
         }
-        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), getExplosionDamageCalculator(), x, y, z, size, fired, mode);
+        Entity directSource = getDirectSourceEntityInternal(source);
+        Entity indirectSource = getIndirectSourceEntityInternal(source);
+        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(directSource, indirectSource), getExplosionDamageCalculator(), x, y, z, size, fired, mode);
         //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
         explosion.explode();
         explosion.finalizeExplosion(true);
@@ -189,7 +191,12 @@ public abstract class Missile extends ThrowableItemProjectile {
     }
 
     @Nullable
-    private static LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
+    private Entity getDirectSourceEntityInternal(@Nullable Entity source) {
+        return source == null ? this : source.getVehicle() == null ? source : source.getVehicle();
+    }
+
+    @Nullable
+    private LivingEntity getIndirectSourceEntityInternal(@Nullable Entity source) {
         if (source == null) {
             return null;
         } else if (source instanceof PrimedTnt primedtnt) {
