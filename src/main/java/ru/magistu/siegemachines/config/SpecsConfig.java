@@ -14,6 +14,7 @@ public final class SpecsConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_FRIENDLY_FIRE;
     public static final ForgeConfigSpec.ConfigValue<Integer> DEPLOYMENT_SICKNESS_COOLDOWN;
     public static final ForgeConfigSpec.ConfigValue<Integer> PREVENT_PICKUP_COOLDOWN;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_SMOOTH_IMPACT;
 
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
@@ -36,6 +37,7 @@ public final class SpecsConfig {
         ALLOW_FRIENDLY_FIRE = BUILDER.define("allowFriendlyFire", false);
         DEPLOYMENT_SICKNESS_COOLDOWN = BUILDER.define("deploymentSicknessCooldown", 300);
         PREVENT_PICKUP_COOLDOWN = BUILDER.define("preventPickupCooldown", 300);
+        ENABLE_SMOOTH_IMPACT = BUILDER.define("enableSmoothImpact", true);
 
         MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f, 0.5f);
         CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f, 0.6f);

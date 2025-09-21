@@ -42,7 +42,7 @@ public class LadderSeat extends Seat {
             return InteractionResult.SUCCESS;
     }
 
-    @SuppressWarnings("unused")
+    @Override
     public boolean shouldRiderSit() {
         return false;
     }

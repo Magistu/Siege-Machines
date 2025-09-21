@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.item.ModItems;
@@ -15,7 +16,7 @@ public class GiantArrow extends AbstractArrow {
     }
 
     public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, ItemStack item) {
-        super(entitytype, entity, level);
+        super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
         this.setPos(pos.x, pos.y, pos.z);
         this.setBaseDamage(5.0F);
     }
@@ -23,6 +24,13 @@ public class GiantArrow extends AbstractArrow {
     @Override
     protected @NotNull ItemStack getPickupItem() {
         return new ItemStack(ModItems.GIANT_ARROW.get());
+    }
+
+    @Override
+    public void onHitEntity(EntityHitResult result) {
+        if (Missile.canHurt(this, result.getEntity())) {
+            super.onHitEntity(result);
+        }
     }
 
 }

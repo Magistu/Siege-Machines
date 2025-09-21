@@ -236,6 +236,12 @@ public class SiegeLadder extends Machine implements GeoEntity {
         super.onAddedToWorld();
     }
 
+    @Override
+    public void onRemovedFromWorld() {
+        this.seats.forEach(Entity::discard);
+        super.onRemovedFromWorld();
+    }
+
     public UsageType getUsage() {
         return UsageType.CLIMB;
     }

@@ -10,7 +10,7 @@ import software.bernie.geckolib.core.object.PlayState;
 
 public interface MachineGeoEntity extends GeoEntity {
 
-    private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
+    default <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
         ((CustomAnimationController<?>) event.getController()).setAnimationState(AnimationController.State.RUNNING);
         if (getUseTicks() > 0) {
             event.getController().setAnimation(getUsingRawAnimation());

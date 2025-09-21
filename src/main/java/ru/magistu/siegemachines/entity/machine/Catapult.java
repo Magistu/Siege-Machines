@@ -8,6 +8,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
@@ -16,6 +18,19 @@ public class Catapult extends ShootingMachine implements ShootingGeoEntity {
 
     public Catapult(EntityType<? extends Mob> entitytype, Level level, MachineType type) {
         super(entitytype, level, type);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar data)
+    {
+        AnimationController<?> controller = new CustomAnimationController<>(this, "controller", 1, this::predicate);
+        controller.setOverrideEasingType(d -> t -> {
+            if (this.getUseTicks() <= 0) {
+                return (double) (this.type.specs.delaytime.get() - this.getDelayTicks()) / this.type.specs.delaytime.get();
+            }
+            return t;
+        });
+        data.add(controller);
     }
 
     @Override

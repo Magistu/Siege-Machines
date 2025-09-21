@@ -3,8 +3,7 @@ package ru.magistu.siegemachines.api.enitity;
 import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nullable;
 
-public interface Useable
-{
+public interface Useable {
     void use(@Nullable LivingEntity entity);
     
     UsageType getUsage();
@@ -13,8 +12,7 @@ public interface Useable
         return this.getUsage() == UsageType.SHOOT;
     }
     
-    enum UsageType
-    {
+    enum UsageType {
         NONE,
         SHOOT,
         RAM,

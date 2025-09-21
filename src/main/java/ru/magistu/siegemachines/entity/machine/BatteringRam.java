@@ -155,8 +155,12 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Reloading
 
     @Override
     public void useRelease() {
-        if (this.deploymentticks > 0)
+        if (this.deploymentticks > 0) {
+            if (this.getControllingPassenger() instanceof Player player) {
+                player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
+            }
             return;
+        }
 
         this.usereleasesoundplayer.run();
         if (!this.level().isClientSide()) {

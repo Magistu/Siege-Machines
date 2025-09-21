@@ -20,7 +20,6 @@ public class Seat extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.discard();
     }
 
     @Override
