@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.projectile;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -9,13 +10,14 @@ import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.item.ModItems;
+import ru.magistu.siegemachines.util.CombatUtil;
 
 public class GiantArrow extends AbstractArrow {
     public GiantArrow(EntityType<GiantArrow> type, Level level) {
         super(type, level);
     }
 
-    public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, ItemStack item) {
+    public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, Entity engine, ItemStack item) {
         super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
         this.setPos(pos.x, pos.y, pos.z);
         this.setBaseDamage(5.0F);
@@ -28,7 +30,7 @@ public class GiantArrow extends AbstractArrow {
 
     @Override
     public void onHitEntity(EntityHitResult result) {
-        if (Missile.canHurt(this, result.getEntity())) {
+        if (CombatUtil.canHurt(this.getOwner(), result.getEntity())) {
             super.onHitEntity(result);
         }
     }

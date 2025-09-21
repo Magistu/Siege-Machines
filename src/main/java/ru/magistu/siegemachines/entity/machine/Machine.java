@@ -596,6 +596,10 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
     }
 
+    public double getExplosionDamageMultiplier() {
+        return this.type.specs.explosiondamagemultiplier.get();
+    }
+
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {
         private final int size;
 

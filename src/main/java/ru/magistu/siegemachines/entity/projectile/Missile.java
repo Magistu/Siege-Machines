@@ -13,7 +13,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,25 +32,27 @@ import org.joml.Vector3d;
 import ru.magistu.siegemachines.ModTags;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.machine.Machine;
+import ru.magistu.siegemachines.util.CombatUtil;
 
 import javax.annotation.Nullable;
 
 public abstract class Missile extends ThrowableItemProjectile {
     public MissileType type = MissileType.STONE;
+    protected Entity engine = null;
 
     public Missile(EntityType<? extends Missile> entitytype, Level level) {
         super(entitytype, level);
     }
 
-    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, MissileType type) {
-        super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
+    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity shooter, Entity engine, MissileType type) {
+        super(entitytype, shooter.getControllingPassenger() != null ? shooter.getControllingPassenger() : shooter, level);
         this.type = type;
+        this.engine = engine;
         this.setPos(pos.x, pos.y, pos.z);
     }
 
     @Override
     public void onHit(HitResult result) {
-        float f = 2.0F;
         if (result.getType() == HitResult.Type.ENTITY) {
             EntityHitResult entityRTR = (EntityHitResult) result;
             Vec3 pos = entityRTR.getLocation();
@@ -63,11 +65,11 @@ public abstract class Missile extends ThrowableItemProjectile {
             }
 
             if (!this.level().isClientSide() && this.type.explosive) {
-                this.explode(pos.x, pos.y, pos.z, 3.0F, Explosion.BlockInteraction.DESTROY);
+                this.explode(pos.x, pos.y, pos.z, Explosion.BlockInteraction.DESTROY);
                 this.discard();
             }
 
-            if (canHurt(this, entity)) {
+            if (this.canHurt(entity)) {
                 entity.hurt(damagesource, damage);
             }
             Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.type.knockback * 0.6D);
@@ -101,14 +103,14 @@ public abstract class Missile extends ThrowableItemProjectile {
                 if (!this.level().isClientSide()) {
                     this.discard();
                     if (smoothimpact && this.type.explosive) {
-                        this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), (float) (this.type.specs.explosionpower.get() * f), Explosion.BlockInteraction.KEEP);
+                        this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), Explosion.BlockInteraction.KEEP);
                     }
                 } else if (smoothimpact) {
                     this.dustExplosion(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), blockpos, this.type.specs.explosionpower.get() / 2, 50);
                 }
             }
             if (!this.level().isClientSide() && !smoothimpact && this.type.explosive) {
-                this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), (float) (this.type.specs.explosionpower.get() * f), Explosion.BlockInteraction.DESTROY);
+                this.explode(blockpos.getX(), blockpos.getY(), blockpos.getZ(), Explosion.BlockInteraction.DESTROY);
             }
         }
 
@@ -123,15 +125,18 @@ public abstract class Missile extends ThrowableItemProjectile {
         }
     }
 
-    public static boolean canHurt(Projectile projectile, Entity victim) {
-        Entity owner = projectile.getOwner();
-        if (owner == null || SpecsConfig.ALLOW_FRIENDLY_FIRE.get()) {
-            return true;
+    private ExplosionDamageCalculator getExplosionDamageCalculator() {
+        if (this.getOwner() == null) {
+            return new ExplosionDamageCalculator();
         }
-        if (owner instanceof LivingEntity livingowner && victim instanceof TamableAnimal animal && animal.isOwnedBy(livingowner)) {
-            return false;
+        if (this.engine != null) {
+            return new EntityBasedExplosionDamageCalculator(this.engine);
         }
-        return owner.getTeam() == null || owner.getTeam().isAllowFriendlyFire() || !owner.isAlliedTo(victim);
+        return new EntityBasedExplosionDamageCalculator(this.getOwner());
+    }
+
+    public boolean canHurt(Entity victim) {
+        return CombatUtil.canHurt(this.getOwner(), victim);
     }
 
     private void dustExplosion(ParticleOptions particle, BlockPos blockpos, double speed, int amount) {
@@ -160,13 +165,17 @@ public abstract class Missile extends ThrowableItemProjectile {
         super.tick();
     }
 
-    public MissileExplosion explode(double x, double y, double z, float radius, Explosion.BlockInteraction mode) {
-        return this.explode(x, y, z, radius, false, mode);
+    public MissileExplosion explode(double x, double y, double z, Explosion.BlockInteraction mode) {
+        return this.explode(x, y, z, false, mode);
     }
 
-    public MissileExplosion explode(double x, double y, double z, float size, boolean fired, Explosion.BlockInteraction mode) {
+    public MissileExplosion explode(double x, double y, double z, boolean fired, Explosion.BlockInteraction mode) {
         Entity source = this.getOwner();
-        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), new EntityBasedExplosionDamageCalculator(source), x, y, z, size, fired, mode);
+        float size = this.type.specs.explosionpower.get().floatValue();
+        if (this.engine != null) {
+            size *= 2.0f;
+        }
+        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), getExplosionDamageCalculator(), x, y, z, size, fired, mode);
         //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
         explosion.explode();
         explosion.finalizeExplosion(true);

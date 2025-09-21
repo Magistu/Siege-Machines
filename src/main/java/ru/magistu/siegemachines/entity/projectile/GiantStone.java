@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.projectile;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -13,8 +14,8 @@ public class GiantStone extends Missile {
         super(entitytype, level);
     }
 
-    public GiantStone(EntityType<GiantStone> entitytype, Level level, Vector3d pos, LivingEntity entity) {
-        super(entitytype, level, pos, entity, MissileType.GIANT_STONE);
+    public GiantStone(EntityType<GiantStone> entitytype, Level level, Vector3d pos, LivingEntity entity, Entity engine) {
+        super(entitytype, level, pos, entity, engine, MissileType.GIANT_STONE);
     }
 
     @Override
