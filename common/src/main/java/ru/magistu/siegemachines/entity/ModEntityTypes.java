@@ -17,9 +17,9 @@ import ru.magistu.siegemachines.entity.projectile.Stone;
 public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> DEFERRED_REGISTER = DeferredRegister.create(SiegeMachines.ID, Registries.ENTITY_TYPE);
 
-    public static final RegistrySupplier<EntityType<Cannonball>> CANNONBALL = addRegistry("cannonball", Cannonball::new, 0.5f, 0.5f);
-    public static final RegistrySupplier<EntityType<Stone>> STONE = addRegistry("stone", Stone::new, 0.6f, 0.6f);
-    public static final RegistrySupplier<EntityType<GiantStone>> GIANT_STONE = addRegistry("giant_stone", GiantStone::new, 1.1f, 1.1f);
+    public static final RegistrySupplier<EntityType<Cannonball>> CANNONBALL = addRegistry("cannonball", Cannonball::new, 0.5f, 0.5f, 20);
+    public static final RegistrySupplier<EntityType<Stone>> STONE = addRegistry("stone", Stone::new, 0.6f, 0.6f, 20);
+    public static final RegistrySupplier<EntityType<GiantStone>> GIANT_STONE = addRegistry("giant_stone", GiantStone::new, 1.1f, 1.1f, 20);
     public static final RegistrySupplier<EntityType<GiantArrow>> GIANT_ARROW = DEFERRED_REGISTER.register("giant_arrow", () -> EntityType.Builder.<GiantArrow>of(GiantArrow::new, MobCategory.MISC).clientTrackingRange(4).updateInterval(20).sized(0.5f, 0.5f).build(""));
 
     public static final RegistrySupplier<EntityType<Cannon>> MORTAR = addRegistry("mortar", (EntityType<Cannon> entitytype, Level level) -> new Cannon(entitytype, level, MachineType.MORTAR), 2.0f, 1.0f, 10);
