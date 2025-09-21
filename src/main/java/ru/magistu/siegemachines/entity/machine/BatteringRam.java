@@ -12,14 +12,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.entity.Reloading;
+import ru.magistu.siegemachines.entity.projectile.MachineBasedExplosionDamageCalculator;
+import ru.magistu.siegemachines.entity.projectile.MissileExplosion;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
@@ -36,6 +36,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Reloading
     public int hittingticks = 0;
     private int wheelssoundticks = 10;
     public double lastwheelpitch;
+    protected Entity lastUsedEntity;
 
     public enum State {
         HITTING,
@@ -135,6 +136,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Reloading
         if (!this.level().isClientSide()) {
             ModNetwork.sendPacketToAllInArea(new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
+        this.lastUsedEntity = entity;
 
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.hittingticks <= 0) {
             this.usesoundplayer.run();
@@ -146,11 +148,18 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Reloading
 
     public void ramHit(BlockPos blockpos) {
         if (!this.level().isClientSide()) {
-            Explosion explosion = new Explosion(this.level(), this,
-                    blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, Explosion.BlockInteraction.DESTROY);
+            int x = blockpos.getX();
+            int y = blockpos.getY();
+            int z = blockpos.getZ();
+            Entity source = this.lastUsedEntity == null ? this : this.lastUsedEntity;
+            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, source), getExplosionDamageCalculator(), x, y, z, 2, false, Explosion.BlockInteraction.DESTROY);
             explosion.explode();
             explosion.finalizeExplosion(true);
         }
+    }
+
+    private ExplosionDamageCalculator getExplosionDamageCalculator() {
+        return new MachineBasedExplosionDamageCalculator(this);
     }
 
     @Override
