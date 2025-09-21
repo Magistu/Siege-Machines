@@ -34,6 +34,6 @@ public class MachineBasedExplosionDamageCalculator extends ExplosionDamageCalcul
     }
 
     public boolean shouldDamageEntity(Explosion explosion, Entity victim) {
-        return victim.getControllingPassenger() != this.source &&CombatUtil.canHurt(this.source, victim);
+        return victim != this.source && CombatUtil.canHurt(this.source, victim);
     }
 }
