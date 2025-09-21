@@ -165,11 +165,18 @@ public abstract class Missile extends ThrowableItemProjectile {
         if (this.engine != null) {
             size *= 2.0f;
         }
-        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(source, getIndirectSourceEntityInternal(source)), this.getExplosionDamageCalculator(), x, y, z, size, fired, mode, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
+        Entity directSource = getDirectSourceEntityInternal(source);
+        Entity indirectSource = getIndirectSourceEntityInternal(source);
+        MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(directSource, indirectSource), this.getExplosionDamageCalculator(), x, y, z, size, fired, mode, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
         //	if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level(), explosion)) return explosion;
         explosion.explode();
         explosion.finalizeExplosion(true);
         return explosion;
+    }
+
+    @Nullable
+    private Entity getDirectSourceEntityInternal(@Nullable Entity source) {
+        return source == null ? this : source.getVehicle() == null ? source : source.getVehicle();
     }
 
     private ExplosionDamageCalculator getExplosionDamageCalculator() {
