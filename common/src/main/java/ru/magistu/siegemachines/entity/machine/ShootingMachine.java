@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 public abstract class ShootingMachine extends Machine implements Shootable {
     public int shootingticks = 0;
+    protected LivingEntity lastUsedEntity = null;
 
     protected ShootingMachine(EntityType<? extends Mob> entitytype, Level level, MachineType type) {
         super(entitytype, level, type);
@@ -53,7 +54,8 @@ public abstract class ShootingMachine extends Machine implements Shootable {
         ItemStack itemstack = this.inventory.removeItemType(projectilebuilder.item, 1);
         if (!itemstack.isEmpty() && !this.level().isClientSide()) {
             Vec3 shotpos = this.getShotPos();
-            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), this);
+            LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
+            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), owner);
 
             float pitch = getTurretPitch();
             float yaw = getGlobalTurretYaw();
@@ -67,6 +69,7 @@ public abstract class ShootingMachine extends Machine implements Shootable {
         if (!this.level().isClientSide()) {
             ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
+        this.lastUsedEntity = entity;
         this.startShooting(entity);
     }
 

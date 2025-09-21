@@ -3,8 +3,10 @@ package ru.magistu.siegemachines.entity.machine;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,13 +14,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.entity.projectile.MissileExplosion;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
@@ -27,6 +32,8 @@ import ru.magistu.siegemachines.util.HitUtil;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
 
 
 public class BatteringRam extends Machine implements MachineGeoEntity {
@@ -145,11 +152,16 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
 
     public void ramHit(BlockPos blockpos) {
         if (!this.level().isClientSide()) {
-            Explosion explosion = new Explosion(this.level(), this,
-                    blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, Explosion.BlockInteraction.DESTROY);
+            Entity exploder = this.getIndirectSourceEntityInternal();
+            MissileExplosion explosion = new MissileExplosion(this.level(), exploder, this.getExplosionDamageCalculator(), blockpos.getX(), blockpos.getY(), blockpos.getY(), size, fired, mode, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
             explosion.explode();
             explosion.finalizeExplosion(true);
         }
+    }
+
+    @Nullable
+    private LivingEntity getIndirectSourceEntityInternal() {
+        return this.getControllingPassenger() != null ? this.getControllingPassenger() : this;
     }
 
     @Override

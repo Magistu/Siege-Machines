@@ -9,6 +9,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 import ru.magistu.siegemachines.item.ModItems;
+import ru.magistu.siegemachines.util.CombatUtil;
 
 public class GiantArrow extends AbstractArrow {
     public GiantArrow(EntityType<GiantArrow> type, Level level) {
@@ -28,7 +29,7 @@ public class GiantArrow extends AbstractArrow {
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        if (Missile.canHurt(this, result.getEntity())) {
+        if (CombatUtil.canHurt(this.getOwner(), result.getEntity())) {
             super.onHitEntity(result);
         }
     }

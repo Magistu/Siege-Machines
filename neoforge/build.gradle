@@ -1,7 +1,6 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'com.hypherionmc.modutils.modpublisher' version '2.1.8'
 }
 

@@ -39,7 +39,7 @@ public final class SpecsConfig {
 
         MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f, 0.5f);
         CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f, 0.6f);
-        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 2.0f, 1.0f);
+        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 3.0f, 1.0f);
         CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f, 0.8f);
         BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f, 0.4f);
         BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 0.0f, 1.0f);
