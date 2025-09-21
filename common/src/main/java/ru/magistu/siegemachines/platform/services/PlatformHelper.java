@@ -51,4 +51,6 @@ public interface PlatformHelper {
     void sendToServer(C2SModPacket<?> msg);
 
     void onAddedToLevel(Entity entity);
+
+    void onRemovedFromLevel(Entity entity);
 }

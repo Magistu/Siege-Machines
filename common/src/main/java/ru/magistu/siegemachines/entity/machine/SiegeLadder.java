@@ -238,6 +238,13 @@ public class SiegeLadder extends Machine implements GeoEntity {
         this.seats.forEach(seat -> this.level().addFreshEntity(seat));
     }
 
+    //Forge methods, do not remove
+    @SuppressWarnings("unused")
+    public void onRemovedFromLevel() {
+        Services.PLATFORM.onRemovedFromLevel(this);
+        this.seats.forEach(Entity::discard);
+    }
+
     public UsageType getUsage() {
         return UsageType.CLIMB;
     }

@@ -53,4 +53,9 @@ public class FabricPlatformHelper implements PlatformHelper {
     public void onAddedToLevel(Entity entity) {
         // TODO: implement
     }
+
+    @Override
+    public void onRemovedFromLevel(Entity entity) {
+        // TODO: implement
+    }
 }

@@ -27,6 +27,9 @@ public class ProjectileBuilder<T extends Projectile> {
             new ProjectileBuilder<>(ModItems.GIANT_ARROW.get(), ModEntityTypes.GIANT_ARROW.get(), GiantArrow::new),
             new ProjectileBuilder<>(Items.ARROW, EntityType.ARROW, (entitytype, level, pos, entity, stack) ->
             {
+                if (entity.hasControllingPassenger()) {
+                    entity = entity.getControllingPassenger();
+                }
                 Arrow arrow = new Arrow(level, entity, new ItemStack(Items.ARROW), null);
                 arrow.setPos(pos.x, pos.y, pos.z);
                 return arrow;

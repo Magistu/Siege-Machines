@@ -57,4 +57,9 @@ public class NeoForgePlatformHelper implements PlatformHelper {
     public void onAddedToLevel(Entity entity) {
         ((EntityAccessForge)entity).setIsAddedToLevel(true);
     }
+
+    @Override
+    public void onRemovedFromLevel(Entity entity) {
+        ((EntityAccessForge)entity).setIsAddedToLevel(false);
+    }
 }

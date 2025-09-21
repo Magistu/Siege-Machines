@@ -13,6 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +43,7 @@ public abstract class Missile extends ThrowableItemProjectile {
     }
 
     public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, MissileType type) {
-        super(entitytype, entity, level);
+        super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
         this.type = type;
         this.setPos(pos.x, pos.y, pos.z);
     }
@@ -66,7 +67,7 @@ public abstract class Missile extends ThrowableItemProjectile {
                 this.remove(RemovalReason.KILLED);
             }
 
-            if (canHurt(entity)) {
+            if (canHurt(this, entity)) {
                 entity.hurt(damagesource, damage);
             }
             Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.type.knockback * 0.6D);
@@ -79,7 +80,7 @@ public abstract class Missile extends ThrowableItemProjectile {
             BlockHitResult blockRTR = (BlockHitResult) result;
             BlockPos blockpos = blockRTR.getBlockPos();
             BlockState blockstate = this.level().getBlockState(blockpos);
-            boolean smoothimpact = blockstate.is(ModTags.Blocks.SMOOTH_IMPACT) && blockRTR.getDirection() == Direction.UP;
+            boolean smoothimpact = SpecsConfig.ENABLE_SMOOTH_IMPACT.get() && blockstate.is(ModTags.Blocks.SMOOTH_IMPACT) && blockRTR.getDirection() == Direction.UP;
 
             if (blockRTR.getDirection() == Direction.UP) {
                 if (this.type.explosive) {
@@ -123,12 +124,15 @@ public abstract class Missile extends ThrowableItemProjectile {
         }
     }
 
-    protected boolean canHurt(Entity victim) {
-        Entity owner = this.getOwner();
-        return owner == null ||
-                SpecsConfig.ALLOW_FRIENDLY_FIRE.get() ||
-                !victim.isAlliedTo(owner) ||
-                (owner.getTeam() != null && owner.getTeam().isAllowFriendlyFire());
+    public static boolean canHurt(Projectile projectile, Entity victim) {
+        Entity owner = projectile.getOwner();
+        if (owner == null || SpecsConfig.ALLOW_FRIENDLY_FIRE.get()) {
+            return true;
+        }
+        if (owner instanceof LivingEntity livingowner && victim instanceof TamableAnimal animal && animal.isOwnedBy(livingowner)) {
+            return false;
+        }
+        return owner.getTeam() == null || owner.getTeam().isAllowFriendlyFire() || !owner.isAlliedTo(victim);
     }
 
     private void dustExplosion(ParticleOptions particle, BlockPos blockpos, double speed, int amount) {

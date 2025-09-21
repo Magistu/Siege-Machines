@@ -24,7 +24,7 @@ public class ModEntityTypes {
 
     public static final RegistrySupplier<EntityType<Cannon>> MORTAR = addRegistry("mortar", (EntityType<Cannon> entitytype, Level level) -> new Cannon(entitytype, level, MachineType.MORTAR), 2.0f, 1.0f, 10);
     public static final RegistrySupplier<EntityType<Cannon>> CULVERIN = addRegistry("culverin", (EntityType<Cannon> entitytype, Level level) -> new Cannon(entitytype, level, MachineType.CULVERIN), 2.5f, 1.8f, 10);
-    public static final RegistrySupplier<EntityType<Trebuchet>> TREBUCHET = addRegistry("trebuchet", Trebuchet::new, 5.0f, 9.0f, 10);
+    public static final RegistrySupplier<EntityType<Catapult>> TREBUCHET = addRegistry("trebuchet", (EntityType<Catapult> entitytype, Level level) -> new Catapult(entitytype, level, MachineType.TREBUCHET), 5.0f, 9.0f, 10);
     public static final RegistrySupplier<EntityType<Catapult>> CATAPULT = addRegistry("catapult", (EntityType<Catapult> entitytype, Level level) -> new Catapult(entitytype, level, MachineType.CATAPULT), 3.0f, 3.0f, 10);
     public static final RegistrySupplier<EntityType<Catapult>> BALLISTA = addRegistry("ballista", (EntityType<Catapult> entitytype, Level level) -> new Catapult(entitytype, level, MachineType.BALLISTA), 1.5f, 1.5f, 10);
     public static final RegistrySupplier<EntityType<BatteringRam>> BATTERING_RAM = addRegistry("battering_ram", BatteringRam::new, 4.0f, 3.0f, 10);

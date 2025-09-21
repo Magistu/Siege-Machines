@@ -47,6 +47,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -605,6 +606,12 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
 
     public int getDelayTime() {
         return type.specs.delaytime.get();
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        AABB box = this.getBoundingBox();
+        return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
     }
 
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {

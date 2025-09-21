@@ -85,7 +85,7 @@ public class ClientProxyForge {
         event.registerEntityRenderer(ModEntityTypes.CATAPULT.get(), context -> new MachineGeoRenderer<>(context, new CatapultModel(SiegeMachines.id("catapult"))));
         event.registerEntityRenderer(ModEntityTypes.BALLISTA.get(),context -> new MachineGeoRenderer<>(context, new BallistaModel(SiegeMachines.id("ballista"))));
         event.registerEntityRenderer(ModEntityTypes.BATTERING_RAM.get(),context -> new MachineGeoRenderer<>(context, new BatteringRamGeoModel(SiegeMachines.id("battering_ram"))));
-        event.registerEntityRenderer(ModEntityTypes.SIEGE_LADDER.get(), SiegeLadderGeoRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.SIEGE_LADDER.get(), context -> new MachineGeoRenderer<>(context, new SiegeLadderModel(SiegeMachines.id("siege_ladder"))));
 
         event.registerEntityRenderer(ModEntityTypes.CANNONBALL.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.GIANT_STONE.get(), ThrownItemRenderer::new);

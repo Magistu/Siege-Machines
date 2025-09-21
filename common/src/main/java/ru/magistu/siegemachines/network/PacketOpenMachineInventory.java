@@ -27,8 +27,7 @@ public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendly
 
     @Override
     public void handleServer(ServerPlayer player) {
-        Entity entity = player.getVehicle();
-        if (entity instanceof Machine machine) {
+        if (player != null && player.getVehicle() instanceof Machine machine) {
             machine.openInventoryGui();
         }
     }
