@@ -37,14 +37,16 @@ import java.util.Optional;
 
 public abstract class Missile extends ThrowableItemProjectile {
     public MissileType type = MissileType.STONE;
+    protected Entity engine = null;
 
     public Missile(EntityType<? extends Missile> entitytype, Level level) {
         super(entitytype, level);
     }
 
-    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, MissileType type) {
+    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, Entity engine, MissileType type) {
         super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
         this.type = type;
+        this.engine = engine;
         this.setPos(pos.x, pos.y, pos.z);
     }
 

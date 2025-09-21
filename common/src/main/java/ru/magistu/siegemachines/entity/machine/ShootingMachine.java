@@ -55,7 +55,7 @@ public abstract class ShootingMachine extends Machine implements Shootable {
         if (!itemstack.isEmpty() && !this.level().isClientSide()) {
             Vec3 shotpos = this.getShotPos();
             LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
-            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), owner);
+            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), owner, this);
 
             float pitch = getTurretPitch();
             float yaw = getGlobalTurretYaw();

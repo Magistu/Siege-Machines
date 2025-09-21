@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.entity.projectile;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -16,8 +17,8 @@ public class GiantArrow extends AbstractArrow {
         super(type, level);
     }
 
-    public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity entity, ItemStack item) {
-        super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level, item, null);
+    public GiantArrow(EntityType<GiantArrow> entitytype, Level level, Vector3d pos, LivingEntity shooter, Entity engine, ItemStack item) {
+        super(entitytype, shooter.getControllingPassenger() != null ? shooter.getControllingPassenger() : shooter, level, item, null);
         this.setPos(pos.x, pos.y, pos.z);
         this.setBaseDamage(5.0F);
     }
