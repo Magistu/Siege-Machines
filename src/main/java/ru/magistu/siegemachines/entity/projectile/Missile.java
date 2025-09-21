@@ -129,8 +129,14 @@ public abstract class Missile extends ThrowableItemProjectile {
         if (this.getOwner() == null) {
             return new ExplosionDamageCalculator();
         }
-        if (this.engine != null) {
-            return new EntityBasedExplosionDamageCalculator(this.engine);
+        if (this.getOwner().getVehicle() != null) {
+            if (this.getOwner().getVehicle() instanceof Machine machine) {
+                return new MachineBasedExplosionDamageCalculator(machine);
+            }
+            return new EntityBasedExplosionDamageCalculator(this.getOwner().getVehicle());
+        }
+        if (this.getOwner() instanceof Machine machine) {
+            return new MachineBasedExplosionDamageCalculator(machine);
         }
         return new EntityBasedExplosionDamageCalculator(this.getOwner());
     }

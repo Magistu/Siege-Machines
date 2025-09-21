@@ -16,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +34,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
-import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.util.CombatUtil;
 
@@ -63,6 +61,7 @@ public class MissileExplosion extends Explosion {
     private final ObjectArrayList<BlockPos> toBlow;
     private final Map<Player, Vec3> hitPlayers;
     private final Vec3 position;
+    private Entity engine;
 
     public MissileExplosion(Level p_46024_, @javax.annotation.Nullable Entity p_46025_, double p_46026_, double p_46027_, double p_46028_, float p_46029_, List<BlockPos> p_46030_) {
         this(p_46024_, p_46025_, p_46026_, p_46027_, p_46028_, p_46029_, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY, p_46030_);
@@ -101,11 +100,8 @@ public class MissileExplosion extends Explosion {
 
     // This method was not copied from Explosion class
     public double getDamageMultiplier() {
-        Entity exploder = this.source;
-        if (exploder.getVehicle() instanceof Machine machine) {
-            return machine.getExplosionDamageMultiplier();
-        } else if (exploder instanceof Machine machine) {
-            return machine.getExplosionDamageMultiplier();
+        if (this.damageCalculator instanceof MachineBasedExplosionDamageCalculator calc) {
+            return calc.getExplosionDamageMultiplier();
         }
         return 1.0f;
     }
