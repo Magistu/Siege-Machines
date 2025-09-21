@@ -20,10 +20,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +37,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -590,6 +588,12 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
 
     public int getDelayTime() {
         return type.specs.delaytime.get();
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        AABB box = this.getBoundingBox();
+        return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
     }
 
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {

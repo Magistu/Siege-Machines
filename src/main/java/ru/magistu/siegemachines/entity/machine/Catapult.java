@@ -37,6 +37,12 @@ public class Catapult extends ShootingMachine implements ShootingGeoEntity {
         return InteractionResult.PASS;
     }
 
+    @Override
+    public boolean isStationary() {
+        return true;
+    }
+
+    @Override
     public void startShooting(LivingEntity entity) {
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.shootingticks <= 0) {
             usesoundplayer.run();

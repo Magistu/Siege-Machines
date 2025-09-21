@@ -9,10 +9,7 @@ import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.gui.ModMenuTypes;
 import ru.magistu.siegemachines.client.gui.machine.MachineInventoryScreen;
 import ru.magistu.siegemachines.client.gui.workbench.SiegeWorkbenchScreen;
-import ru.magistu.siegemachines.client.renderer.GiantArrowRenderer;
-import ru.magistu.siegemachines.client.renderer.MachineGeoRenderer;
-import ru.magistu.siegemachines.client.renderer.SeatRenderer;
-import ru.magistu.siegemachines.client.renderer.SiegeLadderGeoRenderer;
+import ru.magistu.siegemachines.client.renderer.*;
 import ru.magistu.siegemachines.client.renderer.model.*;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
 
@@ -29,9 +26,9 @@ public class ClientRegistries {
         event.registerEntityRenderer(ModEntityTypes.CULVERIN.get(), context -> new MachineGeoRenderer<>(context, new CulverinModel(SiegeMachines.id("culverin"))));
         event.registerEntityRenderer(ModEntityTypes.TREBUCHET.get(), context -> new MachineGeoRenderer<>(context, new TrebuchetModel(SiegeMachines.id("trebuchet"))));
         event.registerEntityRenderer(ModEntityTypes.CATAPULT.get(), context -> new MachineGeoRenderer<>(context, new CatapultModel(SiegeMachines.id("catapult"))));
-        event.registerEntityRenderer(ModEntityTypes.BALLISTA.get(),context -> new MachineGeoRenderer<>(context, new BallistaModel(SiegeMachines.id("ballista"))));
-        event.registerEntityRenderer(ModEntityTypes.BATTERING_RAM.get(),context -> new MachineGeoRenderer<>(context, new BatteringRamGeoModel(SiegeMachines.id("battering_ram"))));
-        event.registerEntityRenderer(ModEntityTypes.SIEGE_LADDER.get(), SiegeLadderGeoRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.BALLISTA.get(), context -> new MachineGeoRenderer<>(context, new BallistaModel(SiegeMachines.id("ballista"))));
+        event.registerEntityRenderer(ModEntityTypes.BATTERING_RAM.get(), context -> new MachineGeoRenderer<>(context, new BatteringRamGeoModel(SiegeMachines.id("battering_ram"))));
+        event.registerEntityRenderer(ModEntityTypes.SIEGE_LADDER.get(), context -> new MachineGeoRenderer<>(context, new SiegeLadderModel(SiegeMachines.id("siege_ladder"))));
 
         event.registerEntityRenderer(ModEntityTypes.CANNONBALL.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.GIANT_STONE.get(), ThrownItemRenderer::new);

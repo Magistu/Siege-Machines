@@ -15,7 +15,7 @@
 //    public static void addEntityAttributes(EntityAttributeCreationEvent event) {
 //        event.put(EntityTypes.MORTAR.get(), Mortar.setEntityAttributes(MachineType.MORTAR).build());
 //        event.put(EntityTypes.CULVERIN.get(), Mortar.setEntityAttributes(MachineType.CULVERIN).build());
-//        event.put(EntityTypes.TREBUCHET.get(), Trebuchet.setEntityAttributes(MachineType.TREBUCHET).build());
+//        event.put(EntityTypes.TREBUCHET.get(), Catapult.setEntityAttributes(MachineType.TREBUCHET).build());
 //        event.put(EntityTypes.CATAPULT.get(), Catapult.setEntityAttributes(MachineType.CATAPULT).build());
 //        event.put(EntityTypes.BALLISTA.get(), Ballista.setEntityAttributes(MachineType.BALLISTA).build());
 //        event.put(EntityTypes.BATTERING_RAM.get(), BatteringRam.setEntityAttributes(MachineType.BATTERING_RAM).build());

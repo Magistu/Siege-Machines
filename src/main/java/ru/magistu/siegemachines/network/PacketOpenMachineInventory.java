@@ -4,7 +4,6 @@ import io.netty.channel.ChannelHandler;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -32,16 +31,8 @@ public class PacketOpenMachineInventory
     }
 
 	public static void handleServerSide(PacketOpenMachineInventory packet, ServerPlayer player) {
-		if(packet == null || player == null || !player.isPassenger()) {
-			return;
-		}
-
-		Entity entity = player.getVehicle();
-        if (!(entity instanceof Machine)) {
-            return;
+        if (player != null && player.getVehicle() instanceof Machine machine) {
+            machine.openInventoryGui();
         }
-		Machine machine = (Machine) entity;
-
-        machine.openInventoryGui();
 	}
 }

@@ -25,11 +25,11 @@ public class ModEntityTypes
     public static final RegistryObject<EntityType<GiantStone>> GIANT_STONE = addRegistry("giant_stone", GiantStone::new, 1.1f, 1.1f);
     public static final RegistryObject<EntityType<GiantArrow>> GIANT_ARROW = DEFERRED_REGISTER.register("giant_arrow", () -> EntityType.Builder.<GiantArrow>of(GiantArrow::new, MobCategory.MISC).clientTrackingRange(4).updateInterval(20).sized(0.5f, 0.5f).build(""));
 
-    public static final RegistryObject<EntityType<Cannon>> MORTAR = addRegistry("mortar", (EntityType<Cannon> entitytype, Level level) -> new Cannon(entitytype, level, MachineType.MORTAR), 2.0f, 1.0f, 10);
-    public static final RegistryObject<EntityType<Cannon>> CULVERIN = addRegistry("culverin", (EntityType<Cannon> entitytype, Level level) -> new Cannon(entitytype, level, MachineType.CULVERIN), 2.5f, 1.8f, 10);
-    public static final RegistryObject<EntityType<Trebuchet>> TREBUCHET = addRegistry("trebuchet", Trebuchet::new, 5.0f, 9.0f, 10);
-    public static final RegistryObject<EntityType<Catapult>> CATAPULT = addRegistry("catapult", (EntityType<Catapult> entitytype, Level level) -> new Catapult(entitytype, level, MachineType.CATAPULT), 3.0f, 3.0f, 10);
-    public static final RegistryObject<EntityType<Catapult>> BALLISTA = addRegistry("ballista", (EntityType<Catapult> entitytype, Level level) -> new Catapult(entitytype, level, MachineType.BALLISTA), 1.5f, 1.5f, 10);
+    public static final RegistryObject<EntityType<Cannon>> MORTAR = addRegistry("mortar", (entitytype, level) -> new Cannon(entitytype, level, MachineType.MORTAR), 2.0f, 1.0f, 10);
+    public static final RegistryObject<EntityType<Cannon>> CULVERIN = addRegistry("culverin", (entitytype, level) -> new Cannon(entitytype, level, MachineType.CULVERIN), 2.5f, 1.8f, 10);
+    public static final RegistryObject<EntityType<Catapult>> TREBUCHET = addRegistry("trebuchet", (entitytype, level) -> new Catapult(entitytype, level, MachineType.TREBUCHET), 5.0f, 9.0f, 10);
+    public static final RegistryObject<EntityType<Catapult>> CATAPULT = addRegistry("catapult", (entitytype, level) -> new Catapult(entitytype, level, MachineType.CATAPULT), 3.0f, 3.0f, 10);
+    public static final RegistryObject<EntityType<Catapult>> BALLISTA = addRegistry("ballista", (entitytype, level) -> new Catapult(entitytype, level, MachineType.BALLISTA), 1.5f, 1.5f, 10);
     public static final RegistryObject<EntityType<BatteringRam>> BATTERING_RAM = addRegistry("battering_ram", BatteringRam::new, 4.0f, 3.0f, 10);
     public static final RegistryObject<EntityType<SiegeLadder>> SIEGE_LADDER = addRegistry("siege_ladder", SiegeLadder::new, 3.0f, 3.0f, 10);
 

@@ -16,7 +16,7 @@ public abstract class Proxy {
     private static void addEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.MORTAR.get(), Cannon.setEntityAttributes(MachineType.MORTAR).build());
         event.put(ModEntityTypes.CULVERIN.get(), Cannon.setEntityAttributes(MachineType.CULVERIN).build());
-        event.put(ModEntityTypes.TREBUCHET.get(), Trebuchet.setEntityAttributes(MachineType.TREBUCHET).build());
+        event.put(ModEntityTypes.TREBUCHET.get(), Catapult.setEntityAttributes(MachineType.TREBUCHET).build());
         event.put(ModEntityTypes.CATAPULT.get(), Catapult.setEntityAttributes(MachineType.CATAPULT).build());
         event.put(ModEntityTypes.BALLISTA.get(), Catapult.setEntityAttributes(MachineType.BALLISTA).build());
         event.put(ModEntityTypes.BATTERING_RAM.get(), BatteringRam.setEntityAttributes(MachineType.BATTERING_RAM).build());

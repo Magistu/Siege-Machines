@@ -71,7 +71,7 @@ public class ModItems {
     public static final RegistryObject<Item> TREBUCHET = ITEMS.register("trebuchet", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.TREBUCHET, () -> MachineType.TREBUCHET) {
         @Override
         @OnlyIn(Dist.CLIENT)
-        public MachineItemGeoRenderer<Trebuchet> getRenderer() {
+        public MachineItemGeoRenderer<Catapult> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("trebuchet"));
         }
     });
