@@ -245,4 +245,10 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public UsageType getUsage() {
         return UsageType.CLIMB;
     }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        AABB box = this.getBoundingBox();
+        return box.inflate(1.5 * box.getXsize(), 1.5 * box.getYsize(), 1.5 * box.getZsize());
+    }
 }
