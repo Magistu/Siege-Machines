@@ -114,8 +114,8 @@ public abstract class Missile extends ThrowableItemProjectile {
             }
         }
 
-        if (result.getType() == HitResult.Type.MISS) {
-            this.level().playSound((Player) this.getOwner(), this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
+        if (result.getType() == HitResult.Type.MISS && this.getOwner() instanceof Player player) {
+            this.level().playSound(player, this.getOnPos(), SoundEvents.ANVIL_BREAK, SoundSource.AMBIENT, 1.0f, 1.0f);
             if (!this.level().isClientSide()) {
                 this.discard();
             }
@@ -126,19 +126,13 @@ public abstract class Missile extends ThrowableItemProjectile {
     }
 
     private ExplosionDamageCalculator getExplosionDamageCalculator() {
-        if (this.getOwner() == null) {
+        if (this.engine == null) {
             return new ExplosionDamageCalculator();
         }
-        if (this.getOwner().getVehicle() != null) {
-            if (this.getOwner().getVehicle() instanceof Machine machine) {
-                return new MachineBasedExplosionDamageCalculator(machine);
-            }
-            return new EntityBasedExplosionDamageCalculator(this.getOwner().getVehicle());
-        }
-        if (this.getOwner() instanceof Machine machine) {
+        if (this.engine instanceof Machine machine) {
             return new MachineBasedExplosionDamageCalculator(machine);
         }
-        return new EntityBasedExplosionDamageCalculator(this.getOwner());
+        return new EntityBasedExplosionDamageCalculator(this.engine);
     }
 
     public boolean canHurt(Entity victim) {
