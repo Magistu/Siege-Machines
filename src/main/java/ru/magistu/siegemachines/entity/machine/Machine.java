@@ -88,6 +88,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         this.inventory = new MachineInventory(this.type.containerrows);
 
         this.applyAttributeSpecs();
+        this.setHealth(type.specs.durability.get());
 
         this.setTurretRotations(-type.turretinitpitch, type.turretinityaw);
         this.turretpitchprev = -type.turretinitpitch;
