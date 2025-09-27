@@ -7,7 +7,7 @@ version="${version}" #mandatory
 # A display name for the mod
 displayName="Medieval Siege Machines" #mandatory
 # logoFile="siegemachines.png" #optional // TODO Logo
-credits="Lexiolty, itzme1on, Sahgar, Goodbird (ported to 1.20.1)"
+credits="Lexiolty, itzme1on, Goodbird, StaxiHD, Sahgar"
 authors="Magistu" #optional
 description='''Adds medieval siege machines'''
 [[dependencies.siegemachines]]

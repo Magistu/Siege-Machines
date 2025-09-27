@@ -6,6 +6,7 @@ import ru.magistu.siegemachines.block.ModBlocks;
 import ru.magistu.siegemachines.client.ClientProxy;
 import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.config.SpecsConfig;
+import ru.magistu.siegemachines.datagen.ModDatagen;
 import ru.magistu.siegemachines.entity.EntityDataSerializers;
 import ru.magistu.siegemachines.item.recipes.ModRecipes;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
@@ -34,6 +35,7 @@ public class SiegeMachines {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         PROXY.setup(eventBus);
+        eventBus.addListener(ModDatagen::gather);
 
         EntityDataSerializers.register(eventBus);
         ModEntityTypes.register(eventBus);

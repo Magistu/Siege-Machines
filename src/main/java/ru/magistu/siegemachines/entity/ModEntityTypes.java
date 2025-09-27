@@ -18,9 +18,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> DEFERRED_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, SiegeMachines.ID);
 
-    public static final RegistryObject<EntityType<Cannonball>> CANNONBALL = addRegistry("cannonball", Cannonball::new, 0.5f, 0.5f, 10);
-    public static final RegistryObject<EntityType<Stone>> STONE = addRegistry("stone", Stone::new, 0.6f, 0.6f, 10);
-    public static final RegistryObject<EntityType<GiantStone>> GIANT_STONE = addRegistry("giant_stone", GiantStone::new, 1.1f, 1.1f, 10);
+    public static final RegistryObject<EntityType<Cannonball>> CANNONBALL = addRegistry("cannonball", Cannonball::new, 1.0f, 1.0f, 10);
+    public static final RegistryObject<EntityType<Stone>> STONE = addRegistry("stone", Stone::new, 1.0f, 1.0f, 10);
+    public static final RegistryObject<EntityType<GiantStone>> GIANT_STONE = addRegistry("giant_stone", GiantStone::new, 2.0f, 2.0f, 10);
     public static final RegistryObject<EntityType<GiantArrow>> GIANT_ARROW = DEFERRED_REGISTER.register("giant_arrow", () -> EntityType.Builder.<GiantArrow>of(GiantArrow::new, MobCategory.MISC).clientTrackingRange(10).updateInterval(20).sized(0.5f, 0.5f).build(""));
 
     public static final RegistryObject<EntityType<Cannon>> MORTAR = addRegistry("mortar", (entitytype, level) -> new Cannon(entitytype, level, MachineType.MORTAR), 2.0f, 1.0f, 10);

@@ -17,7 +17,7 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
-        this.tag(ModTags.DamageTypes.MACHINE_IMMUNE_TO).add(DamageTypes.CACTUS,DamageTypes.WITHER,DamageTypes.MAGIC,DamageTypes.DROWN,DamageTypes.STARVE);
+    protected void addTags(HolderLookup.Provider provider) {
+        this.tag(ModTags.DamageTypes.MACHINE_IMMUNE_TO).add(DamageTypes.CACTUS, DamageTypes.WITHER,DamageTypes.MAGIC, DamageTypes.DROWN, DamageTypes.STARVE);
     }
 }

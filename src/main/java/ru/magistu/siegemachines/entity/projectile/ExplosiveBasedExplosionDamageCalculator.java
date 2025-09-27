@@ -7,26 +7,24 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import ru.magistu.siegemachines.entity.machine.Machine;
-import ru.magistu.siegemachines.util.CombatUtil;
+import ru.magistu.siegemachines.entity.Explosive;
 
 import java.util.Optional;
 
-public class MachineBasedExplosionDamageCalculator extends ExplosionDamageCalculator {
-    private final Machine source;
+public class ExplosiveBasedExplosionDamageCalculator extends ExplosionDamageCalculator {
+    private final Explosive source;
 
-    public MachineBasedExplosionDamageCalculator(Machine source) {
+    public ExplosiveBasedExplosionDamageCalculator(Explosive source) {
         this.source = source;
     }
 
     public Optional<Float> getBlockExplosionResistance(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state, FluidState fluid) {
-        return super.getBlockExplosionResistance(explosion, reader, pos, state, fluid).map((p_45913_) -> {
-            return this.source.getBlockExplosionResistance(explosion, reader, pos, state, fluid, p_45913_);
-        });
+        return super.getBlockExplosionResistance(explosion, reader, pos, state, fluid).map(
+                r -> this.source.getBlockResistance(explosion, reader, pos, state, fluid, r));
     }
 
     public boolean shouldBlockExplode(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state, float power) {
-        return this.source.shouldBlockExplode(explosion, reader, pos, state, power);
+        return this.source.shouldBlockDestroy(explosion, reader, pos, state, power);
     }
 
     public float getExplosionDamageMultiplier() {
@@ -34,6 +32,6 @@ public class MachineBasedExplosionDamageCalculator extends ExplosionDamageCalcul
     }
 
     public boolean shouldDamageEntity(Explosion explosion, Entity victim) {
-        return CombatUtil.canHurt(this.source, victim);
+        return victim != this.source && this.source.shouldDamageEntity(explosion, victim);
     }
 }

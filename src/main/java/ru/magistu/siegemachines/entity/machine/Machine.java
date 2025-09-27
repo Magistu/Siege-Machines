@@ -265,14 +265,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     }
 
     @Override
-    public float getBlockExplosionResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
-        if (resistance < 4.3f) {
-            return 3.0f;
-        }
-        return resistance * 0.7f;
-    }
-
-    @Override
     @Nullable
     protected SoundEvent getHurtSound(@NotNull DamageSource p_184601_1_) {
         return null;
@@ -595,10 +587,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     public AABB getBoundingBoxForCulling() {
         AABB box = this.getBoundingBox();
         return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
-    }
-
-    public double getExplosionDamageMultiplier() {
-        return this.type.specs.explosiondamagemultiplier.get();
     }
 
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {
