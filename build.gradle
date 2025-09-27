@@ -213,7 +213,7 @@ unifiedPublishing {
     project {
         displayName = "[${rootProject.minecraft_version}]-${rootProject.mod_display_name}-${rootProject.version}"
         version = rootProject.version
-        changelog = String.join("", rootProject.file("CHANGELOG.md").readLines())
+        changelog = String.join("\n", rootProject.file("CHANGELOG.md").readLines())
         releaseType = "release"
         gameVersions = [rootProject.minecraft_version]
         gameLoaders = ["forge"]
@@ -235,7 +235,7 @@ unifiedPublishing {
 
             displayName = "[${rootProject.minecraft_version}]-${rootProject.mod_display_name}-${rootProject.version}"
             version = rootProject.version
-            changelog = String.join("", rootProject.file("CHANGELOG.md").readLines())
+            changelog = String.join("\n", rootProject.file("CHANGELOG.md").readLines())
             releaseType = "release"
             gameVersions = [rootProject.minecraft_version]
             gameLoaders = ["forge"]
@@ -253,7 +253,7 @@ unifiedPublishing {
 
             displayName = "[${rootProject.minecraft_version}]-${rootProject.mod_display_name}-${rootProject.version}"
             version = rootProject.version
-            changelog = String.join("", rootProject.file("CHANGELOG.md").readLines())
+            changelog = String.join("\n", rootProject.file("CHANGELOG.md").readLines())
             releaseType = "release"
             gameVersions = [rootProject.minecraft_version]
             gameLoaders = ["forge"]
