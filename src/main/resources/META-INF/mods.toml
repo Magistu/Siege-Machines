@@ -1,25 +1,25 @@
 modLoader="javafml" #mandatory
-loaderVersion="[47,)" #mandatory
-license="All rights reserved"
+loaderVersion="${forge_version_range}" #mandatory
+license="${license}"
 [[mods]] #mandatory
-modId="siegemachines" #mandatory
+modId="${mod_id}" #mandatory
 version="${version}" #mandatory
 # A display name for the mod
-displayName="Medieval Siege Machines" #mandatory
+displayName="${description}" #mandatory
 # logoFile="siegemachines.png" #optional // TODO Logo
-credits="Lexiolty, itzme1on, Goodbird, StaxiHD, Sahgar"
-authors="Magistu" #optional
-description='''Adds medieval siege machines'''
+credits="${credits}"
+authors="${mod_author}" #optional
+description='''${description}'''
 [[dependencies.siegemachines]]
 modId = "minecraft"
-versionRange = "[1.20.1,1.21)"
+versionRange = "[${minecraft_min_version},${minecraft_max_version})"
 mandatory = true
 side = "BOTH"
 ordering = "NONE"
 
 [[dependencies.siegemachines]]
 modId = "forge"
-versionRange = "[47,)"
+versionRange = "${forge_version_range}"
 mandatory = true
 side = "BOTH"
 ordering = "NONE"
