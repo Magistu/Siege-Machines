@@ -1,0 +1,43 @@
+{
+  "item.siegemachines.mortar": "Mörser",
+  "item.siegemachines.culverin": "Feldschlange",
+  "item.siegemachines.trebuchet": "Trebuchet",
+  "item.siegemachines.catapult": "Katapult",
+  "item.siegemachines.ballista": "Ballista",
+  "item.siegemachines.battering_ram": "Rammbock",
+  "item.siegemachines.siege_ladder": "Belagerungsleiter",
+  "item.siegemachines.cannonball": "Kanonenkugel",
+  "item.siegemachines.giant_arrow": "Riesiger Pfeil",
+  "item.siegemachines.stone": "Stein",
+
+  "entity.siegemachines.mortar": "Mörser",
+  "entity.siegemachines.culverin": "Feldschlange",
+  "entity.siegemachines.trebuchet": "Trebuchet",
+  "entity.siegemachines.catapult": "Katapult",
+  "entity.siegemachines.ballista": "Ballista",
+  "entity.siegemachines.battering_ram": "Rammbock",
+
+  "item.siegemachines.turret_base": "Geschützturmbasis",
+  "item.siegemachines.beam": "Träger",
+  "item.siegemachines.counterweight": "Gegengewicht",
+  "item.siegemachines.barrel": "Lauf",
+  "item.siegemachines.wheel": "Rad",
+
+  "block.siegemachines.siege_workbench": "Belagerungswerkbank",
+
+  "siegemachines.medieval_siege_machines": "Mittelalterliche Belagerungswaffen",
+
+  "siegemachines.uses_gunpowder": "Benötigt Schwarzpulver",
+  "siegemachines.ammo": "Munition:",
+  "siegemachines.category": "Mittelalterliche Belagerungswaffen",
+  "siegemachines.machine_use": "Maschine benutzen",
+  "siegemachines.ladder_climb": "Leiter hochklettern",
+  "siegemachines.machine_inventory": "Inventar öffnen",
+  "siegemachines.no_ammo": "Keine Munition!",
+  "siegemachines.no_gunpowder": "Kein Schwarzpulver!",
+  "siegemachines.wait": "Warte %1$f Sekunden.",
+
+  "category.siegemachines.siege_workbench_crafting": "Handwerk",
+
+  "siegemachines.usage": "Drücken Sie %1$s um die Maschine zu nutzen"
+}

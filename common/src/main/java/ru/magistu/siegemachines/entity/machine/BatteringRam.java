@@ -3,10 +3,8 @@ package ru.magistu.siegemachines.entity.machine;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,37 +12,35 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.*;
 import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.entity.projectile.MachineBasedExplosionDamageCalculator;
+import ru.magistu.siegemachines.entity.Explosive;
+import ru.magistu.siegemachines.entity.projectile.ExplosiveBasedExplosionDamageCalculator;
 import ru.magistu.siegemachines.entity.projectile.MissileExplosion;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
 import ru.magistu.siegemachines.util.CartesianGeometry;
+import ru.magistu.siegemachines.util.CombatUtil;
 import ru.magistu.siegemachines.util.HitUtil;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import javax.annotation.Nullable;
 
-
-public class BatteringRam extends Machine implements MachineGeoEntity {
+public class BatteringRam extends Machine implements MachineGeoEntity, Explosive {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     public int hittingticks = 0;
     private int wheelssoundticks = 10;
     public double lastwheelpitch;
     protected Entity lastUsedEntity;
+    private final ExplosiveBasedExplosionDamageCalculator explosionDamageCalculator = new ExplosiveBasedExplosionDamageCalculator(this);
 
     public enum State {
         HITTING,
@@ -160,25 +156,36 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
             int y = blockpos.getY();
             int z = blockpos.getZ();
             Entity source = this.lastUsedEntity == null ? this : this.lastUsedEntity;
-            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(this, source), getExplosionDamageCalculator(), x, y, z, 2, false, Explosion.BlockInteraction.DESTROY, null, null, null);
+            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(this, source), explosionDamageCalculator, x, y, z, 2, false, Explosion.BlockInteraction.DESTROY, null, null, null);
             explosion.explode();
             explosion.finalizeExplosion(false);
         }
     }
 
-    private ExplosionDamageCalculator getExplosionDamageCalculator() {
-        return new MachineBasedExplosionDamageCalculator(this);
+    @Override
+    public float getBlockResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
+        return resistance;
     }
 
-    @Nullable
-    private LivingEntity getIndirectSourceEntityInternal() {
-        return this.getControllingPassenger() != null ? this.getControllingPassenger() : this;
+    @Override
+    public double getExplosionDamageMultiplier() {
+        return 1.0;
+    }
+
+    @Override
+    public boolean shouldDamageEntity(Explosion explosion, Entity victim) {
+        return CombatUtil.canHurt(this.lastUsedEntity, victim);
+    }
+
+    @Override
+    public boolean shouldBlockDestroy(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state, float power) {
+        return pos.getY() > this.getY() - 0.5;
     }
 
     @Override
     public void useRelease() {
         if (this.deploymentticks > 0) {
-            if (this.getControllingPassenger() instanceof Player player) {
+            if (this.lastUsedEntity instanceof Player player) {
                 player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
             }
             return;

@@ -12,7 +12,6 @@ public final class SpecsConfig {
     public static final ModConfigSpec.ConfigValue<Boolean> ALLOW_FRIENDLY_FIRE;
     public static final ModConfigSpec.ConfigValue<Integer> DEPLOYMENT_SICKNESS_COOLDOWN;
     public static final ModConfigSpec.ConfigValue<Integer> PREVENT_PICKUP_COOLDOWN;
-    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_SMOOTH_IMPACT;
 
     public static final SiegeMachineSpecs MORTAR;
     public static final SiegeMachineSpecs CULVERIN;
@@ -35,23 +34,22 @@ public final class SpecsConfig {
         ALLOW_FRIENDLY_FIRE = BUILDER.define("allowFriendlyFire", false);
         DEPLOYMENT_SICKNESS_COOLDOWN = BUILDER.define("deploymentSicknessCooldown", 300);
         PREVENT_PICKUP_COOLDOWN = BUILDER.define("preventPickupCooldown", 300);
-        ENABLE_SMOOTH_IMPACT = BUILDER.define("enableSmoothImpact", true);
 
-        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 1.5f, 0.5f);
-        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 3.0f, 0.6f);
-        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 3.0f, 1.0f);
-        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 1.0f, 0.8f);
-        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 1.2f, 0.4f);
-        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 1.3f, 1.0f);
-        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 0.0f, 1.0f);
+        MORTAR = new SiegeMachineSpecs(BUILDER, "mortar", 80, 200, 2.5f, 0.2f, 0.5f);
+        CULVERIN = new SiegeMachineSpecs(BUILDER, "culverin", 150, 260, 3.5f, 0.03f, 0.6f);
+        TREBUCHET = new SiegeMachineSpecs(BUILDER, "trebuchet", 350, 400, 2.8f, 0.2f, 1.0f);
+        CATAPULT = new SiegeMachineSpecs(BUILDER, "catapult", 150, 200, 2.0f, 0.2f, 0.8f);
+        BALLISTA = new SiegeMachineSpecs(BUILDER, "ballista", 70, 120, 4.5f, 0.04f, 0.4f);
+        BATTERING_RAM = new SiegeMachineSpecs(BUILDER, "battering_ram", 500, 100, 0.0f, 0.5f, 1.0f);
+        SIEGE_LADDER = new SiegeMachineSpecs(BUILDER, "siege_ladder", 400, 0, 0.0f, 0.0f, 1.0f);
 
         BUILDER.pop();
 
         BUILDER.push("missiles");
 
-        CANNONBALL = new MissileSpecs(BUILDER, "cannonball", 15.0f, 3.0f, false);
-        STONE = new MissileSpecs(BUILDER, "stone", 50.0f, 2.0f, false);
-        GIANT_STONE = new MissileSpecs(BUILDER, "giant_stone", 70.0f, 5.0f, false);
+        CANNONBALL = new MissileSpecs(BUILDER, "cannonball", 15.0f, 3.0f, 1.0, 1.5, 1.5, true, false);
+        STONE = new MissileSpecs(BUILDER, "stone", 50.0f, 2.5f, 1.0, 1.5, 1.8, true, false);
+        GIANT_STONE = new MissileSpecs(BUILDER, "giant_stone", 70.0f, 5.0f, 1.0, 3.0, 3.0, true, false);
 
         BUILDER.pop();
 

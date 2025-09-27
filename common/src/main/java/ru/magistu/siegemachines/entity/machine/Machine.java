@@ -95,6 +95,8 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     private static final EntityDataAccessor<Integer> PREVENT_PICKUP_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<List<ItemStack>> DATA_INVENTORY_ITEMS = SynchedEntityData.defineId(Machine.class, ITEM_STACKS_SERIALIZER);
 
+    protected static final int USE_RELEASE = 66;
+
     protected int deploymentticks = 0;
 
     protected Runnable reloadsoundplayer;
@@ -154,8 +156,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
                 .add(Attributes.ATTACK_DAMAGE, 0.0D)
                 .add(Attributes.FOLLOW_RANGE, 0.0D);
     }
-
-    protected static final int USE_RELEASE = 66;
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -282,14 +282,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     private void playUseReleaseSound() {
         Vec3 pos = this.position();
         this.level().playLocalSound(pos.x, pos.y, pos.z, this.type.usereleasesound.get(), this.getSoundSource(), this.type.usereleasevolume, 1.0f, false);
-    }
-
-    @Override
-    public float getBlockExplosionResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
-        if (resistance < 4.3f) {
-            return 3.0f;
-        }
-        return resistance * 0.7f;
     }
 
     @Override
@@ -613,10 +605,6 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     public AABB getBoundingBoxForCulling() {
         AABB box = this.getBoundingBox();
         return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
-    }
-
-    public double getExplosionDamageMultiplier() {
-        return this.type.specs.explosiondamagemultiplier.get();
     }
 
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {
