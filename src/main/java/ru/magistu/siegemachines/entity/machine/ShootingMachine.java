@@ -98,7 +98,9 @@ public abstract class ShootingMachine extends Machine implements Shootable, Relo
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-                this.inventory.addItem(stack);
+                ItemStack stack1 = stack.copy();
+                stack1.setCount(1);
+                this.inventory.addItem(stack1);
             }
             return InteractionResult.SUCCESS;
         }

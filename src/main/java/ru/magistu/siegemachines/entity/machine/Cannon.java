@@ -63,7 +63,9 @@ public class Cannon extends ShootingMachine implements GeoEntity {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-                this.inventory.addItem(stack);
+                ItemStack stack1 = stack.copy();
+                stack1.setCount(1);
+                this.inventory.addItem(stack1);
             }
             return InteractionResult.SUCCESS;
         }
