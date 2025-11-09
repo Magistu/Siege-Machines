@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.item.ModItems;
 
 public class GiantStone extends Missile {
@@ -15,7 +15,7 @@ public class GiantStone extends Missile {
         super(entitytype, level);
     }
 
-    public GiantStone(EntityType<GiantStone> entitytype, Level level, Vector3d pos, LivingEntity shooter, Entity engine) {
+    public GiantStone(EntityType<GiantStone> entitytype, Level level, Vec3 pos, LivingEntity shooter, Entity engine) {
         super(entitytype, level, pos, shooter, engine, MissileType.GIANT_STONE);
     }
 

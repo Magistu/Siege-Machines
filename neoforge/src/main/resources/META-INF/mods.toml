@@ -5,7 +5,7 @@ license="${license}"
 modId="${mod_id}" #mandatory
 version="${version}" #mandatory
 # A display name for the mod
-displayName="${description}" #mandatory
+displayName="${mod_title}" #mandatory
 # logoFile="siegemachines.png" #optional // TODO Logo
 credits="${credits}"
 authors="${mod_author}" #optional

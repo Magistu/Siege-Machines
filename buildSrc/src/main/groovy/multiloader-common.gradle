@@ -98,7 +98,7 @@ jar {
 
 processResources {
     def expandProps = [
-            'version'                        : version,
+            'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'minecraft_min_version'        : minecraft_min_version,
@@ -106,6 +106,7 @@ processResources {
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,
             'mod_name'                     : mod_name,
+            'mod_title'                    : mod_title,
             'mod_author'                   : mod_author,
             'mod_id'                       : mod_id,
             'license'                      : license,

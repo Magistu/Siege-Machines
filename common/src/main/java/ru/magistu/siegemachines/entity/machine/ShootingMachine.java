@@ -16,7 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.enitity.Shootable;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
@@ -55,7 +54,7 @@ public abstract class ShootingMachine extends Machine implements Shootable {
         if (!itemstack.isEmpty()) {
             Vec3 shotpos = this.getShotPos();
             LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
-            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), owner, this);
+            Projectile projectile = projectilebuilder.build(this.level(), new Vec3(shotpos.x, shotpos.y, shotpos.z), owner, this);
 
             float pitch = getTurretPitch();
             float yaw = getGlobalTurretYaw();
@@ -98,7 +97,9 @@ public abstract class ShootingMachine extends Machine implements Shootable {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-                this.inventory.addItem(stack);
+                ItemStack stack1 = stack.copy();
+                stack1.setCount(1);
+                this.inventory.addItem(stack1);
             }
             return InteractionResult.SUCCESS;
         }

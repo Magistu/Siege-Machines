@@ -6,8 +6,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 public interface ProjectileFactory<T extends Projectile> {
-    T create(EntityType<T> entitytype, Level level, Vector3d pos, LivingEntity shooter, Entity engine, ItemStack stack);
+    T create(EntityType<T> entitytype, Level level, Vec3 pos, LivingEntity shooter, Entity engine, ItemStack stack);
 }

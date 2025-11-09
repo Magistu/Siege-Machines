@@ -57,6 +57,7 @@ dependencies {
     implementation "dev.architectury:architectury-neoforge:$architectury_version"
 
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 publisher {

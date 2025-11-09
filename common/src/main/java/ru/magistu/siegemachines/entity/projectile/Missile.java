@@ -21,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.entity.Explosive;
 import ru.magistu.siegemachines.util.CombatUtil;
 import javax.annotation.Nullable;
@@ -47,7 +47,7 @@ public abstract class Missile extends ThrowableItemProjectile implements Explosi
         super(entitytype, level);
     }
 
-    public Missile(EntityType<? extends Missile> entitytype, Level level, Vector3d pos, LivingEntity entity, Entity engine, MissileType type) {
+    public Missile(EntityType<? extends Missile> entitytype, Level level, Vec3 pos, LivingEntity entity, Entity engine, MissileType type) {
         super(entitytype, entity.getControllingPassenger() != null ? entity.getControllingPassenger() : entity, level);
         this.type = type;
         this.engine = engine;

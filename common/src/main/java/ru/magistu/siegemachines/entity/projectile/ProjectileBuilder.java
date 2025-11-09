@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
 import ru.magistu.siegemachines.item.*;
 
@@ -52,7 +52,7 @@ public class ProjectileBuilder<T extends Projectile> {
         this.factory = factory;
     }
 
-    public T build(Level level, Vector3d pos, LivingEntity entity, Entity engine) {
+    public T build(Level level, Vec3 pos, LivingEntity entity, Entity engine) {
         return this.factory.create(this.entitytype, level, pos, entity, engine, new ItemStack(item));
     }
 }
