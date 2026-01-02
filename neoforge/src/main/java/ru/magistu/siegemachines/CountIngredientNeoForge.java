@@ -11,6 +11,7 @@ import ru.magistu.siegemachines.init.IngredientTypes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record CountIngredientNeoForge(Ingredient base, int count) implements ICustomIngredient {
@@ -29,7 +30,7 @@ public record CountIngredientNeoForge(Ingredient base, int count) implements ICu
 
     @Override
     public Stream<ItemStack> getItems() {
-        List<ItemStack> items = Arrays.stream(base.getItems()).toList();
+        List<ItemStack> items = Arrays.stream(base.getItems()).map(ItemStack::copy).toList();
         for (ItemStack stack : items) {
             stack.setCount(count);
         }
