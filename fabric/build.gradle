@@ -26,6 +26,7 @@ dependencies {
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version"
     modImplementation "dev.architectury:architectury-fabric:$architectury_version"
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$rootProject.neoforge_config_api_version"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }

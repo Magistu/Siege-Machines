@@ -4,8 +4,8 @@
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${mod_description}",
-    "authors": "${mod_author}",
-    "contributors": "${credits}",
+    "authors": ["${mod_author}"],
+    "contributors": ["${credits}"],
     "contact": {
         "homepage": "https://fabricmc.net/",
         "sources": "https://github.com/FabricMC/fabric-example-mod"

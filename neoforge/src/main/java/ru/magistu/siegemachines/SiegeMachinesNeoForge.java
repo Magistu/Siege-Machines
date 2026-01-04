@@ -20,6 +20,8 @@ import ru.magistu.siegemachines.init.IngredientTypes;
 public class SiegeMachinesNeoForge {
 
     public SiegeMachinesNeoForge(IEventBus bus, Dist dist, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.SERVER, SpecsConfig.SPEC, "siege-machines-specs.toml");
+
         bus.addListener(ModDatagen::gather);
         bus.addListener(SiegeMachinesNeoForge::addEntityAttributes);
         bus.addListener(PacketHandlerNeoForge::register);
@@ -28,7 +30,6 @@ public class SiegeMachinesNeoForge {
             ClientProxyForge.setup(bus);
         }
 
-        SpecsConfig.init();
         IngredientTypes.register(bus);
         EntityDataSerializers.register(bus);
         SiegeMachines.init();

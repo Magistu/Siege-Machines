@@ -1,38 +1,28 @@
 package ru.magistu.siegemachines.config;
 
-/**
- * Fabric-compatible specs matching NeoForge API.
- * Fields: durability, delaytime, projectilespeed, inaccuracy, knockbackresistance
- */
+
+import net.neoforged.neoforge.common.ModConfigSpec;
+
 public final class SiegeMachineSpecs {
-    public final ConfigValue<Integer> durability;
-    public final ConfigValue<Integer> delaytime;
-    public final ConfigValue<Double> projectilespeed;
-    public final ConfigValue<Double> inaccuracy;
-    public final ConfigValue<Double> knockbackresistance;
+    private final String name;
 
-    public SiegeMachineSpecs(int durability, int delaytime, double projectilespeed,
-                             double inaccuracy, double knockbackresistance) {
-        this.durability = new ConfigValue<>(durability);
-        this.delaytime = new ConfigValue<>(delaytime);
-        this.projectilespeed = new ConfigValue<>(projectilespeed);
-        this.inaccuracy = new ConfigValue<>(inaccuracy);
-        this.knockbackresistance = new ConfigValue<>(knockbackresistance);
-    }
+    public final ModConfigSpec.IntValue durability;
+    public final ModConfigSpec.IntValue delaytime;
+    public final ModConfigSpec.DoubleValue projectilespeed;
+    public final ModConfigSpec.DoubleValue inaccuracy;
+    public final ModConfigSpec.DoubleValue knockbackresistance;
 
-    public static class ConfigValue<T> {
-        private final T value;
+    public SiegeMachineSpecs(ModConfigSpec.Builder builder, String name, int durability, int delaytime, float projectilespeed, float inaccuracy, float knockbackresistance) {
+        this.name = name;
 
-        public ConfigValue(T value) {
-            this.value = value;
-        }
+        builder.push(name);
 
-        public T get() {
-            return value;
-        }
+        this.durability = builder.defineInRange("durability", durability, 0, Integer.MAX_VALUE);
+        this.delaytime = builder.defineInRange("reloadTime", delaytime, 0, Integer.MAX_VALUE);
+        this.projectilespeed = builder.defineInRange("projectileSpeed", projectilespeed, 0, Integer.MAX_VALUE);
+        this.inaccuracy = builder.defineInRange("inaccuracy", inaccuracy, 0, Integer.MAX_VALUE);
+        this.knockbackresistance = builder.defineInRange("knockbackResistance", knockbackresistance, 0, 1);
 
-        public T getDefault() {
-            return value;
-        }
+        builder.pop();
     }
 }

@@ -1,7 +1,9 @@
 package ru.magistu.siegemachines.fabric;
 
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.neoforged.fml.config.ModConfig;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.ModEntityTypes;
@@ -19,6 +21,8 @@ public class SiegeMachinesFabric implements ModInitializer {
         // CRITICAL: Register custom entity data serializers FIRST before anything else
         ModEntityDataSerializers.register();
 
+        NeoForgeConfigRegistry.INSTANCE.register(SiegeMachines.ID, ModConfig.Type.SERVER, SpecsConfig.SPEC, "siege-machines-specs.toml");
+
         // Initialize common mod content (this registers everything)
         SiegeMachines.init();
 
@@ -27,9 +31,6 @@ public class SiegeMachinesFabric implements ModInitializer {
 
         // Initialize events
         CommonEvents.register();
-
-        // Initialize config
-        SpecsConfig.init();
 
         // Register networking
         ModNetwork.register();
