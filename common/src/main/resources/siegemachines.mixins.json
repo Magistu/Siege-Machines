@@ -5,7 +5,6 @@
   "refmap": "[1.21.1]-Siege-Machines-common-refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinGui"
   ],
   "client": [
   ],

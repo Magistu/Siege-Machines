@@ -6,9 +6,9 @@ modId="siegemachines" #mandatory
 version="${version}" #mandatory
 # A display name for the mod
 displayName="Medieval Siege Machines" #mandatory
-# logoFile="siegemachines.png" #optional // TODO Logo
-credits="Lexiolty, itzme1on, Goodbird, Sahgar"
-authors="Magistu" #optional
+logoFile="logo.png"
+authors="${mod_author}"
+credits = "${credits}"
 description='''Adds medieval siege machines'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.siegemachines]]

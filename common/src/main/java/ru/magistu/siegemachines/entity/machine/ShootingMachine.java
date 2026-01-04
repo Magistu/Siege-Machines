@@ -16,12 +16,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.enitity.Shootable;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
-import ru.magistu.siegemachines.network.ModPacketHandler;
-import ru.magistu.siegemachines.network.PacketMachineUse;
+import ru.magistu.siegemachines.network.ModNetwork;
+import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 
 import java.util.Arrays;
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 
 public abstract class ShootingMachine extends Machine implements Shootable {
     public int shootingticks = 0;
+    protected LivingEntity lastUsedEntity = null;
 
     protected ShootingMachine(EntityType<? extends Mob> entitytype, Level level, MachineType type) {
         super(entitytype, level, type);
@@ -51,9 +51,10 @@ public abstract class ShootingMachine extends Machine implements Shootable {
             return;
         }
         ItemStack itemstack = this.inventory.removeItemType(projectilebuilder.item, 1);
-        if (!itemstack.isEmpty() && !this.level().isClientSide()) {
+        if (!itemstack.isEmpty()) {
             Vec3 shotpos = this.getShotPos();
-            Projectile projectile = projectilebuilder.build(this.level(), new Vector3d(shotpos.x, shotpos.y, shotpos.z), this);
+            LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
+            Projectile projectile = projectilebuilder.build(this.level(), new Vec3(shotpos.x, shotpos.y, shotpos.z), owner, this);
 
             float pitch = getTurretPitch();
             float yaw = getGlobalTurretYaw();
@@ -65,15 +66,20 @@ public abstract class ShootingMachine extends Machine implements Shootable {
     @Override
     public void use(LivingEntity entity) {
         if (!this.level().isClientSide()) {
-            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
+        this.lastUsedEntity = entity;
         this.startShooting(entity);
     }
 
     @Override
     public void useRelease() {
-        if (this.deploymentticks > 0)
+        if (this.deploymentticks > 0) {
+            if (this.getControllingPassenger() instanceof Player player) {
+                player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
+            }
             return;
+        }
 
         this.usereleasesoundplayer.run();
         if (!this.level().isClientSide()) {
@@ -91,7 +97,9 @@ public abstract class ShootingMachine extends Machine implements Shootable {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-                this.inventory.addItem(stack);
+                ItemStack stack1 = stack.copy();
+                stack1.setCount(1);
+                this.inventory.addItem(stack1);
             }
             return InteractionResult.SUCCESS;
         }

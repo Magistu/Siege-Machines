@@ -13,26 +13,34 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import ru.magistu.siegemachines.ModSoundTypes;
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.*;
+import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.network.ModPacketHandler;
-import ru.magistu.siegemachines.network.PacketMachineUse;
+import ru.magistu.siegemachines.entity.Explosive;
+import ru.magistu.siegemachines.entity.projectile.ExplosiveBasedExplosionDamageCalculator;
+import ru.magistu.siegemachines.entity.projectile.MissileExplosion;
+import ru.magistu.siegemachines.network.ModNetwork;
+import ru.magistu.siegemachines.network.S2CPacketMachineUse;
 import ru.magistu.siegemachines.util.BaseAnimations;
 import ru.magistu.siegemachines.util.CartesianGeometry;
+import ru.magistu.siegemachines.util.CombatUtil;
+import ru.magistu.siegemachines.util.HitUtil;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
-public class BatteringRam extends Machine implements MachineGeoEntity {
+public class BatteringRam extends Machine implements MachineGeoEntity, Explosive {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     public int hittingticks = 0;
     private int wheelssoundticks = 10;
     public double lastwheelpitch;
+    protected Entity lastUsedEntity;
+    private final ExplosiveBasedExplosionDamageCalculator explosionDamageCalculator = new ExplosiveBasedExplosionDamageCalculator(this);
 
     public enum State {
         HITTING,
@@ -46,6 +54,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
     public BatteringRam(EntityType<? extends Mob> entitytype, Level level) {
         super(entitytype, level, MachineType.BATTERING_RAM);
     }
+
 
     @Override
     public RawAnimation getUsingRawAnimation() {
@@ -78,7 +87,7 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
     }
 
     @Override
-    public void travel(Vec3 pos) {
+    public void travel(Vec3 velocity) {
         if (this.isAlive()) {
             if (this.isVehicle()) {
                 LivingEntity livingentity = this.getControllingPassenger();
@@ -89,9 +98,9 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
                 }
                 this.setSpeed(0.04f);
 
-                pos = new Vec3(0.0f, pos.y, f1);
+                velocity = new Vec3(0.0f, velocity.y, f1);
             }
-            super.travel(pos);
+            super.travel(velocity);
         }
     }
 
@@ -129,8 +138,9 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
         }
 
         if (!this.level().isClientSide()) {
-            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
         }
+        this.lastUsedEntity = entity;
 
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.hittingticks <= 0) {
             this.usesoundplayer.run();
@@ -142,17 +152,44 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
 
     public void ramHit(BlockPos blockpos) {
         if (!this.level().isClientSide()) {
-            Explosion explosion = new Explosion(this.level(), this,
-                    blockpos.getX(), blockpos.getY(), blockpos.getZ(), 2, false, Explosion.BlockInteraction.DESTROY);
+            int x = blockpos.getX();
+            int y = blockpos.getY();
+            int z = blockpos.getZ();
+            Entity source = this.lastUsedEntity == null ? this : this.lastUsedEntity;
+            MissileExplosion explosion = new MissileExplosion(this.level(), source, this.level().damageSources().explosion(this, source), explosionDamageCalculator, x, y, z, 2, false, Explosion.BlockInteraction.DESTROY, null, null, null);
             explosion.explode();
-            explosion.finalizeExplosion(true);
+            explosion.finalizeExplosion(false);
         }
     }
 
     @Override
+    public float getBlockResistance(Explosion explosion, BlockGetter level, BlockPos pos, BlockState blockState, FluidState fluidState, float resistance) {
+        return resistance;
+    }
+
+    @Override
+    public double getExplosionDamageMultiplier() {
+        return 1.0;
+    }
+
+    @Override
+    public boolean shouldDamageEntity(Explosion explosion, Entity victim) {
+        return CombatUtil.canHurt(this.lastUsedEntity, victim);
+    }
+
+    @Override
+    public boolean shouldBlockDestroy(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state, float power) {
+        return pos.getY() > this.getY() - 0.5;
+    }
+
+    @Override
     public void useRelease() {
-        if (this.deploymentticks > 0)
+        if (this.deploymentticks > 0) {
+            if (this.lastUsedEntity instanceof Player player) {
+                player.sendSystemMessage(Component.translatable(SiegeMachines.ID + ".wait", this.deploymentticks / 20.0f).withStyle(ChatFormatting.RED));
+            }
             return;
+        }
 
         this.usereleasesoundplayer.run();
         if (!this.level().isClientSide()) {
@@ -160,6 +197,18 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
             BlockPos blockpos = BlockPos.containing(this.getHitPos());
             this.ramHit(blockpos);
         }
+    }
+
+    private Vec3 getHitPos() {
+        double pitch = this.getTurretPitch() * Math.PI / 180.0;
+        double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
+        Vec3 pos = this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw));
+        Vec3 delta = CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw);
+        HitResult hit = HitUtil.getHitResult(pos, this, e -> e.getVehicle() != this, delta, this.level(), 0.0f, ClipContext.Block.COLLIDER);
+        if (hit.getType() != HitResult.Type.MISS) {
+            return hit.getLocation();
+        }
+        return pos.add(delta);
     }
 
     public double getWheelsSpeed() {
@@ -172,13 +221,6 @@ public class BatteringRam extends Machine implements MachineGeoEntity {
 
     @Override
     public void push(double p_70024_1_, double p_70024_3_, double p_70024_5_) {
-    }
-
-    protected Vec3 getHitPos() {
-        double pitch = this.getTurretPitch() * Math.PI / 180.0;
-        double yaw = (this.getViewYRot(0.5f) + this.getTurretYaw()) * Math.PI / 180.0;
-
-        return this.position().add(CartesianGeometry.applyRotations(this.type.turretpivot, 0.0, yaw).add(CartesianGeometry.applyRotations(this.type.turretvector, pitch, yaw)));
     }
 
     public UsageType getUsage() {

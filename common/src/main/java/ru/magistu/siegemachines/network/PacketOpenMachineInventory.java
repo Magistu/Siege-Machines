@@ -1,44 +1,40 @@
 package ru.magistu.siegemachines.network;
 
-import dev.architectury.networking.NetworkManager;
 import io.netty.channel.ChannelHandler;
-import dev.architectury.utils.Env;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import ru.magistu.siegemachines.entity.machine.Machine;
 
-import java.text.MessageFormat;
-
 @ChannelHandler.Sharable
-public class PacketOpenMachineInventory implements ModPacket {
+public class PacketOpenMachineInventory implements C2SModPacket<RegistryFriendlyByteBuf> {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketOpenMachineInventory> STREAM_CODEC =
-            StreamCodec.ofMember((buf, p) -> {}, buf -> new PacketOpenMachineInventory());
+            ModPacket.streamCodec(PacketOpenMachineInventory::read);
 
 
-    public static final Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
+    public static final CustomPacketPayload.Type<PacketOpenMachineInventory> TYPE = ModPacket.type(PacketOpenMachineInventory.class);
 
     public PacketOpenMachineInventory() {
     }
 
+    public static PacketOpenMachineInventory read(FriendlyByteBuf buf) {
+        return new PacketOpenMachineInventory();
+    }
 
     @Override
-    public void apply(NetworkManager.PacketContext ctx) {
-        if (ctx.getEnvironment() == Env.CLIENT) {
-            throw new IllegalStateException(MessageFormat.format("attempted to handle packet {0} on client side", TYPE));
-        } else {
-            ctx.queue(() -> handleServer(ctx.getPlayer()));
+    public void handleServer(ServerPlayer player) {
+        if (player != null && player.getVehicle() instanceof Machine machine) {
+            machine.openInventoryGui();
         }
     }
 
-    public void handleServer(Player player) {
-        Entity entity = player.getVehicle();
-        if (entity instanceof Machine machine) {
-            machine.openInventoryGui();
-        }
+    @Override
+    public void write(RegistryFriendlyByteBuf buf) {
+
     }
 
     @Override

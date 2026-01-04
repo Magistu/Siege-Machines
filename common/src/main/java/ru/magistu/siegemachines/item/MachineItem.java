@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,10 +34,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.KeyBindings;
 import ru.magistu.siegemachines.client.renderer.MachineItemGeoRenderer;
+import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
@@ -46,6 +49,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -63,7 +67,7 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     public MachineItemGeoRenderer<T> getRenderer() {
-        return null;
+        throw new NotImplementedException(MessageFormat.format("No renderer registered for {0} item", entitytype.get().toString()));
     }
 
     @Override
@@ -119,7 +123,11 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
             if (data != null) {
                 machine.readAdditionalSaveData(data.copyTag());
             }
-            machine.deploymentticks = 200;
+            // Reset with actual values from specs config
+            machine.applyAttributeSpecs();
+
+            machine.setPreventPickupTicks(SpecsConfig.PREVENT_PICKUP_COOLDOWN.get());
+            machine.setDeploymentTicks(SpecsConfig.DEPLOYMENT_SICKNESS_COOLDOWN.get());
             itemstack.shrink(1);
         }
 
@@ -136,12 +144,12 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Nullable
-    public Machine spawn(EntityType<T> entitytype, ServerLevel level, ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
+    private Machine spawn(EntityType<T> entitytype, ServerLevel level, ItemStack stack, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         return this.spawn(entitytype, level, stack.get(DataComponents.CUSTOM_DATA), stack.getHoverName(), player, pos, type, bl, bl2, yaw);
     }
 
     @Nullable
-    public Machine spawn(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
+    private Machine spawn(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         Machine machine = this.create(entitytype, level, nbt, component, player, pos, type, bl, bl2, yaw);
         if (machine != null) {
             //     if (net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn(machine, (LevelAccessor)level, pos.getX(), pos.getY(), pos.getZ(), null, type)) return null;
@@ -152,7 +160,7 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @Nullable
-    public Machine create(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
+    private Machine create(EntityType<T> entitytype, ServerLevel level, @Nullable CustomData nbt, @Nullable Component component, @Nullable Player player, BlockPos pos, MobSpawnType type, boolean bl, boolean bl2, float yaw) {
         Machine machine = entitytype.create(level);
         if (machine == null)
             return null;
@@ -202,7 +210,8 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
                 if (data != null) {
                     machine.readAdditionalSaveData(data.copyTag());
                 }
-                machine.deploymentticks = 200;
+                machine.setPreventPickupTicks(SpecsConfig.PREVENT_PICKUP_COOLDOWN.get());
+                machine.setDeploymentTicks(SpecsConfig.DEPLOYMENT_SICKNESS_COOLDOWN.get());
                 if (!player.isCreative())
                     itemstack.shrink(1);
                 player.awardStat(Stats.ITEM_USED.get(this));
@@ -215,7 +224,7 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
     }
 
     @SuppressWarnings("unchecked")
-    public EntityType<T> getType(@Nullable CustomData nbt) {
+    private EntityType<T> getType(@Nullable CustomData nbt) {
         EntityType<T> defaulttype = this.entitytype.get();
 
         if (nbt != null) {

@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:siege_workbench"
+    },
+    "title": {"text": "Medieval Siege Machines", "color": "gold"},
+    "description": {"text": "Craft a Siege Workbench to begin your conquest"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "background": "minecraft:textures/block/stone_bricks.png"
+  },
+  "criteria": {
+    "get_workbench": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:siege_workbench"
+          }
+        ]
+      }
+    }
+  }
+}

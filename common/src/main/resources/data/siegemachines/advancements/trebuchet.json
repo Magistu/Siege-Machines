@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:trebuchet"
+    },
+    "title": {"text": "The Warwolf", "color": "dark_purple"},
+    "description": {"text": "Craft a Trebuchet - the king of siege weapons"},
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:catapult",
+  "criteria": {
+    "get_trebuchet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:trebuchet"
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 100
+  }
+}

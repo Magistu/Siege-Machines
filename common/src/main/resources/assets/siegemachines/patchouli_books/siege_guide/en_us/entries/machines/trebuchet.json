@@ -1,0 +1,17 @@
+{
+  "name": "Trebuchet",
+  "icon": "siegemachines:trebuchet",
+  "category": "siegemachines:machines",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The mighty $(item)Trebuchet$() - king of siege weapons! This counterweight-powered giant can hurl massive stones incredible distances. No fortress can withstand its assault.$(br2)$(l)Ammo:$() Stone blocks or Giant Stones"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:trebuchet",
+      "link_recipe": true
+    }
+  ]
+}

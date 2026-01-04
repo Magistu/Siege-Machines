@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import ru.magistu.siegemachines.ModSoundTypes;
+import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.config.SiegeMachineSpecs;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;

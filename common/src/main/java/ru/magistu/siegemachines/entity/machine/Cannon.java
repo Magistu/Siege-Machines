@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import ru.magistu.siegemachines.ModSoundTypes;
+import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -60,7 +60,9 @@ public class Cannon extends ShootingMachine implements GeoEntity {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-                this.inventory.addItem(stack);
+                ItemStack stack1 = stack.copy();
+                stack1.setCount(1);
+                this.inventory.addItem(stack1);
             }
             return InteractionResult.SUCCESS;
         }
@@ -88,7 +90,7 @@ public class Cannon extends ShootingMachine implements GeoEntity {
     }
 
     @Override
-    public void travel(Vec3 pos) {
+    public void travel(Vec3 velocity) {
         if (this.isAlive()) {
             if (getDelayTicks() <= 0 && this.isVehicle()) {
                 LivingEntity livingentity = this.getControllingPassenger();
@@ -100,9 +102,9 @@ public class Cannon extends ShootingMachine implements GeoEntity {
                 }
                 this.setSpeed(0.04f);
 
-                pos = new Vec3(f0, pos.y, f1);
+                velocity = new Vec3(f0, velocity.y, f1);
             }
-            super.travel(pos);
+            super.travel(velocity);
         }
     }
 

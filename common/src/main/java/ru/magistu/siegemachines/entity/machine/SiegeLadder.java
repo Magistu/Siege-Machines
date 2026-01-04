@@ -1,7 +1,5 @@
 package ru.magistu.siegemachines.entity.machine;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,15 +8,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
-import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.network.ModPacketHandler;
-import ru.magistu.siegemachines.network.PacketMachineUse;
 import ru.magistu.siegemachines.platform.Services;
 import ru.magistu.siegemachines.util.CartesianGeometry;
+import ru.magistu.siegemachines.util.HitUtil;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -89,9 +87,9 @@ public class SiegeLadder extends Machine implements GeoEntity {
     }
 
     @Override
-    public void travel(Vec3 pos) {
+    public void travel(Vec3 velocity) {
         if (this.isAlive()) {
-            if (this.isVehicle()) {
+            if (this.hasControllingPassenger()) {
                 LivingEntity livingentity = this.getControllingPassenger();
 
                 float f1 = livingentity.zza;
@@ -99,11 +97,10 @@ public class SiegeLadder extends Machine implements GeoEntity {
                     f1 *= 0.25f;
                 this.setSpeed(0.04f);
 
-                pos = new Vec3(0.0f, pos.y, f1);
-
+                velocity = new Vec3(0.0f, velocity.y, f1);
             }
 
-            super.travel(pos);
+            super.travel(velocity);
         }
     }
 
@@ -111,7 +108,15 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void tick() {
         lastwheelpitch = wheelspitch;
         wheelspitch += this.getWheelsSpeed();
-        seatsTick();
+
+//        if (this.getWheelsSpeed() > 0.0081 && this.wheelssoundticks-- <= 0)
+//        {
+//            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundTypes.RAM_WHEELS.get(), SoundCategory.NEUTRAL, 0.6f, 1.0f, true);
+//            this.wheelssoundticks = 20;
+//        }
+
+        this.seatsTick();
+
         super.tick();
     }
 
@@ -119,10 +124,14 @@ public class SiegeLadder extends Machine implements GeoEntity {
         return Mth.lerp(partialTick, lastwheelpitch, wheelspitch);
     }
 
-
     public void seatsTick() {
         this.leftseats.forEach(seat -> this.updateSeatPosition(seat, true));
         this.rightseats.forEach(seat -> this.updateSeatPosition(seat, false));
+    }
+
+    @Override
+    protected boolean canDropAsItem() {
+        return super.canDropAsItem() && seats.stream().noneMatch(Entity::isVehicle);
     }
 
     public void updateSeatPosition(LadderSeat seat, boolean left) {
@@ -130,49 +139,42 @@ public class SiegeLadder extends Machine implements GeoEntity {
 
         float highness = seat.climb();
 
-        Vec3 pos = this.getSeatPosititon(highness, yaw, left);
+        Vec3 origin = getSeatOrigin(left, yaw);
+        Vec3 pos = origin.add(CartesianGeometry.applyRotations(CLIMB_VECTOR.scale(highness), 0.0, yaw));
         Optional<Vec3> freepos = this.level().findFreePosition(seat, Shapes.create(AABB.ofSize(pos, 0.1, 0.1, 0.1)), pos, 0.0, 0.0, 0.0);
         if (freepos.isPresent() && pos.distanceTo(freepos.get()) < 0.5) {
             seat.setHighness(highness);
             pos = freepos.get();
-        } else
-            pos = this.getSeatPosititon(seat, yaw, left);
+        }
+        if (seat.isVehicle()) {
+            HitResult hit = HitUtil.getBlockHitResult(origin, pos.subtract(origin), this.level(), ClipContext.Block.COLLIDER);
+            if (hit.getType() != HitResult.Type.MISS) {
+                highness = (float) (hit.getLocation().subtract(origin).length() / CLIMB_VECTOR.length());
+                seat.setHighness(highness);
+                pos = hit.getLocation();
+            }
+        }
         seat.moveTo(pos);
+    }
+
+    private Vec3 getSeatOrigin(boolean left, double yaw) {
+        return this.position().add(CartesianGeometry.applyRotations(left ? CLIMB_PIVOT_1 : CLIMB_PIVOT_2, 0.0, yaw));
     }
 
     @Override
     public void remove(RemovalReason reason) {
-        this.removeSeats();
-        super.remove(reason);
-    }
-
-    public void removeSeats() {
         for (LadderSeat seat : this.seats)
             seat.discard();
+        super.remove(reason);
     }
 
     @Override
     public void use(LivingEntity entity) {
-        if (!this.level().isClientSide()) {
-            ModPacketHandler.sendPacketToAllInArea((ServerLevel) level(), new PacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
-        }
         if (this.getControllingPassenger() == entity) {
             LadderSeat seat = this.getFreeSeat(entity);
             if (seat != null)
                 entity.startRiding(seat);
         }
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        this.removeSeats();
-        super.addAdditionalSaveData(compoundTag);
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.onAddedToLevel();
-        super.readAdditionalSaveData(compoundTag);
     }
 
     @Override
@@ -185,14 +187,6 @@ public class SiegeLadder extends Machine implements GeoEntity {
         }
 
         return 0.0;
-    }
-
-    protected Vec3 getSeatPosititon(LadderSeat seat, double yaw, boolean left) {
-        return getSeatPosititon(seat.getHighness(), yaw, left);
-    }
-
-    protected Vec3 getSeatPosititon(float highness, double yaw, boolean left) {
-        return this.position().add(CartesianGeometry.applyRotations((left ? CLIMB_PIVOT_1 : CLIMB_PIVOT_2).add(CLIMB_VECTOR.scale(highness)), 0.0, yaw));
     }
 
     protected @Nullable LadderSeat getFreeSeat(LivingEntity entity) {
@@ -242,6 +236,13 @@ public class SiegeLadder extends Machine implements GeoEntity {
     public void onAddedToLevel() {
         Services.PLATFORM.onAddedToLevel(this);
         this.seats.forEach(seat -> this.level().addFreshEntity(seat));
+    }
+
+    //Forge methods, do not remove
+    @SuppressWarnings("unused")
+    public void onRemovedFromLevel() {
+        Services.PLATFORM.onRemovedFromLevel(this);
+        this.seats.forEach(Entity::discard);
     }
 
     public UsageType getUsage() {

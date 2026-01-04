@@ -1,13 +1,19 @@
 package ru.magistu.siegemachines.network;
 
-import dev.architectury.networking.NetworkManager;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.StreamDecoder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public interface ModPacket extends CustomPacketPayload {
+public interface ModPacket<T extends FriendlyByteBuf> extends CustomPacketPayload {
 
-    static <P extends ModPacket> Type<P> type(Class<P> pClass) {
-        return new Type<>(ModPacketHandler.packet(pClass));
+    static <T extends FriendlyByteBuf, P extends ModPacket<T>> StreamCodec<T, P> streamCodec(StreamDecoder<T, P> decoder) {
+        return StreamCodec.ofMember(ModPacket::write, decoder);
     }
 
-    void apply(NetworkManager.PacketContext ctx);
+    static <T extends FriendlyByteBuf, P extends ModPacket<T>> Type<P> type(Class<P> pClass) {
+        return new Type<>(ModNetwork.packet(pClass));
+    }
+
+    void write(T buf);
 }

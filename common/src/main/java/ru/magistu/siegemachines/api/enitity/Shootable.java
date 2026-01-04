@@ -8,8 +8,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface Shootable extends Useable
-{
+public interface Shootable extends Useable {
     void use(@Nullable LivingEntity entity);
     
     @Override

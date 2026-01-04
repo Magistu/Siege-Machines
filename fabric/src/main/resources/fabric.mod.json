@@ -1,26 +1,23 @@
 {
     "schemaVersion": 1,
     "id": "${mod_id}",
-    "version": "${mod_version}",
+    "version": "${version}",
     "name": "${mod_name}",
     "description": "${mod_description}",
-    "authors": [
-        "${mod_authors}"
-    ],
+    "authors": "${mod_author}",
+    "contributors": "${credits}",
     "contact": {
         "homepage": "https://fabricmc.net/",
         "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
-    "license": "${mod_license}",
-    "icon": "${mod_id}.png",
+    "license": "${license}",
+    "icon": "logo.png",
     "environment": "*",
     "entrypoints": {
-        "fabric-datagen": [
-            "ru.magistu.siegemachines.fabric.datagen.ModDatagen"
-        ],
-        "main": [
-            "ru.magistu.siegemachines.fabric.SiegeMachinesFabric"
-        ]
+        "main": ["ru.magistu.siegemachines.fabric.SiegeMachinesFabric"],
+        "client": ["ru.magistu.siegemachines.client.fabric.ClientProxyFabric"],
+        "rei_client": ["ru.magistu.siegemachines.plugin.rei.ReiClientPlugin"],
+        "jei_mod_plugin": ["ru.magistu.siegemachines.plugin.jei.JeiPlugin"]
     },
     "mixins": [
         "${mod_id}.mixins.json",

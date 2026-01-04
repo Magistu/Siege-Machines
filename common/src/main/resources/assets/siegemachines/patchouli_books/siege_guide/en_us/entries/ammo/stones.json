@@ -1,0 +1,17 @@
+{
+  "name": "Stones",
+  "icon": "minecraft:cobblestone",
+  "category": "siegemachines:ammo",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Catapult and Trebuchet use $(item)Stone$() blocks as ammunition. Simply load cobblestone or stone into the machine's inventory.$(br2)$(l)Tip:$() The Trebuchet can also use $(item)Giant Stones$() for even more devastating impacts!"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Giant Stone",
+      "text": "$(item)Giant Stones$() deal massive damage and have a larger blast radius. Perfect for taking down structures and groups of enemies."
+    }
+  ]
+}

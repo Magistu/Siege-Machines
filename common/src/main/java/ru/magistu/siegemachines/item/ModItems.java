@@ -33,7 +33,7 @@ public class ModItems {
     });
     public static final RegistrySupplier<Item> TREBUCHET = ITEMS.register("trebuchet", () -> new MachineItem<>(new Item.Properties(), ModEntityTypes.TREBUCHET, () -> MachineType.TREBUCHET) {
         @Override
-        public MachineItemGeoRenderer<Trebuchet> getRenderer() {
+        public MachineItemGeoRenderer<Catapult> getRenderer() {
             return new MachineItemGeoRenderer<>(new MachineItemModel<>("trebuchet"));
         }
     });

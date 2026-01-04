@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:mortar"
+    },
+    "title": {"text": "Bombard!", "color": "red"},
+    "description": {"text": "Craft a Mortar - rain fire upon your enemies"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:root",
+  "criteria": {
+    "get_mortar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:mortar"
+          }
+        ]
+      }
+    }
+  }
+}

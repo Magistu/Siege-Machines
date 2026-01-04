@@ -1,0 +1,18 @@
+{
+  "name": "Introduction",
+  "icon": "siegemachines:siege_workbench",
+  "category": "siegemachines:getting_started",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Welcome, Engineer!",
+      "text": "The art of siege warfare has been perfected over centuries. With this manual, you will learn to construct and operate the most devastating weapons of medieval warfare.$(br2)From simple mortars to mighty trebuchets, each machine serves a purpose on the battlefield."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Getting Started",
+      "text": "Your first step is to craft a $(item)Siege Workbench$(). This special crafting station is required to build most siege machines.$(br2)You'll also need to gather $(item)Beams$(), $(item)Wheels$(), and other components before constructing your first weapon of war."
+    }
+  ]
+}

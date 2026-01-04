@@ -1,6 +1,7 @@
 package ru.magistu.siegemachines.client;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
@@ -10,8 +11,8 @@ public class KeyBindings {
     public static KeyMapping MACHINE_INVENTORY = new KeyMapping(SiegeMachines.ID + ".machine_inventory", 73, SiegeMachines.ID + ".category");
 
     public static KeyMapping getUseKey(MachineType type) {
-//        if (type == MachineType.SIEGE_LADDER)
-//            return LADDER_CLIMB;
+        if (type == MachineType.SIEGE_LADDER)
+            return Minecraft.getInstance().options.keyJump;
         return MACHINE_USE;
     }
 }

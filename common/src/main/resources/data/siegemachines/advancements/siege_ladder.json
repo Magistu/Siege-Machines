@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:siege_ladder"
+    },
+    "title": {"text": "Scale the Walls", "color": "yellow"},
+    "description": {"text": "Craft a Siege Ladder - breach any fortification"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:root",
+  "criteria": {
+    "get_siege_ladder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:siege_ladder"
+          }
+        ]
+      }
+    }
+  }
+}

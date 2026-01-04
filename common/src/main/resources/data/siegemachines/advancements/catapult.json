@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:catapult"
+    },
+    "title": {"text": "Stone Thrower", "color": "gray"},
+    "description": {"text": "Craft a Catapult - hurl boulders at castle walls"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:root",
+  "criteria": {
+    "get_catapult": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:catapult"
+          }
+        ]
+      }
+    }
+  }
+}

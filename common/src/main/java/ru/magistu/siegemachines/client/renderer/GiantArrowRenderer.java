@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.client.renderer.model.GiantArrowModel;
-import ru.magistu.siegemachines.item.GiantArrow;
+import ru.magistu.siegemachines.entity.projectile.GiantArrow;
 
 public class GiantArrowRenderer extends EntityRenderer<GiantArrow> {
     public static final ResourceLocation TEXTURE_LOCATION = SiegeMachines.id("textures/item/giant_arrow.png");

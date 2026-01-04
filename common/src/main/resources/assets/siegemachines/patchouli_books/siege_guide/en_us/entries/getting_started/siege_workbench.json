@@ -1,0 +1,17 @@
+{
+  "name": "Siege Workbench",
+  "icon": "siegemachines:siege_workbench",
+  "category": "siegemachines:getting_started",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Siege Workbench$() is your gateway to siege engineering. This specialized crafting station allows you to combine components into powerful war machines.$(br2)Place it down and right-click to access its crafting interface."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:siege_workbench",
+      "text": "Crafted with planks and beams in a regular crafting table."
+    }
+  ]
+}

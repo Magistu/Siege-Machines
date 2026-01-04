@@ -1,0 +1,17 @@
+{
+  "name": "Wheel",
+  "icon": "siegemachines:wheel",
+  "category": "siegemachines:components",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(item)Wheels$() allow your siege machines to be mobile on the battlefield. Essential for machines like the Culverin, Battering Ram, and Trebuchet."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:wheel",
+      "text": "Crafted with planks arranged around a central stick."
+    }
+  ]
+}

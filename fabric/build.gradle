@@ -1,93 +1,100 @@
 plugins {
-    id 'com.github.johnrengelman.shadow'
+    id 'multiloader-loader'
+    id 'fabric-loom'
+    id 'com.hypherionmc.modutils.modpublisher' version '2.1.8'
 }
 
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
-
-    // Files in this configuration will be bundled into your mod using the Shadow plugin.
-    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
-    }
+base {
+    archivesName = "siege-machines-${minecraft_version}-fabric"
 }
 
 dependencies {
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
+
     modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version}"
-    implementation "com.eliotlash.mclib:mclib:20"
-    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rootProject.rei_version"
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version"
-    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_version"
-    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
-    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$rootProject.neoforge_config_api_version"
-    modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}") {
-        exclude group: "net.fabricmc.fabric-api" }
 
-    loom {
-        runs {
-            datagen {
-                inherit client
-                name "Data Generation"
-                vmArg "-Dfabric-api.datagen"
-                vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
-                vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-                runDir "build/datagen"
-            }
+    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version"
+    modImplementation "dev.architectury:architectury-fabric:$architectury_version"
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
         }
     }
 }
 
-processResources {
-    var replaceProperties = [
-            minecraft_version : rootProject.minecraft_version,
-            minecraft_version_range: rootProject.minecraft_version_range,
-            minecraft_version_condition: rootProject.minecraft_version_condition,
-            fabric_loader_version: rootProject.fabric_loader_version,
-            architectury_version : rootProject.architectury_version,
-            cloth_config_version: rootProject.cloth_config_version,
-            mod_id : rootProject.mod_id,
-            mod_name: rootProject.mod_name,
-            mod_license: rootProject.mod_license,
-            mod_version: rootProject.mod_version,
-            mod_authors : rootProject.mod_authors,
-            mod_description : rootProject.mod_description,
-            mod_credits : rootProject.mod_credits,
-            mod_issues_url : rootProject.mod_issues_url,
-            mod_sources_url: rootProject.mod_sources_url,
-            mod_home_url: rootProject.mod_home_url,
-    ]
-    inputs.properties replaceProperties
+publisher {
+    def mcVersionsNeo = (rootProject.ext.minecraftGameVersions as List).collect { it.toString() } as String[]
+    def changelogFile = rootProject.file("fabric/CHANGELOG.md")
+    def changelogText = changelogFile.exists() ? changelogFile.getText("UTF-8") : ""
 
-    filesMatching('fabric.mod.json') {
-        expand replaceProperties
+    apiKeys {
+        modrinth System.getenv("MODRINTH_TOKEN")
+        curseforge System.getenv("CURSEFORGE_TOKEN")
     }
-}
 
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier.set 'dev-shadow'
-}
+    setCurseID((rootProject.findProperty("mod_curseforge_id") ?: "").toString())
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
+    setModrinthID((rootProject.findProperty("mod_modrinth_id") ?: "").toString())
+
+    setVersionType((rootProject.findProperty("release_channel") ?: "release").toString())
+
+    setChangelog(changelogText)
+
+    setProjectVersion(rootProject.version)
+
+    setDisplayName("[${rootProject.minecraft_version}-fabric]-${rootProject.mod_display_name}-${rootProject.version}")
+
+    setGameVersions(*mcVersionsNeo)
+
+    setLoaders("fabric")
+
+    setCurseEnvironment("both")
+
+    setArtifact(tasks.jar)
+
+    modrinthDepends {
+        required("architectury-api")
+        required("cloth-config")
+        required("geckolib")
+        optional("patchouli")
+    }
+
+    curseDepends {
+        required("architectury-api")
+        required("cloth-config")
+        required("geckolib")
+        optional("patchouli")
+    }
 }

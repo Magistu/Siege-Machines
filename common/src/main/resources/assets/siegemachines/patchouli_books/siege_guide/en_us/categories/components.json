@@ -1,0 +1,6 @@
+{
+  "name": "Components",
+  "description": "Essential building blocks for constructing siege machines.",
+  "icon": "siegemachines:beam",
+  "sortnum": 1
+}

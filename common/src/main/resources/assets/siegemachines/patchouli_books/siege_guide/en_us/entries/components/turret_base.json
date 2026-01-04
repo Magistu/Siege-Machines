@@ -1,0 +1,17 @@
+{
+  "name": "Turret Base",
+  "icon": "siegemachines:turret_base",
+  "category": "siegemachines:components",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Turret Base$() provides a rotating platform for aiming siege weapons. Used in the Ballista and Catapult."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:turret_base",
+      "text": "Simple wooden platform with stick supports."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Catapult",
+  "icon": "siegemachines:catapult",
+  "category": "siegemachines:machines",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Catapult$() hurls stones in a high arc using torsion power. A classic siege weapon for bombarding fortifications.$(br2)$(l)Ammo:$() Stone blocks"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:catapult",
+      "link_recipe": true
+    }
+  ]
+}

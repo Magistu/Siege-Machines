@@ -76,11 +76,10 @@ public class SiegeWorkbenchRecipe extends ShapedRecipe {
     public static class CustomSerializer extends Serializer {
 
         public static final MapCodec<SiegeWorkbenchRecipe> CODEC = RecordCodecBuilder.mapCodec(
-                instance -> instance.group(Serializer.CODEC.forGetter(recipe -> recipe))
-                        .apply(instance, recipe -> new SiegeWorkbenchRecipe(recipe)));
-
+                instance -> instance.group(ShapedRecipe.Serializer.CODEC.forGetter(upgradeRecipe -> upgradeRecipe))
+                        .apply(instance, SiegeWorkbenchRecipe::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SiegeWorkbenchRecipe> STREAM_CODEC = StreamCodec.of(
-                Serializer.STREAM_CODEC::encode, buffer -> new SiegeWorkbenchRecipe(Serializer.STREAM_CODEC.decode(buffer)));
+                ShapedRecipe.Serializer.STREAM_CODEC::encode, pBuffer -> new SiegeWorkbenchRecipe(ShapedRecipe.Serializer.STREAM_CODEC.decode(pBuffer)));
 
 
         @Override

@@ -1,0 +1,8 @@
+{
+  "name": "Siege Engineer's Manual",
+  "landing_text": "Welcome to the art of siege warfare! This manual will teach you everything you need to know about constructing and operating medieval siege machines.",
+  "version": 1,
+  "creative_tab": "siegemachines:machines",
+  "use_resource_pack": true,
+  "model": "patchouli:book_brown"
+}
