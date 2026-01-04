@@ -24,7 +24,6 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
-    modImplementation "me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version"
     modImplementation "dev.architectury:architectury-fabric:$architectury_version"
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$rootProject.neoforge_config_api_version"
 
@@ -83,12 +82,13 @@ publisher {
 
     setCurseEnvironment("both")
 
-    setArtifact(tasks.jar)
+    setArtifact(tasks.remapJar)
 
     modrinthDepends {
         required("architectury-api")
         required("cloth-config")
         required("geckolib")
+        required("forge-config-api-port")
         optional("patchouli")
     }
 
@@ -96,6 +96,7 @@ publisher {
         required("architectury-api")
         required("cloth-config")
         required("geckolib")
+        required("forge-config-api-port")
         optional("patchouli")
     }
 }
