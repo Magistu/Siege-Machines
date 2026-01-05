@@ -1,0 +1,17 @@
+{
+  "name": "Culverin",
+  "icon": "siegemachines:culverin",
+  "category": "siegemachines:machines",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Culverin$() is a heavy siege cannon mounted on wheels. It fires cannonballs with devastating force, capable of breaching castle walls.$(br2)$(l)Requires:$() Cannonballs + Gunpowder"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:culverin",
+      "link_recipe": true
+    }
+  ]
+}

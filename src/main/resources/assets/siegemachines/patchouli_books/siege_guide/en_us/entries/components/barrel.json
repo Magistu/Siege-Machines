@@ -1,0 +1,17 @@
+{
+  "name": "Barrel",
+  "icon": "siegemachines:barrel",
+  "category": "siegemachines:components",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The iron $(item)Barrel$() is the firing tube for cannon-type weapons. Required for the Mortar and Culverin."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:barrel",
+      "text": "Forged from iron ingots into a hollow tube."
+    }
+  ]
+}

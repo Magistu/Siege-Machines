@@ -1,0 +1,17 @@
+{
+  "name": "Ballista",
+  "icon": "siegemachines:ballista",
+  "category": "siegemachines:machines",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Ballista$() is a giant crossbow that fires massive bolts. Excellent for picking off enemies at long range with pinpoint accuracy.$(br2)$(l)Ammo:$() Giant Arrows"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:ballista",
+      "link_recipe": true
+    }
+  ]
+}

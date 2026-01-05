@@ -1,0 +1,17 @@
+{
+  "name": "Siege Ladder",
+  "icon": "siegemachines:siege_ladder",
+  "category": "siegemachines:machines",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Siege Ladder$() allows soldiers to scale walls and fortifications. Multiple soldiers can climb simultaneously!$(br2)$(l)Controls:$() Mount, press Space to enter climbing position, then W/S to go up/down."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:siege_ladder",
+      "link_recipe": true
+    }
+  ]
+}

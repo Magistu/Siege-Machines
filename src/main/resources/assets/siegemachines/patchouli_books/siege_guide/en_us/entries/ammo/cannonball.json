@@ -1,0 +1,17 @@
+{
+  "name": "Cannonball",
+  "icon": "siegemachines:cannonball",
+  "category": "siegemachines:ammo",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(item)Cannonballs$() are iron spheres packed with gunpowder. Used by the Mortar and Culverin.$(br2)$(l)Note:$() You also need $(item)Gunpowder$() in the machine's inventory to fire!"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:cannonball",
+      "text": "Iron ingots around gunpowder yields 4 cannonballs."
+    }
+  ]
+}

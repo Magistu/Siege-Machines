@@ -1,0 +1,17 @@
+{
+  "name": "Counterweight",
+  "icon": "siegemachines:counterweight",
+  "category": "siegemachines:components",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The massive $(item)Counterweight$() provides the devastating power of the Trebuchet. When released, its weight swings the arm with tremendous force."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:counterweight",
+      "text": "Heavy cobblestone block reinforced with iron."
+    }
+  ]
+}

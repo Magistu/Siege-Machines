@@ -1,0 +1,17 @@
+{
+  "name": "Beam",
+  "icon": "siegemachines:beam",
+  "category": "siegemachines:components",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(item)Beams$() are the fundamental building block of siege engineering. These sturdy wooden beams form the framework of nearly every siege machine.$(br2)You'll need plenty of these!"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:beam",
+      "text": "Simple to craft - just 4 planks yields 4 beams."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Giant Arrow",
+  "icon": "siegemachines:giant_arrow",
+  "category": "siegemachines:ammo",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(item)Giant Arrows$() are massive bolts designed for the Ballista. They can pierce through armor and multiple enemies in a line."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "siegemachines:giant_arrow",
+      "text": "Beam shaft with iron tip and feather fletching. Makes 4."
+    }
+  ]
+}

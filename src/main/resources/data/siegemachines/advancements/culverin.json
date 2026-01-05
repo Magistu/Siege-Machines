@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:culverin"
+    },
+    "title": {"text": "Heavy Artillery", "color": "dark_red"},
+    "description": {"text": "Craft a Culverin - the mighty siege cannon"},
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:mortar",
+  "criteria": {
+    "get_culverin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:culverin"
+          }
+        ]
+      }
+    }
+  }
+}

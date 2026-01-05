@@ -1,0 +1,17 @@
+{
+  "name": "Mortar",
+  "icon": "siegemachines:mortar",
+  "category": "siegemachines:machines",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Mortar$() is a portable artillery piece that lobs explosive cannonballs in a high arc. Perfect for attacking enemies behind walls or fortifications.$(br2)$(l)Requires:$() Cannonballs + Gunpowder"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:mortar",
+      "link_recipe": true
+    }
+  ]
+}

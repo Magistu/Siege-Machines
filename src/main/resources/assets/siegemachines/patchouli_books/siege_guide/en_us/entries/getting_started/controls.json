@@ -1,0 +1,17 @@
+{
+  "name": "Controls",
+  "icon": "minecraft:oak_sign",
+  "category": "siegemachines:getting_started",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Mounting:$() Right-click a machine to mount it.$(br2)$(l)Movement:$() Use WASD to move and aim the machine.$(br2)$(l)Fire:$() Press F to fire!$(br2)$(l)Inventory:$() Press I to open inventory."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "More Controls",
+      "text": "$(l)Dismount:$() Press Shift to dismount.$(br2)$(l)Siege Ladder:$() Press Space to transfer to climbing position, then W/S to climb up/down.$(br2)$(br)Remember to load ammunition before firing!"
+    }
+  ]
+}

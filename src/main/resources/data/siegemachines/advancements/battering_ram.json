@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:battering_ram"
+    },
+    "title": {"text": "Gate Breaker", "color": "dark_gray"},
+    "description": {"text": "Craft a Battering Ram - no door can stop you"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:root",
+  "criteria": {
+    "get_battering_ram": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:battering_ram"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:ballista"
+    },
+    "title": {"text": "Giant Slayer", "color": "blue"},
+    "description": {"text": "Craft a Ballista - pierce armor from afar"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:root",
+  "criteria": {
+    "get_ballista": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "siegemachines:ballista"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "display": {
+    "icon": {
+      "id": "siegemachines:culverin"
+    },
+    "title": {"text": "Master Siege Engineer", "color": "gold", "bold": true},
+    "description": {"text": "Craft every siege machine - you are the master of war!"},
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "siegemachines:trebuchet",
+  "criteria": {
+    "get_mortar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:mortar"}]
+      }
+    },
+    "get_culverin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:culverin"}]
+      }
+    },
+    "get_catapult": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:catapult"}]
+      }
+    },
+    "get_trebuchet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:trebuchet"}]
+      }
+    },
+    "get_ballista": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:ballista"}]
+      }
+    },
+    "get_battering_ram": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:battering_ram"}]
+      }
+    },
+    "get_siege_ladder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{"items": "siegemachines:siege_ladder"}]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 500
+  }
+}

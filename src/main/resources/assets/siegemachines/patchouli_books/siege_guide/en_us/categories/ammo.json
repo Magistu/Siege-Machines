@@ -1,0 +1,6 @@
+{
+  "name": "Ammunition",
+  "description": "Projectiles and ammunition for your siege machines.",
+  "icon": "siegemachines:cannonball",
+  "sortnum": 3
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Battering Ram",
+  "icon": "siegemachines:battering_ram",
+  "category": "siegemachines:machines",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Battering Ram$() is designed for one purpose: breaking down gates and doors. Roll it up to enemy fortifications and smash your way in!$(br2)$(l)No ammo required$()"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "siegemachines:battering_ram",
+      "link_recipe": true
+    }
+  ]
+}
