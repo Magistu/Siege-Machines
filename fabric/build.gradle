@@ -86,7 +86,6 @@ publisher {
 
     modrinthDepends {
         required("architectury-api")
-        required("cloth-config")
         required("geckolib")
         required("forge-config-api-port")
         optional("patchouli")
@@ -94,7 +93,6 @@ publisher {
 
     curseDepends {
         required("architectury-api")
-        required("cloth-config")
         required("geckolib")
         required("forge-config-api-port")
         optional("patchouli")

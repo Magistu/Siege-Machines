@@ -95,14 +95,12 @@ publisher {
 
     modrinthDepends {
         required("architectury-api")
-        required("cloth-config")
         required("geckolib")
         optional("patchouli")
     }
 
     curseDepends {
         required("architectury-api")
-        required("cloth-config")
         required("geckolib")
         optional("patchouli")
     }
