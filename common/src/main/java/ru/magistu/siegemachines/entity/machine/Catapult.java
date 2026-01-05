@@ -59,7 +59,7 @@ public class Catapult extends ShootingMachine implements ShootingGeoEntity {
 
     @Override
     public void startShooting(LivingEntity entity) {
-        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.shootingticks <= 0) {
+        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
             usesoundplayer.run();
             setUseTicks(type.usetime);
             this.shootingticks = this.type.usereleasetime;
@@ -68,5 +68,10 @@ public class Catapult extends ShootingMachine implements ShootingGeoEntity {
 
     public float getReloadProgress() {
         return ((float) this.type.specs.delaytime.get() - getDelayTicks()) / type.specs.delaytime.get();
+    }
+
+    @Override
+    public int getShootingTicks() {
+        return this.shootingticks;
     }
 }

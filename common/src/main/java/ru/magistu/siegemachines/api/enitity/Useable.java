@@ -29,4 +29,8 @@ public interface Useable {
     float getTurretYaw();
 
     float getTurretPitch();
+
+    int getDelayTicks();
+
+    int getUseTicks();
 }
