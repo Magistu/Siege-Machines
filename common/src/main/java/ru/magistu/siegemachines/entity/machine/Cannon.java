@@ -146,6 +146,11 @@ public class Cannon extends ShootingMachine implements GeoEntity {
     }
 
     @Override
+    public int getShootingTicks() {
+        return this.shootingticks;
+    }
+
+    @Override
     public void shoot() {
         if (!level().isClientSide()) {
             super.shoot();

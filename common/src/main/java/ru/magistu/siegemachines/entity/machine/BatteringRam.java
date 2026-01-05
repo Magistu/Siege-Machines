@@ -137,12 +137,12 @@ public class BatteringRam extends Machine implements MachineGeoEntity, Explosive
             return;
         }
 
-        if (!this.level().isClientSide()) {
-            ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
-        }
-        this.lastUsedEntity = entity;
-
         if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.hittingticks <= 0) {
+            if (!this.level().isClientSide()) {
+                ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            }
+            this.lastUsedEntity = entity;
+
             this.usesoundplayer.run();
             this.state = State.HITTING;
             setUseTicks(type.usetime);

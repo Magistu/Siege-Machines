@@ -1,29 +1,30 @@
 package ru.magistu.siegemachines.api.entity;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
 import javax.annotation.Nullable;
 
-
 public interface Useable {
     void use(@Nullable LivingEntity entity);
-    
+
     UsageType getUsage();
 
     MachineType getMachineType();
-    
+
     default boolean canShoot() {
         return this.getUsage() == UsageType.SHOOT;
     }
-    
+
     enum UsageType {
         NONE,
         SHOOT,
         RAM,
         CLIMB
     }
-    
+
     void setTurretRotationsDest(float pitch, float yaw);
 
     void setYawDest(float yaw);
@@ -37,4 +38,10 @@ public interface Useable {
     int getDelayTicks();
 
     int getUseTicks();
+
+    Entity asLivingEntity();
+
+    boolean isStationary();
+
+    Machine.MachineInventory getInventory();
 }

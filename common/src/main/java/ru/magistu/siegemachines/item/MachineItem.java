@@ -179,8 +179,7 @@ public class MachineItem<T extends Machine> extends Item implements GeoItem {
             machine.setCustomName(component);
 
         machine.moveTo((double) pos.getX() + 0.5D, (double) pos.getY() + d0, (double) pos.getZ() + 0.5D, Mth.wrapDegrees(yaw), 0.0F);
-        machine.yHeadRot = machine.getYRot();
-        machine.yBodyRot = machine.getYRot();
+        machine.setYaw(machine.getYRot());
         machine.finalizeSpawn(level, level.getCurrentDifficultyAt(machine.blockPosition()), type, null);
         machine.playAmbientSound();
 
