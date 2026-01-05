@@ -602,6 +602,10 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
     }
 
+    public MachineType getMachineType() {
+        return this.type;
+    }
+
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {
         private final int size;
 
