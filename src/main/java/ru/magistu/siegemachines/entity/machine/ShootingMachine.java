@@ -66,11 +66,13 @@ public abstract class ShootingMachine extends Machine implements Shootable, Relo
 
     @Override
     public void use(LivingEntity entity) {
-        if (!this.level().isClientSide()) {
-            ModNetwork.sendPacketToAllInArea(new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
+            if (!this.level().isClientSide()) {
+                ModNetwork.sendPacketToAllInArea(new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            }
+            this.lastUsedEntity = entity;
+            this.startShooting(entity);
         }
-        this.lastUsedEntity = entity;
-        this.startShooting(entity);
     }
 
     @Override

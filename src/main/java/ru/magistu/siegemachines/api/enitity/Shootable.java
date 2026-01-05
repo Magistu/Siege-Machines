@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface Shootable extends Useable
 {
+    void startShooting(@Nullable LivingEntity entity);
+
     void use(@Nullable LivingEntity entity);
     
     @Override
@@ -31,4 +33,6 @@ public interface Shootable extends Useable
     List<Item> getValidAmmo();
     
     boolean reload(ItemStack stack);
+
+    int getShootingTicks();
 }

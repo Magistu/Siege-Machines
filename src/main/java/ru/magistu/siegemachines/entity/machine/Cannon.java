@@ -49,7 +49,7 @@ public class Cannon extends ShootingMachine implements GeoEntity {
         ItemStack stack = player.getItemInHand(hand);
 
         if (stack.getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (getUseTicks() <= 0 && this.shootingticks <= 0) {
+            if (getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
                 stack.hurtAndBreak(1, player, p -> {
                     p.broadcastBreakEvent(hand);
                     net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, this.useItem, hand);
@@ -138,7 +138,7 @@ public class Cannon extends ShootingMachine implements GeoEntity {
 
     @Override
     public void startShooting(LivingEntity entity) {
-        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.shootingticks <= 0) {
+        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
             this.usesoundplayer.run();
             setUseTicks(this.type.usetime);
             this.shootingticks = this.type.usereleasetime;
@@ -156,6 +156,10 @@ public class Cannon extends ShootingMachine implements GeoEntity {
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
         }
+    }
+
+    public int getShootingTicks() {
+        return this.shootingticks;
     }
 
     public double getWheelsSpeed() {
