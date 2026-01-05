@@ -16,8 +16,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.entity.Shootable;
+import ru.magistu.siegemachines.entity.Reloading;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public abstract class ShootingMachine extends Machine implements Shootable {
+public abstract class ShootingMachine extends Machine implements Shootable, Reloading {
     public int shootingticks = 0;
     protected LivingEntity lastUsedEntity = null;
 
@@ -51,7 +53,7 @@ public abstract class ShootingMachine extends Machine implements Shootable {
             return;
         }
         ItemStack itemstack = this.inventory.removeItemType(projectilebuilder.item, 1);
-        if (!itemstack.isEmpty()) {
+        if (!itemstack.isEmpty() && !this.level().isClientSide()) {
             Vec3 shotpos = this.getShotPos();
             LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
             Projectile projectile = projectilebuilder.build(this.level(), new Vec3(shotpos.x, shotpos.y, shotpos.z), owner, this);
@@ -65,11 +67,13 @@ public abstract class ShootingMachine extends Machine implements Shootable {
 
     @Override
     public void use(LivingEntity entity) {
-        if (!this.level().isClientSide()) {
-            ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+        if (getDelayTicks() <= 0 && getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
+            if (!this.level().isClientSide()) {
+                ModNetwork.sendPacketToAllInArea((ServerLevel) level(), new S2CPacketMachineUse(this.getId()), this.blockPosition(), SiegeMachines.RENDER_UPDATE_RANGE_SQR);
+            }
+            this.lastUsedEntity = entity;
+            this.startShooting(entity);
         }
-        this.lastUsedEntity = entity;
-        this.startShooting(entity);
     }
 
     @Override

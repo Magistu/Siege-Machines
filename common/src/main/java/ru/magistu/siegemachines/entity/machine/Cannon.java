@@ -16,11 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import ru.magistu.siegemachines.client.ModSoundTypes;
 import ru.magistu.siegemachines.SiegeMachines;
+import ru.magistu.siegemachines.client.ModSoundTypes;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
@@ -49,8 +49,11 @@ public class Cannon extends ShootingMachine implements GeoEntity {
         ItemStack stack = player.getItemInHand(hand);
 
         if (stack.getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (getUseTicks() <= 0 && this.shootingticks <= 0) {
-                stack.hurtAndBreak(1, player, getSlotForHand(hand));
+            if (getUseTicks() <= 0 && this.getShootingTicks() <= 0) {
+                stack.hurtAndBreak(1, player, p -> {
+                    p.broadcastBreakEvent(hand);
+                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, this.useItem, hand);
+                });
                 this.startShooting(player);
             }
             return InteractionResult.SUCCESS;
@@ -153,6 +156,10 @@ public class Cannon extends ShootingMachine implements GeoEntity {
             this.blowParticles(ParticleTypes.FLAME, 0.035, 25);
             this.blowParticles(ParticleTypes.CLOUD, 0.2, 60);
         }
+    }
+
+    public int getShootingTicks() {
+        return this.shootingticks;
     }
 
     public double getWheelsSpeed() {
