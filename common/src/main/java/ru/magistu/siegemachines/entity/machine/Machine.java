@@ -153,14 +153,14 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(DATA_TURRET_PITCH, -25f);
-        builder.define(DATA_TURRET_YAW, 0f);
-        builder.define(DATA_USE_TICKS, 0);
-        builder.define(DATA_DELAY_TICKS, 0);
-        builder.define(PREVENT_PICKUP_TICKS, 0);
-        builder.define(DATA_INVENTORY_ITEMS, new ArrayList<>());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_TURRET_PITCH, -25f);
+        this.entityData.define(DATA_TURRET_YAW, 0f);
+        this.entityData.define(DATA_USE_TICKS, 0);
+        this.entityData.define(DATA_DELAY_TICKS, 0);
+        this.entityData.define(PREVENT_PICKUP_TICKS, 0);
+        this.entityData.define(DATA_INVENTORY_ITEMS, new ArrayList<>());
     }
 
     @Override
@@ -318,6 +318,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
             listnbt.add(compound);
         }
         nbt.put("Items", listnbt);
+        nbt.put("TurretRotations", this.newFloatList(this.getTurretPitch(), this.getTurretYaw()));
         nbt.putInt("DelayTicks", getDelayTicks());
         nbt.putInt("UseTicks", getUseTicks());
     }
@@ -332,11 +333,15 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
                 this.inventory.getItems().set(i, ItemStack.parseOptional(registryAccess(), listnbt.getCompound(i)));
             }
         }
-        if (nbt.contains("DelayTicks", 3)) {
-            setDelayTicks(nbt.getInt("DelayTicks"));
+        if (nbt.contains("TurretRotations", 5)) {
+            ListTag turretrotations = nbt.getList("TurretRotations", 5);
+            setTurretRotations(turretrotations.getFloat(0), turretrotations.getFloat(1));
         }
-        if (nbt.contains("UseTicks", 3)) {
-            setUseTicks(nbt.getInt("UseTicks"));
+        if (nbt.contains("DelayTicks")) {
+            this.setDelayTicks(nbt.getInt("DelayTicks"));
+        }
+        if (nbt.contains("UseTicks")) {
+            this.setUseTicks(nbt.getInt("UseTicks"));
         }
     }
 
