@@ -1,7 +1,6 @@
 package ru.magistu.siegemachines.entity.machine;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -41,19 +40,15 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.magistu.siegemachines.ModTags;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.api.enitity.Useable;
+import ru.magistu.siegemachines.api.entity.Useable;
 import ru.magistu.siegemachines.config.SpecsConfig;
 import ru.magistu.siegemachines.util.CartesianGeometry;
 import ru.magistu.siegemachines.util.HitUtil;

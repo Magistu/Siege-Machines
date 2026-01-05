@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.api.enitity;
+package ru.magistu.siegemachines.api.entity;
 
 import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nullable;

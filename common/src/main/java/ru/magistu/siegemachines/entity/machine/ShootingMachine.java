@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import ru.magistu.siegemachines.SiegeMachines;
-import ru.magistu.siegemachines.api.enitity.Shootable;
+import ru.magistu.siegemachines.api.entity.Shootable;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;

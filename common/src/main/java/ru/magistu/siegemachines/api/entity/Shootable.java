@@ -1,4 +1,4 @@
-package ru.magistu.siegemachines.api.enitity;
+package ru.magistu.siegemachines.api.entity;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public interface Shootable extends Useable {
+    void startShooting(@Nullable LivingEntity entity);
+
     void use(@Nullable LivingEntity entity);
     
     @Override
@@ -30,4 +32,6 @@ public interface Shootable extends Useable {
     List<Item> getValidAmmo();
     
     boolean reload(ItemStack stack);
+
+    int getShootingTicks();
 }
