@@ -1,6 +1,8 @@
 package ru.magistu.siegemachines.api.entity;
 
 import net.minecraft.world.entity.LivingEntity;
+import ru.magistu.siegemachines.entity.machine.MachineType;
+
 import javax.annotation.Nullable;
 
 
@@ -8,6 +10,8 @@ public interface Useable {
     void use(@Nullable LivingEntity entity);
     
     UsageType getUsage();
+
+    MachineType getMachineType();
     
     default boolean canShoot() {
         return this.getUsage() == UsageType.SHOOT;
