@@ -58,14 +58,14 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     public final MachineType type;
 
     protected float turretpitchprev = -25;
-    protected float turretpitchdest = -25;
     protected float turretyawprev = getTurretYaw();
-    protected float turretyawdest = getTurretYaw();
-    protected float yawdest = this.getYRot();
     private boolean stationary;
 
     private static final EntityDataAccessor<Float> DATA_TURRET_PITCH = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_TURRET_YAW = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_TURRET_PITCH_DEST = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_TURRET_YAW_DEST = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_YAW_DEST = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_USE_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_DELAY_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PREVENT_PICKUP_TICKS = SynchedEntityData.defineId(Machine.class, EntityDataSerializers.INT);
@@ -138,6 +138,9 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         super.defineSynchedData();
         this.entityData.define(DATA_TURRET_PITCH, -25f);
         this.entityData.define(DATA_TURRET_YAW, 0f);
+        this.entityData.define(DATA_TURRET_PITCH_DEST, -25f);
+        this.entityData.define(DATA_TURRET_YAW_DEST, 0f);
+        this.entityData.define(DATA_YAW_DEST, 0f);
         this.entityData.define(DATA_USE_TICKS, 0);
         this.entityData.define(DATA_DELAY_TICKS, 0);
         this.entityData.define(PREVENT_PICKUP_TICKS, 0);
@@ -311,9 +314,11 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
                 this.inventory.getItems().set(i, ItemStack.of(listnbt.getCompound(i)));
             }
         }
+        this.setYawDest(this.getYaw());
         if (nbt.contains("TurretRotations", 5)) {
             ListTag turretrotations = nbt.getList("TurretRotations", 5);
-            setTurretRotations(turretrotations.getFloat(0), turretrotations.getFloat(1));
+            this.setTurretRotations(turretrotations.getFloat(0), turretrotations.getFloat(1));
+            this.setTurretRotationsDest(getTurretPitch(), getTurretYaw());
         }
         if (nbt.contains("DelayTicks")) {
             this.setDelayTicks(nbt.getInt("DelayTicks"));
@@ -376,11 +381,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     }
 
     public float getYawDest() {
-        return this.yawdest;
-    }
-
-    public void setYawDest(float yaw) {
-        this.yawdest = yaw;
+        return this.entityData.get(DATA_YAW_DEST);
     }
 
     public float getTurretPitch(float f) {
@@ -434,21 +435,33 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         entityData.set(DATA_TURRET_PITCH, pitch);
     }
 
+    protected void setTurretPitchDest(float pitch) {
+        entityData.set(DATA_TURRET_PITCH_DEST, pitch);
+    }
+
     protected void setTurretYaw(float yaw) {
         entityData.set(DATA_TURRET_YAW, yaw);
     }
 
+    public void setYawDest(float yaw) {
+        entityData.set(DATA_YAW_DEST, yaw);
+    }
+
     public float getTurretPitchDest() {
-        return this.turretpitchdest;
+        return this.entityData.get(DATA_TURRET_PITCH_DEST);
+    }
+
+    protected void setTurretYawDest(float yaw) {
+        this.entityData.set(DATA_TURRET_YAW_DEST, yaw);
     }
 
     public float getTurretYawDest() {
-        return this.turretyawdest;
+        return this.entityData.get(DATA_TURRET_YAW_DEST);
     }
 
     public void setTurretRotationsDest(float pitch, float yaw) {
-        this.turretpitchdest = pitch;
-        this.turretyawdest = yaw;
+        this.setTurretPitchDest(pitch);
+        this.setTurretYawDest(yaw);
     }
 
     public void updateYaw() {
@@ -461,16 +474,13 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (this.isAlive()) {
-            if (this.isVehicle() && getUseTicks() <= 0 && getDelayTicks() <= 0) {
-                LivingEntity livingentity = this.getControllingPassenger();
-
-                this.setTurretRotationsDest(livingentity.getXRot(), livingentity.getYRot() - this.getYaw());
-                this.setYawDest(livingentity.getYRot());
-
-                this.updateYaw();
-                this.updateTurretRotations();
+        if (this.isAlive() && this.isVehicle() && getUseTicks() <= 0 && getDelayTicks() <= 0) {
+            if (this.getControllingPassenger() instanceof Player player) {
+                this.setTurretRotationsDest(player.getXRot(), player.getYRot() - this.getYaw());
+                this.setYawDest(player.getYRot());
             }
+            this.updateYaw();
+            this.updateTurretRotations();
         }
     }
 
@@ -571,6 +581,7 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return false;
     }
 
+    @Override
     public boolean isStationary() {
         return stationary;
     }
@@ -585,8 +596,14 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return box.inflate(box.getXsize(), box.getYsize(), box.getZsize());
     }
 
+    @Override
     public MachineType getMachineType() {
         return this.type;
+    }
+
+    @Override
+    public LivingEntity asLivingEntity() {
+        return this;
     }
 
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {

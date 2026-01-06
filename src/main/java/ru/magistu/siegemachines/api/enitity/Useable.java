@@ -1,5 +1,6 @@
 package ru.magistu.siegemachines.api.enitity;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
@@ -36,4 +37,8 @@ public interface Useable {
     int getDelayTicks();
 
     int getUseTicks();
+
+    Entity asLivingEntity();
+
+    boolean isStationary();
 }

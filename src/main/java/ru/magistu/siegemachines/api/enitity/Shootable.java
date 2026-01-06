@@ -1,9 +1,11 @@
 package ru.magistu.siegemachines.api.enitity;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,4 +37,6 @@ public interface Shootable extends Useable
     boolean reload(ItemStack stack);
 
     int getShootingTicks();
+
+    ProjectileBuilder<? extends Projectile> getProjectileBuilder();
 }
