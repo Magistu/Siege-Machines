@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
@@ -154,6 +155,9 @@ public abstract class ShootingMachine extends Machine implements Shootable, Relo
     }
 
     public boolean isValidAmmo(Item entry) {
+        if (type.usesgunpowder && entry.equals(Items.GUNPOWDER)) {
+            return true;
+        }
         return Arrays.stream(this.type.ammo).anyMatch(builder -> builder.item.equals(entry));
     }
 
@@ -168,14 +172,17 @@ public abstract class ShootingMachine extends Machine implements Shootable, Relo
 
     @Override
     public boolean hasAmmo() {
+        if (type.usesgunpowder && !inventory.containsItem(Items.GUNPOWDER)) {
+            return false;
+        }
         return this.inventory.getItems().stream().anyMatch(this::isValidAmmo);
     }
 
     @Override
-    public boolean reload(ItemStack stack) {
+    public ItemStack reload(ItemStack stack) {
         if (this.isValidAmmo(stack))
-            return !this.inventory.addItem(stack).isEmpty();
-        return false;
+            return this.inventory.addItem(stack);
+        return stack;
     }
 
     @Override

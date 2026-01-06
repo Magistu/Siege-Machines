@@ -609,6 +609,11 @@ public abstract class Machine extends Mob implements MenuProvider, Useable {
         return this;
     }
 
+    @Override
+    public MachineInventory getInventory() {
+        return this.inventory;
+    }
+
     public class MachineInventory implements Container, StackedContentsCompatible, Nameable {
         private final int size;
 

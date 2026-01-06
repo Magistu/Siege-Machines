@@ -7,7 +7,7 @@ plugins {
 
 version = rootProject.version
 group = rootProject.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "[${rootProject.minecraft_version}]-${rootProject.mod_display_name}"
+archivesBaseName = "siege-machines-${minecraft_version}-forge"
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)

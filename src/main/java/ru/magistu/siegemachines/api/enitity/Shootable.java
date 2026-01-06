@@ -33,8 +33,8 @@ public interface Shootable extends Useable
     boolean isValidAmmo(ItemStack stack);
 
     List<Item> getValidAmmo();
-    
-    boolean reload(ItemStack stack);
+
+    ItemStack reload(ItemStack stack);
 
     int getShootingTicks();
 

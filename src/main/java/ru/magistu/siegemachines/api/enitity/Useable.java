@@ -2,6 +2,7 @@ package ru.magistu.siegemachines.api.enitity;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import ru.magistu.siegemachines.entity.machine.Machine;
 import ru.magistu.siegemachines.entity.machine.MachineType;
 
 import javax.annotation.Nullable;
@@ -41,4 +42,6 @@ public interface Useable {
     Entity asLivingEntity();
 
     boolean isStationary();
+
+    Machine.MachineInventory getInventory();
 }
