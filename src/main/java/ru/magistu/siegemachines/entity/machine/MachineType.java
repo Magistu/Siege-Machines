@@ -36,7 +36,7 @@ public class MachineType {
     public static MachineType TREBUCHET = new MachineType(
             SpecsConfig.TREBUCHET, 1, 0.0f, -45.0f, 75.0f, 0.0f, 0.0f, 0.0f, 5.0f, 0.5f, true, 38, 137,
             new Vec3(40.0, 0.0, -60.0).scale(1 / 16.0),
-            new Vec3(0.0, 19.0, 0.0),
+            new Vec3(0.0, 26.0, 0.0),
             new Vec3(0.0, 0.0, 0.0),
             ProjectileBuilder.GIANT_THROWING_AMMO, false,
             () -> new ItemStack[]{new ItemStack(Items.OAK_PLANKS, 8), new ItemStack(ModItems.BEAM.get(), 12), new ItemStack(Items.STICK, 20), new ItemStack(Items.IRON_NUGGET, 36), new ItemStack(Items.COBBLESTONE, 2)}, ModItems.TREBUCHET,
