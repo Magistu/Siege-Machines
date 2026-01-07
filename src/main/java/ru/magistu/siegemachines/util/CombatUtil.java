@@ -14,6 +14,6 @@ public class CombatUtil {
         if (attacker instanceof LivingEntity livingowner && victim instanceof TamableAnimal animal && animal.isOwnedBy(livingowner)) {
             return false;
         }
-        return !attacker.isAlliedTo(victim) && !victim.isAlliedTo(attacker);
+        return victim.getTeam() == null || !attacker.isAlliedTo(victim);
     }
 }
