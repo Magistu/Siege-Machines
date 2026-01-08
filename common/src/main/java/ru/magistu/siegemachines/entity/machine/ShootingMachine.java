@@ -17,10 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
 import ru.magistu.siegemachines.SiegeMachines;
 import ru.magistu.siegemachines.api.entity.Shootable;
-import ru.magistu.siegemachines.entity.Reloading;
 import ru.magistu.siegemachines.entity.projectile.ProjectileBuilder;
 import ru.magistu.siegemachines.network.ModNetwork;
 import ru.magistu.siegemachines.network.S2CPacketMachineUse;
@@ -31,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public abstract class ShootingMachine extends Machine implements Shootable, Reloading {
+public abstract class ShootingMachine extends Machine implements Shootable {
     public int shootingticks = 0;
     protected LivingEntity lastUsedEntity = null;
 
@@ -54,7 +52,7 @@ public abstract class ShootingMachine extends Machine implements Shootable, Relo
             return;
         }
         ItemStack itemstack = this.inventory.removeItemType(projectilebuilder.item, 1);
-        if (!itemstack.isEmpty() && !this.level().isClientSide()) {
+        if (!itemstack.isEmpty()) {
             Vec3 shotpos = this.getShotPos();
             LivingEntity owner = this.lastUsedEntity == null ? this : this.lastUsedEntity;
             Projectile projectile = projectilebuilder.build(this.level(), new Vec3(shotpos.x, shotpos.y, shotpos.z), owner, this);
